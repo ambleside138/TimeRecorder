@@ -1,0 +1,124 @@
+﻿<UserControl
+    x:Class="TimeRecorder.Contents.WorkUnitRecorder.Editor.TaskEditDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder.Editor"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    Width="560"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Background="{StaticResource MaterialDesignBackground}"
+    mc:Ignorable="d">
+    <Grid Margin="24,0,24,8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40" />
+            <RowDefinition />
+            <RowDefinition Height="52" />
+        </Grid.RowDefinitions>
+
+        <!--  Header  -->
+        <TextBlock
+            VerticalAlignment="Bottom"
+            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+            Text="作業内容" />
+
+        <!--  Contents  -->
+        <StackPanel Grid.Row="1" Margin="0,8">
+            <TextBlock
+                Margin="0,0,0,4"
+                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                Text="タイトル*" />
+            <TextBox materialDesign:TextFieldAssist.HasClearButton="True" Text="{Binding TaskCardViewModel.Title.Value}" />
+
+            <TextBlock
+                Margin="0,16,0,4"
+                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                Text="作業分類" />
+            <StackPanel Orientation="Horizontal">
+                <RadioButton
+                    VerticalContentAlignment="Top"
+                    Content="開発"
+                    GroupName="TaskCategory"
+                    IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Develop, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    Style="{StaticResource HorizontalMarginStyleKey}" />
+                <RadioButton
+                    Content="契約後の導入"
+                    GroupName="TaskCategory"
+                    IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Introduce, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    Style="{StaticResource HorizontalMarginStyleKey}" />
+                <RadioButton
+                    Content="保守"
+                    GroupName="TaskCategory"
+                    IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Maintain, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    Style="{StaticResource HorizontalMarginStyleKey}" />
+                <RadioButton
+                    Content="その他"
+                    GroupName="TaskCategory"
+                    IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Other, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    Style="{StaticResource HorizontalMarginStyleKey}" />
+            </StackPanel>
+
+            <TextBlock
+                Margin="0,16,0,4"
+                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                Text="製品" />
+            <StackPanel Orientation="Horizontal">
+                <RadioButton
+                    Content="REMORA"
+                    GroupName="Product"
+                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=REMORA, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    Style="{StaticResource HorizontalMarginStyleKey}" />
+                <RadioButton
+                    Content="C-Note"
+                    GroupName="Product"
+                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=C_Note, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    Style="{StaticResource HorizontalMarginStyleKey}" />
+                <RadioButton
+                    Content="看護勤務"
+                    GroupName="Product"
+                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=ShiftSchedule, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    Style="{StaticResource HorizontalMarginStyleKey}" />
+                <RadioButton
+                    Content="[なし]"
+                    GroupName="Product"
+                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=None, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    Style="{StaticResource HorizontalMarginStyleKey}" />
+            </StackPanel>
+
+            <TextBlock
+                Margin="0,16,0,4"
+                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                Text="ユーザ" />
+            <TextBox Text="" />
+
+            <TextBlock
+                Margin="0,16,0,0"
+                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                Text="備考*" />
+            <TextBox materialDesign:TextFieldAssist.HasClearButton="True" Text="{Binding TaskCardViewModel.Remarks.Value}" />
+
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="2"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button Command="materialDesign:DialogHost.CloseDialogCommand" Content="登録">
+                <Button.CommandParameter>
+                    <system:Boolean>True</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+            <Button
+                Command="materialDesign:DialogHost.CloseDialogCommand"
+                Content="キャンセル"
+                Style="{StaticResource MaterialDesignFlatButton}">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

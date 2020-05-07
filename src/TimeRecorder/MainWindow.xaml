@@ -1,0 +1,108 @@
+﻿<metro:MetroWindow
+    x:Class="TimeRecorder.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:configuration="clr-namespace:TimeRecorder.Contents.Configuration"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:exporter="clr-namespace:TimeRecorder.Contents.Exporter"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+    xmlns:local="clr-namespace:TimeRecorder"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:vm="clr-namespace:TimeRecorder.Host"
+    xmlns:workUnitRecorder="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder"
+    Title="工数管理"
+    Width="800"
+    Height="450"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{materialDesign:MaterialDesignFont}"
+    TextElement.FontSize="11"
+    TextElement.FontWeight="Medium"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    mc:Ignorable="d">
+
+    <metro:MetroWindow.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="NavigationRail/NavigationRailResource.xaml" />
+
+            </ResourceDictionary.MergedDictionaries>
+
+            <Style
+                x:Key="FullRowListBoxItemStyle"
+                BasedOn="{StaticResource {x:Type ListBoxItem}}"
+                TargetType="ListBoxItem">
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+            </Style>
+
+            <DataTemplate DataType="{x:Type workUnitRecorder:WorkUnitRecorderViewModel}">
+                <workUnitRecorder:WorkUnitRecorderView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type exporter:ExporterViewModel}">
+                <exporter:ExporterView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type configuration:ConfigurationViewModel}">
+                <configuration:ConfigurationView />
+            </DataTemplate>
+        </ResourceDictionary>
+    </metro:MetroWindow.Resources>
+
+    <metro:MetroWindow.DataContext>
+        <vm:MainWindowViewModel />
+    </metro:MetroWindow.DataContext>
+
+    <behaviors:Interaction.Triggers>
+        <!--  When ContentRendered event raised, Initialize method of ViewModel would be called.  -->
+        <behaviors:EventTrigger EventName="ContentRendered">
+            <l:LivetCallMethodAction MethodName="Initialize" MethodTarget="{Binding}" />
+        </behaviors:EventTrigger>
+
+        <!--  Dispose method is called, when Window closing.  -->
+        <behaviors:EventTrigger EventName="Closed">
+            <l:DataContextDisposeAction />
+        </behaviors:EventTrigger>
+
+        <!--  If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior.  -->
+
+    </behaviors:Interaction.Triggers>
+
+    <Grid>
+        <materialDesign:DialogHost x:Name="RootDialog">
+
+            <TabControl
+                Padding="16"
+                ItemsSource="{Binding Contents}"
+                Style="{StaticResource NavigationRailControlStyleKey}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                Kind="{Binding NavigationIcon.IconKey}" />
+                            <TextBlock
+                                Grid.Row="1"
+                                Margin="0,4,0,0"
+                                HorizontalAlignment="Center"
+                                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                Text="{Binding NavigationIcon.Title}" />
+                        </Grid>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+            </TabControl>
+        </materialDesign:DialogHost>
+
+    </Grid>
+
+</metro:MetroWindow>

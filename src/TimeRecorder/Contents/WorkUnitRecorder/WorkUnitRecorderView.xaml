@@ -1,0 +1,120 @@
+﻿<UserControl
+    x:Class="TimeRecorder.Contents.WorkUnitRecorder.WorkUnitRecorderView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="TaskCardResource.xaml" />
+
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="340" />
+            <ColumnDefinition Width="16" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <DatePicker
+            Width="140"
+            Height="32"
+            Margin="0,0,0,16"
+            HorizontalAlignment="Left"
+            materialDesign:HintAssist.Hint="Pick Date"
+            Style="{StaticResource MaterialDesignFilledDatePicker}" />
+
+        <Border
+            Grid.Row="1"
+            Padding="8"
+            Background="{StaticResource MaterialDesignChipBackground}"
+            CornerRadius="4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Margin="8,0,0,0"
+                    Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                    Text="ToDo" />
+
+                <ScrollViewer Grid.Row="1" Margin="0,8,4,8">
+                    <ItemsControl ItemsSource="{Binding PlanedTaskCards}">
+                        <ItemsControl.ItemContainerStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.Margin" Value="8" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <materialDesign:Card Width="280" Padding="16">
+                                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
+                                    <!--<TextBlock Text="test" />-->
+                                </materialDesign:Card>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+            </Grid>
+
+        </Border>
+
+        <Border
+            Grid.Row="1"
+            Grid.Column="2"
+            Padding="8"
+            Background="{StaticResource MaterialDesignChipBackground}"
+            CornerRadius="4">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Margin="8,0,0,0"
+                    Style="{StaticResource MaterialDesignHeadline4TextBlock}"
+                    Text="Doing" />
+
+                <ScrollViewer Grid.Row="1" Margin="0,8,4,8">
+                    <ItemsControl ItemsSource="{Binding PlanedTaskCards}">
+                        <ItemsControl.ItemContainerStyle>
+                            <Style>
+                                <Setter Property="FrameworkElement.Margin" Value="8" />
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <materialDesign:Card Width="280" Padding="16">
+                                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
+                                    <!--<TextBlock Text="test" />-->
+                                </materialDesign:Card>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+
+            </Grid>
+
+        </Border>
+    </Grid>
+</UserControl>
