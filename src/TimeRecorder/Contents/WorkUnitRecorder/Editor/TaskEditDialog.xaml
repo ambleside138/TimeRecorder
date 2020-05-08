@@ -67,19 +67,19 @@
                 Text="製品" />
             <StackPanel Orientation="Horizontal">
                 <RadioButton
-                    Content="REMORA"
+                    Content="Product1"
                     GroupName="Product"
-                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=REMORA, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=Product1, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
                     Style="{StaticResource HorizontalMarginStyleKey}" />
                 <RadioButton
-                    Content="C-Note"
+                    Content="Product2"
                     GroupName="Product"
-                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=C_Note, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=Product2, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
                     Style="{StaticResource HorizontalMarginStyleKey}" />
                 <RadioButton
-                    Content="看護勤務"
+                    Content="Product3"
                     GroupName="Product"
-                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=ShiftSchedule, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=Product3, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
                     Style="{StaticResource HorizontalMarginStyleKey}" />
                 <RadioButton
                     Content="[なし]"
