@@ -22,14 +22,16 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Accent/MaterialDesignColor.Lime.xaml" />
 
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.BlueGrey.Named.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/MaterialDesignColor.Red.Named.xaml" />
 
 
                 <!--  Material Design: MahApps Compatibility  -->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.MahApps;component/Themes/MaterialDesignTheme.MahApps.Flyout.xaml" />
 
-                <!-- overrides textblockstyle -->
+                <!--  overrides textblockstyle  -->
                 <ResourceDictionary Source="Styles/MaterialTextBlockStyle.xaml" />
+                <ResourceDictionary Source="Styles/MacLikeScrollBarStyle.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
@@ -70,6 +72,7 @@
             <!--  Converters  -->
             <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
             <converters:EnumToDisplayTextConverter x:Key="EnumToDisplayTextConverter" />
+            <converters:EnumToIconKeyConverter x:Key="EnumToIconKeyConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

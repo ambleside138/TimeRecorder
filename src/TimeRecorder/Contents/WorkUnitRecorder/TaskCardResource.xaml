@@ -32,14 +32,15 @@
                 Height="40"
                 HorizontalAlignment="Left"
                 VerticalAlignment="Center"
-                Background="LightSlateGray"
-                CornerRadius="20">
+                Background="{StaticResource MaterialDesignBodyLight}"
+                CornerRadius="20"
+                Opacity="0.7">
                 <materialDesign:PackIcon
                     Width="24"
                     Height="24"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Kind="FileCodeOutline" />
+                    Kind="{Binding TaskCategory.Value, Converter={StaticResource EnumToIconKeyConverter}}" />
             </Border>
 
             <StackPanel Grid.Column="1" Orientation="Vertical">
@@ -97,7 +98,7 @@
                     Width="24"
                     Height="24"
                     Style="{StaticResource MaterialDesignIconButton}"
-                    ToolTip="MaterialDesignIconButton">
+                    ToolTip="タスクの開始">
                     <materialDesign:PackIcon
                         Width="16"
                         Height="16"

@@ -2,7 +2,9 @@
     x:Class="TimeRecorder.Contents.WorkUnitRecorder.WorkUnitRecorderView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -26,57 +28,116 @@
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="340" />
+            <ColumnDefinition Width="240" />
             <ColumnDefinition Width="16" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <DatePicker
-            Width="140"
-            Height="32"
-            Margin="0,0,0,16"
-            HorizontalAlignment="Left"
-            materialDesign:HintAssist.Hint="Pick Date"
-            Style="{StaticResource MaterialDesignFilledDatePicker}" />
 
-        <Border
-            Grid.Row="1"
-            Padding="8"
-            Background="{StaticResource MaterialDesignChipBackground}"
-            CornerRadius="4">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+        <Grid Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-                <TextBlock
-                    Margin="8,0,0,0"
-                    Style="{StaticResource MaterialDesignHeadline4TextBlock}"
-                    Text="ToDo" />
+            <!--  表示日付  -->
+            <DatePicker
+                Width="140"
+                Height="32"
+                Margin="0,0,0,16"
+                HorizontalAlignment="Left"
+                materialDesign:HintAssist.Hint="Pick Date"
+                Style="{StaticResource MaterialDesignFilledDatePicker}" />
 
-                <ScrollViewer Grid.Row="1" Margin="0,8,4,8">
-                    <ItemsControl ItemsSource="{Binding PlanedTaskCards}">
-                        <ItemsControl.ItemContainerStyle>
-                            <Style>
-                                <Setter Property="FrameworkElement.Margin" Value="8" />
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
+            <!--  現在のタスク  -->
 
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <materialDesign:Card Width="280" Padding="16">
-                                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
-                                    <!--<TextBlock Text="test" />-->
-                                </materialDesign:Card>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+            <Border
+                Grid.Column="1"
+                Height="32"
+                Margin="16,0,0,0"
+                VerticalAlignment="Top"
+                Background="{StaticResource MaterialDesignChipBackground}"
+                CornerRadius="3">
+                <Grid Margin="8,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-            </Grid>
+                    <materialDesign:PackIcon
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Kind="FileCodeOutline" />
 
-        </Border>
+                    <!--  Title  -->
+                    <TextBlock
+                        Grid.Column="1"
+                        Width="80"
+                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                        Text="{Binding Title.Value}" />
 
+                    <!--  Remarks  -->
+                    <TextBlock
+                        Grid.Column="2"
+                        Width="128"
+                        Opacity="0.7"
+                        Style="{StaticResource MaterialDesignBody2TextBlock}"
+                        Text="{Binding Remarks.Value}" />
+
+                    <!--  DurationTime  -->
+                    <TextBlock
+                        Grid.Column="3"
+                        Margin="4,0"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                        Text="00:00:00" />
+
+                    <!--  Stop  -->
+                    <Button
+                        Grid.Column="4"
+                        Width="24"
+                        Height="24"
+                        Margin="8,0,0,0"
+                        Padding="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                        <Button.Background>
+                            <SolidColorBrush Color="{StaticResource RedPrimary500}" />
+                        </Button.Background>
+                        <Button.BorderBrush>
+                            <SolidColorBrush Color="{StaticResource RedPrimary500}" />
+                        </Button.BorderBrush>
+                        
+                        <materialDesign:PackIcon
+                            Width="20"
+                            Height="20"
+                            Kind="Stop" />
+
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="StopCurrentTask" MethodTarget="{Binding}" />
+                            </behaviors:EventTrigger>
+                        </behaviors:Interaction.Triggers>
+                    </Button>
+                </Grid>
+            </Border>
+
+        </Grid>
+
+
+
+
+        <!--  表示対象日付のタイムライン  -->
+        <ScrollViewer Grid.Row="1" Padding="0,8,0,0">
+
+            <local:TimelineCanvas />
+        </ScrollViewer>
+
+        <!--  タスク  -->
         <Border
             Grid.Row="1"
             Grid.Column="2"
