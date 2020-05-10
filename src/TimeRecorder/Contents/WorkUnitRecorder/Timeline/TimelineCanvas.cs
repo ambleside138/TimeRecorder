@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using TimeRecorder.Contents.WorkUnitRecorder.Timeline;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -19,7 +21,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         // Using a DependencyProperty as the backing store for StartHour.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StartHourProperty =
-            DependencyProperty.Register("StartHour", typeof(int), typeof(TimelineCanvas), new PropertyMetadata(8));
+            DependencyProperty.Register("StartHour", typeof(int), typeof(TimelineCanvas), new PropertyMetadata(0));
 
         #endregion
 
@@ -43,9 +45,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             set { SetValue(HourHeightProperty, value); }
         }
 
+        // 描画の都合上、4の倍数かつ60以上を推奨
+        // ＃作業時間の最小単位を15分、1分を1px以上で表現すると考える場合
+
         // Using a DependencyProperty as the backing store for HourHeight.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HourHeightProperty =
-            DependencyProperty.Register("HourHeight", typeof(int), typeof(TimelineCanvas), new PropertyMetadata(96)); 
+            DependencyProperty.Register("HourHeight", typeof(int), typeof(TimelineCanvas), new PropertyMetadata(TimelineProperties.Current.HourHeight)); 
         #endregion
 
 
@@ -111,6 +116,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
             Children.Add(vline);
         }
+
 
     }
 }

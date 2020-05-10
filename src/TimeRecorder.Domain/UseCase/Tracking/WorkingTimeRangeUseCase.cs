@@ -24,7 +24,7 @@ namespace TimeRecorder.Domain.UseCase.Tracking
             _WorkingTimeRegistSpecification = new WorkingTimeRegistSpecification(workingTimeRangeRepository);
         }
 
-        public void AddWorkingTimeRange(WorkingTimeRange workingTimeRange)
+        public WorkingTimeRange AddWorkingTimeRange(WorkingTimeRange workingTimeRange)
         {
             var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(workingTimeRange);
             if(string.IsNullOrEmpty( validationResult.ErrorMessage) == false)
@@ -32,7 +32,7 @@ namespace TimeRecorder.Domain.UseCase.Tracking
                 throw new SpecificationCheckException(validationResult);
             }
 
-            _WorkingTimeRangeRepository.Add(workingTimeRange);
+            return _WorkingTimeRangeRepository.Add(workingTimeRange);
         }
 
         public void EditWorkingTimeRange(WorkingTimeRange workingTimeRange)

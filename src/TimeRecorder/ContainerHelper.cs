@@ -5,6 +5,7 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
+using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Repository.SQLite.Tasks;
 using TimeRecorder.Repository.SQLite.Tracking;
 
@@ -23,7 +24,7 @@ namespace TimeRecorder
             resolver.Register<IWorkTaskRepository, SQLiteWorkTaskRepository>(Lifestyle.Singleton);
             resolver.Register<IWorkingTimeRangeRepository, SQLiteWorkingTimeRangeRepository>(Lifestyle.Singleton);
             resolver.Register<IDailyWorkRecordQueryService, SQLiteDailyWorkRecordQueryService>(Lifestyle.Singleton);
-
+            resolver.Register<IWorkingTimeQueryService, SQLiteWorkingTimeQueryService>(Lifestyle.Singleton);
 
             // You can configure lifestyle - Transient, Singleton or Scoped
             //resolver.Register<ILogger, MailLogger>(Lifestyle.Singleton);

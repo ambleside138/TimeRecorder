@@ -4,6 +4,7 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Hospitals;
 using TimeRecorder.Domain.Domain.Processes;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
+using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.Tasks
@@ -86,7 +87,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
             set => RaisePropertyChangedIfSet(ref _IsPlaned, value);
         }
         #endregion
-
+        
         public static WorkTask ForNew()
         {
             return new WorkTask { Id = Identity<WorkTask>.Temporary, HospitalId = Identity<Hospital>.Empty, ProcessId = Identity<Process>.Empty, };
@@ -107,5 +108,10 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
 
         private WorkTask() { }
+
+        public WorkingTimeRange StartTask()
+        {
+            return WorkingTimeRange.ForNew(Id);
+        }
     }
 }

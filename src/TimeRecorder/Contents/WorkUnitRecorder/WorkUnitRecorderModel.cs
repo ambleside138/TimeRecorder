@@ -29,18 +29,19 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ObservableCollection<WorkTask> PlanedTaskModels { get; } = new ObservableCollection<WorkTask>();
 
+        public ObservableCollection<WorkingTimeForTimelineDto> WorkingTimes { get; } = new ObservableCollection<WorkingTimeForTimelineDto>();
 
         #region UseCases
         private readonly WorkTaskUseCase _WorkTaskUseCase;
         private readonly WorkingTimeRangeUseCase _WorkingTimeRangeUseCase;
-        private readonly GetDailyWorkRecordUseCase _GetDailyWorkRecordUseCase; 
+        private readonly GetWorkingTimeForTimelineUseCase _GetWorkingTimeForTimelineUseCase;
         #endregion
 
         public WorkUnitRecorderModel()
         {
             _WorkTaskUseCase = new WorkTaskUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());
             _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>());
-            _GetDailyWorkRecordUseCase = new GetDailyWorkRecordUseCase(ContainerHelper.Resolver.Resolve<IDailyWorkRecordQueryService>());
+            _GetWorkingTimeForTimelineUseCase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.Resolver.Resolve<IWorkingTimeQueryService>());
         }
 
         public void Load()
@@ -50,7 +51,15 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             PlanedTaskModels.Clear();
             PlanedTaskModels.AddRange(list);
 
-            var workingtimeheader = _GetDailyWorkRecordUseCase.Select(TargetYmd);
+            
+        }
+
+        public void LoadWorkingTime()
+        {
+            var list = _GetWorkingTimeForTimelineUseCase.SelectByYmd(TargetYmd);
+
+            WorkingTimes.Clear();
+            WorkingTimes.AddRange(list);
         }
 
         public void AddWorkTask(WorkTask workTask)
@@ -70,6 +79,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public WorkTask SelectWorkTask(Identity<WorkTask> identity)
         {
             return _WorkTaskUseCase.SelectById(identity);
+        }
+
+        public void AddWorkingTime(WorkingTimeRange workingTimeRange)
+        {
+            _WorkingTimeRangeUseCase.AddWorkingTimeRange(workingTimeRange);
+
+            LoadWorkingTime();
         }
     }
 }

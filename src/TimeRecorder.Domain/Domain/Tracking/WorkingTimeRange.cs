@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
+using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Utility.SystemClocks;
 
@@ -14,7 +14,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
     {
         public Identity<WorkingTimeRange> Id { get; private set; }
 
-        public Identity<Task> TaskId { get; set; }
+        public Identity<WorkTask> TaskId { get; set; }
 
         public DateTime StartDateTime { get; private set; }
 
@@ -26,18 +26,20 @@ namespace TimeRecorder.Domain.Domain.Tracking
 
         private static readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
 
-        public static WorkingTimeRange ForNew()
+        public static WorkingTimeRange ForNew(Identity<WorkTask> taskId)
         {
             return new WorkingTimeRange 
             { 
                 Id = Identity<WorkingTimeRange>.Temporary, 
+                TaskId = taskId,
                 StartDateTime =  _SystemClock.Now,
+                EndDateTime = null,
             };
         }
 
         private WorkingTimeRange() { }
 
-        public WorkingTimeRange(Identity<WorkingTimeRange> identity, Identity<Task> taskId, DateTime startDateTime, DateTime? endDateTime)
+        public WorkingTimeRange(Identity<WorkingTimeRange> identity, Identity<WorkTask> taskId, DateTime startDateTime, DateTime? endDateTime)
         {
             Id = identity;
             TaskId = taskId;

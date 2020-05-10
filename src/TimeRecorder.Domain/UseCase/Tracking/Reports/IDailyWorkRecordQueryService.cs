@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.Domain.Tracking
+namespace TimeRecorder.Domain.UseCase.Tracking
 {
     public interface IDailyWorkRecordQueryService
     {

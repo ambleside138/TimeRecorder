@@ -8,6 +8,7 @@ using TimeRecorder.Contents.WorkUnitRecorder.Editor;
 using TimeRecorder.NavigationRail.ViewModels;
 using Reactive.Bindings.Helpers;
 using Reactive.Bindings.Extensions;
+using TimeRecorder.Contents.WorkUnitRecorder.Timeline;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -18,6 +19,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         private readonly WorkUnitRecorderModel _Model = new WorkUnitRecorderModel();
 
         public ReadOnlyReactiveCollection<TaskCardViewModel> PlanedTaskCards { get; }
+
+        public ReadOnlyReactiveCollection<WorkingTimeCardViewModel> WorkingTimes { get; }
 
         public WorkUnitRecorderViewModel()
         {

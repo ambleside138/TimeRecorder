@@ -111,11 +111,11 @@
                         <Button.BorderBrush>
                             <SolidColorBrush Color="{StaticResource RedPrimary500}" />
                         </Button.BorderBrush>
-                        
+
                         <materialDesign:PackIcon
-                            Width="20"
-                            Height="20"
-                            Kind="Stop" />
+                            Width="16"
+                            Height="16"
+                            Kind="CheckboxBlankOutline" />
 
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="Click">
@@ -134,7 +134,25 @@
         <!--  表示対象日付のタイムライン  -->
         <ScrollViewer Grid.Row="1" Padding="0,8,0,0">
 
-            <local:TimelineCanvas />
+            <local:TimelineCanvas>
+                <ItemsControl ItemsSource="{Binding TimelineWorkingTimes}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock
+                                Canvas.Left="40"
+                                Canvas.Top="{Binding CanvasTop}"
+                                Height="{Binding Height}"
+                                Text="hoge" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </local:TimelineCanvas>
         </ScrollViewer>
 
         <!--  タスク  -->
