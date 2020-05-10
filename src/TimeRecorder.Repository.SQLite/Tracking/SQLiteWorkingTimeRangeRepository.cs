@@ -9,7 +9,7 @@ using TimeRecorder.Repository.SQLite.Tracking.Dao;
 namespace TimeRecorder.Repository.SQLite.Tracking
 {
 
-    class SQLiteWorkingTimeRangeRepository : IWorkingTimeRangeRepository
+    public class SQLiteWorkingTimeRangeRepository : IWorkingTimeRangeRepository
     {
         public WorkingTimeRange Add(WorkingTimeRange workingTimeRange)
         {
