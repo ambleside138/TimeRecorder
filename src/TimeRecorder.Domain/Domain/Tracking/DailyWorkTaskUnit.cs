@@ -6,12 +6,14 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.Tracking
 {
-    /// <summary>
-    /// 日々記録していく作業単位
-    /// </summary>
-    public class DailyWorkUnit
+    public class DailyWorkTaskUnit
     {
         public Identity<WorkTask> TaskId { get; set; }
+
+        private readonly List<WorkingTimeRange> _WorkingTimeRanges = new List<WorkingTimeRange>();
+
+        public IReadOnlyList<WorkingTimeRange> WorkingTimeRanges => _WorkingTimeRanges;
+
 
 
     }

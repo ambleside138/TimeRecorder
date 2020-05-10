@@ -11,12 +11,12 @@ namespace TimeRecorder.Domain.Test.Application.Processes
     [TestFixture]
     class ProcessApplicationServiceTest
     {
-        private ProcessApplicationService _Service;
+        private ProcessUseCase _Service;
  
         [SetUp]
         public void SetUp()
         {
-            _Service = new ProcessApplicationService(new ProcessRepository());
+            _Service = new ProcessUseCase(new ProcessRepository());
         }
 
         [Test]

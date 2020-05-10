@@ -37,7 +37,18 @@ create table
   , planedEndDateTime datetime
   , actualStartDateTime datetime
   , actualEndDateTime datetime
-)";
+);
+
+create table
+  workingtimes
+(
+  id INTEGER PRIMARY KEY AUTOINCREMENT
+  , taskid int
+  , ymd varchar(8)
+  , starttime varchar(4)
+  , endtime varchar(4)
+)
+";
 
                 using (var cmd = new SQLiteCommand(sql, con))
                 {

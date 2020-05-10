@@ -4,7 +4,8 @@ using System.Text;
 
 namespace TimeRecorder.Domain.Domain.Tracking
 {
-    public interface IDailyWorkUnitRepository
+    public interface IDailyWorkRecordQueryService
     {
+        DailyWorkRecordHeader SelectByYmd(string ymd);
     }
 }

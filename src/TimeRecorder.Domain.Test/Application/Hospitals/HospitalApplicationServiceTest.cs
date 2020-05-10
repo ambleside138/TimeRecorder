@@ -14,7 +14,7 @@ namespace TimeRecorder.Domain.Test.UseCase.Hospitals
         [Test]
         public void 病院一覧の取得()
         {
-            var interactor = new HospitalApplicationService(new HospitalRepository());
+            var interactor = new HospitalUseCase(new HospitalRepository());
 
             var list = interactor.GetHospitals();
 

@@ -8,11 +8,11 @@ namespace TimeRecorder.UseCase.Hospitals
     /// <summary>
     /// 病院（＝案件） に関するPresentation層との相互作用を実装します
     /// </summary>
-    public class HospitalApplicationService
+    public class HospitalUseCase
     {
         private readonly IHospitalRepository _HospitalRepository;
 
-        public HospitalApplicationService(IHospitalRepository hospitalRepository)
+        public HospitalUseCase(IHospitalRepository hospitalRepository)
         {
             _HospitalRepository = hospitalRepository;
         }

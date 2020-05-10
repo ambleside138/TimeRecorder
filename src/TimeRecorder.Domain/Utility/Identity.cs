@@ -7,6 +7,7 @@ namespace TimeRecorder.Domain.Utility
 {
     public class Identity<T> : ValueObject<Identity<T>>
     {
+        private const int TemporaryIdValue = -1;
 
         public int Value { get; }
 
@@ -19,17 +20,19 @@ namespace TimeRecorder.Domain.Utility
 
         protected override IEnumerable<object> GetAtomicValues()
         {
-            if(Value >= 0)
-            {
-                yield return Value;
-            }
-            else
+            if(IsTemporary)
             {
                 yield return TempValue;
             }
+            else
+            {
+                yield return Value;
+            }
         }
 
-        public static Identity<T> Temporary => new Identity<T>(-1) { TempValue = Guid.NewGuid() };
+        public bool IsTemporary => Value == TemporaryIdValue;
+
+        public static Identity<T> Temporary => new Identity<T>(TemporaryIdValue) { TempValue = Guid.NewGuid() };
         public static Identity<T> Empty => new Identity<T>(0);
 
        

@@ -10,13 +10,13 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.UseCase.Tasks
 {
-    public class WorkTaskApplicationService
+    public class WorkTaskUseCase
     {
         private readonly IWorkTaskRepository _TaskRepository;
         //private IHospitalRepository _HospitalRepository;
         //private IProcessRepository _ProcessRepository;
 
-        public WorkTaskApplicationService(IWorkTaskRepository taskRepository)
+        public WorkTaskUseCase(IWorkTaskRepository taskRepository)
         {
             _TaskRepository = taskRepository;
         }
