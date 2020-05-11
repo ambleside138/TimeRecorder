@@ -9,6 +9,7 @@ using TimeRecorder.NavigationRail.ViewModels;
 using Reactive.Bindings.Helpers;
 using Reactive.Bindings.Extensions;
 using TimeRecorder.Contents.WorkUnitRecorder.Timeline;
+using System.Reactive.Linq;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -22,9 +23,24 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReadOnlyReactiveCollection<WorkingTimeCardViewModel> WorkingTimes { get; }
 
+        public ReactiveProperty<WorkingTimeCardViewModel> DoingTask { get; }
+
+
         public WorkUnitRecorderViewModel()
         {
-            PlanedTaskCards = _Model.PlanedTaskModels.ToReadOnlyReactiveCollection(t => new TaskCardViewModel(t)).AddTo(CompositeDisposable);
+            PlanedTaskCards = _Model.PlanedTaskModels
+                                    .ToReadOnlyReactiveCollection(t => new TaskCardViewModel(t))
+                                    .AddTo(CompositeDisposable);
+
+            WorkingTimes = _Model.WorkingTimes
+                                 .ToReadOnlyReactiveCollection(w => new WorkingTimeCardViewModel(w))
+                                 .AddTo(CompositeDisposable);
+
+            DoingTask = _Model.DoingTask
+                              .Select(t => new WorkingTimeCardViewModel(t))
+                              .ToReactiveProperty()
+                              .AddTo(CompositeDisposable);
+
             Initialize();          
         }
 
@@ -78,6 +94,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
         {
             Console.WriteLine("You can intercept the closing event, and cancel here.");
+        }
+
+        public void StartWorkTask(TaskCardViewModel taskCardViewModel)
+        {
+            var workingTime = taskCardViewModel.DomainModel.StartTask();
+            _Model.AddWorkingTime(workingTime);
         }
 
     }

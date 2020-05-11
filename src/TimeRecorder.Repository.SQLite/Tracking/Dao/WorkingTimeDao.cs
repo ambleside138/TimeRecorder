@@ -92,7 +92,7 @@ WHERE
 ";
             #endregion
 
-            return Connection.Query<WorkingTimeTableRow>(sql).ToArray();
+            return Connection.Query<WorkingTimeTableRow>(sql, new { ymd }).ToArray();
         }
     }
 }

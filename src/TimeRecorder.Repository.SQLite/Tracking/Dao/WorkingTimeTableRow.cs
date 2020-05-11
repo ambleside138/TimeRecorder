@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 
 namespace TimeRecorder.Repository.SQLite.Tracking.Dao
@@ -24,7 +25,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking.Dao
 
             return new WorkingTimeRange(
                 new Domain.Utility.Identity<WorkingTimeRange>(Id),
-                new Domain.Utility.Identity<System.Threading.Tasks.Task>(TaskId),
+                new Domain.Utility.Identity<WorkTask>(TaskId),
                 startDateTime.Value,
                 endDateTime );
         }

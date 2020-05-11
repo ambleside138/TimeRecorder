@@ -27,7 +27,7 @@ namespace TimeRecorder.Domain.UseCase.Tracking
         public WorkingTimeRange AddWorkingTimeRange(WorkingTimeRange workingTimeRange)
         {
             var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(workingTimeRange);
-            if(string.IsNullOrEmpty( validationResult.ErrorMessage) == false)
+            if(validationResult != null)
             {
                 throw new SpecificationCheckException(validationResult);
             }

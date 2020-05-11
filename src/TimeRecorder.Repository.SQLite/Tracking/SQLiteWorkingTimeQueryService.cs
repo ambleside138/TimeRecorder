@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.UseCase.Tracking;
+using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Repository.SQLite.Tracking
 {
@@ -20,6 +22,7 @@ SELECT
   , time.endtime as endtime
   , task.title as title
   , task.taskcategory as taskcategory
+  , task.remarks as remarks
 FROM
   workingtimes time
 INNER JOIN
@@ -33,10 +36,44 @@ WHERE
 
             RepositoryAction.Query(c =>
             {
-                list.AddRange(c.Query<WorkingTimeForTimelineDto>(sql, new { ymd }));
+                var listRow = c.Query<WorkingTimeForTimelineTableRow>(sql, new { ymd });
+
+                list.AddRange(listRow.Select(r => r.ConvertToDto()));
             });
 
-            return list.OrderBy(i => i.StartTime).ToArray();
+            return list.OrderBy(i => i.StartDateTime).ToArray();
+        }
+
+        private class WorkingTimeForTimelineTableRow
+        {
+            public int WorkingTimeId { get; set; }
+
+            public int WorkTaskId { get; set; }
+
+            public string StartTime { get; set; }
+
+            public string EndTime { get; set; }
+
+            public string Title { get; set; }
+
+            public TaskCategory  TaskCategory { get; set; }
+
+            public string Remarks { get; set; }
+
+            public WorkingTimeForTimelineDto ConvertToDto()
+            {
+                
+                return new WorkingTimeForTimelineDto
+                {
+                    WorkingTimeId = new Domain.Utility.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
+                    WorkTaskId = new Domain.Utility.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
+                    StartDateTime = DateTimeParser.ConvertFromHHmm(StartTime).Value,
+                    EndDateTime = DateTimeParser.ConvertFromHHmm(EndTime),
+                    TaskTitle = Title,
+                    TaskCategory = TaskCategory,
+                    TaskRemarks = Remarks,
+                };
+            }
         }
     }
 }

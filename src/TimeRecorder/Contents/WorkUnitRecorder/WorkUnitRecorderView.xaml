@@ -77,7 +77,7 @@
                         Grid.Column="1"
                         Width="80"
                         Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                        Text="{Binding Title.Value}" />
+                        Text="{Binding DoingTask.Value.TaskTitle}" />
 
                     <!--  Remarks  -->
                     <TextBlock
@@ -85,7 +85,7 @@
                         Width="128"
                         Opacity="0.7"
                         Style="{StaticResource MaterialDesignBody2TextBlock}"
-                        Text="{Binding Remarks.Value}" />
+                        Text="{Binding DoingTask.Value.TaskRemarks}" />
 
                     <!--  DurationTime  -->
                     <TextBlock
@@ -133,26 +133,35 @@
 
         <!--  表示対象日付のタイムライン  -->
         <ScrollViewer Grid.Row="1" Padding="0,8,0,0">
+            <Grid>
+                <local:TimelineCanvas />
 
-            <local:TimelineCanvas>
-                <ItemsControl ItemsSource="{Binding TimelineWorkingTimes}">
+                <ItemsControl ItemsSource="{Binding WorkingTimes}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <Canvas />
+                            <Canvas HorizontalAlignment="Stretch" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <TextBlock
-                                Canvas.Left="40"
-                                Canvas.Top="{Binding CanvasTop}"
                                 Height="{Binding Height}"
+                                Background="LightGoldenrodYellow"
                                 Text="hoge" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
+
+                    <ItemsControl.ItemContainerStyle>
+                        <Style>
+                            <Setter Property="Canvas.Top" Value="{Binding CanvasTop}" />
+                            <Setter Property="Canvas.Left" Value="40" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
-            </local:TimelineCanvas>
+            </Grid>
+
+
         </ScrollViewer>
 
         <!--  タスク  -->

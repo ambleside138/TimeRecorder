@@ -99,17 +99,27 @@
                     Height="24"
                     Style="{StaticResource MaterialDesignIconButton}"
                     ToolTip="タスクの開始">
+
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="Click">
+                            <l:LivetCallMethodAction
+                                MethodName="StartWorkTask"
+                                MethodParameter="{Binding}"
+                                MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:WorkUnitRecorderView}}}" />
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+
                     <materialDesign:PackIcon
                         Width="16"
                         Height="16"
                         Kind="Play" />
                 </Button>
+
                 <Button
                     Width="24"
                     Height="24"
                     Style="{StaticResource MaterialDesignIconButton}"
                     ToolTip="MaterialDesignIconButton">
-
 
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="Click">

@@ -4,18 +4,22 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
+using TimeRecorder.Domain.UseCase.Tracking;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 {
     public class WorkingTimeCardViewModel
     {
 
-        public WorkingTimeCardViewModel(WorkTask task, WorkingTimeRange workingTimeRange)
+        public WorkingTimeCardViewModel(WorkingTimeForTimelineDto workingTimeRange)
         {
             DomainModel = workingTimeRange;
 
-            TaskTitle = task.Title;
-            TaskCategory = task.TaskCategory;
+            if (DomainModel == null)
+                return;
+
+            TaskTitle = workingTimeRange.TaskTitle;
+            TaskCategory = workingTimeRange.TaskCategory;
 
             StartHHmm = workingTimeRange.StartDateTime.ToString("HHmm");
             EndHHmm = workingTimeRange.EndDateTime?.ToString("HHmm") ?? "";
@@ -27,6 +31,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
         private int CalcTop()
         {
+            if (DomainModel == null)
+                return 0;
+
             // とりあえず0時開始として考える
 
             var hourHeight = TimelineProperties.Current.HourHeight;
@@ -39,6 +46,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
         private int CalcHeight()
         {
+            if (DomainModel == null)
+                return 0;
+
             var hourHeight = TimelineProperties.Current.HourHeight;
 
             if (DomainModel.EndDateTime.HasValue == false)
@@ -49,15 +59,15 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
         }
 
 
-        public WorkingTimeRange DomainModel { get; }
+        public WorkingTimeForTimelineDto DomainModel { get; }
 
         public string TaskTitle { get; }
 
         public TaskCategory TaskCategory { get; }
 
-        public string StartHHmm { get; set; }
+        public string StartHHmm { get; set; } = "";
 
-        public string EndHHmm { get; set; }
+        public string EndHHmm { get; set; } = "";
 
         public int CanvasTop { get; }
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reactive.Joins;
 using System.Text;
 using Livet;
+using Reactive.Bindings;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
@@ -31,6 +32,10 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ObservableCollection<WorkingTimeForTimelineDto> WorkingTimes { get; } = new ObservableCollection<WorkingTimeForTimelineDto>();
 
+
+        public ReactiveProperty<WorkingTimeForTimelineDto> DoingTask { get; } = new ReactiveProperty<WorkingTimeForTimelineDto>();
+
+
         #region UseCases
         private readonly WorkTaskUseCase _WorkTaskUseCase;
         private readonly WorkingTimeRangeUseCase _WorkingTimeRangeUseCase;
@@ -51,7 +56,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             PlanedTaskModels.Clear();
             PlanedTaskModels.AddRange(list);
 
-            
+            LoadWorkingTime();
         }
 
         public void LoadWorkingTime()
@@ -60,6 +65,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
             WorkingTimes.Clear();
             WorkingTimes.AddRange(list);
+
+            DoingTask.Value = WorkingTimes.FirstOrDefault(w => w.EndDateTime.HasValue == false);
         }
 
         public void AddWorkTask(WorkTask workTask)
