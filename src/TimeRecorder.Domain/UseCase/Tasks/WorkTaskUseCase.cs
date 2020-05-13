@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TimeRecorder.Domain.Domain.Hospitals;
+using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Processes;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
@@ -13,7 +13,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
     public class WorkTaskUseCase
     {
         private readonly IWorkTaskRepository _TaskRepository;
-        //private IHospitalRepository _HospitalRepository;
+        //private IClientRepository _ClientRepository;
         //private IProcessRepository _ProcessRepository;
 
         public WorkTaskUseCase(IWorkTaskRepository taskRepository)
@@ -54,7 +54,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
             {
                 var list = _TaskRepository.SelectToDo();
 
-                //var listHospital = _HospitalRepository.SelectAll();
+                //var listClient = _ClientRepository.SelectAll();
                 //var listProcess = _ProcessRepository.SelectAll();
 
 

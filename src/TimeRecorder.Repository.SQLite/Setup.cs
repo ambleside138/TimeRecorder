@@ -30,7 +30,7 @@ create table
   , title varchar(64)
   , taskcategory int 
   , product int
-  , hospitalId int
+  , ClientId int
   , processId int
   , remarks varchar(128)
   , planedStartDateTime datetime

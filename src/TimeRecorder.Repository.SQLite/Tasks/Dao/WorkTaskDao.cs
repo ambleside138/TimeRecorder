@@ -22,7 +22,7 @@ insert into worktasks
   title 
   , taskcategory 
   , product
-  , hospitalId 
+  , ClientId 
   , processId 
   , remarks
   , planedStartDateTime 
@@ -35,7 +35,7 @@ values
   @title 
   , @taskcategory 
   , @product
-  , @hospitalId 
+  , @ClientId 
   , @processId 
   , @remarks
   , @planedStartDateTime 
@@ -74,7 +74,7 @@ set
   title = @title
   , taskcategory = @taskcategory 
   , product = @product
-  , hospitalId = @hospitalId
+  , ClientId = @ClientId
   , processId = @processId
   , remarks = @remarks
   , planedStartDateTime = @planedStartDateTime 
@@ -98,7 +98,7 @@ SELECT
   , title 
   , taskcategory 
   , product
-  , hospitalId 
+  , ClientId 
   , processId 
   , remarks
   , planedStartDateTime 
@@ -124,7 +124,7 @@ SELECT
   , title 
   , taskcategory 
   , product
-  , hospitalId 
+  , ClientId 
   , processId 
   , remarks
   , planedStartDateTime 

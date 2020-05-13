@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TimeRecorder.Domain.Domain.Hospitals;
+using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Processes;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
@@ -46,13 +46,13 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
         #endregion
 
-        #region HospitalId変更通知プロパティ
-        private Identity<Hospital> _HospitalId;
+        #region ClientId変更通知プロパティ
+        private Identity<Client> _ClientId;
 
-        public Identity<Hospital> HospitalId
+        public Identity<Client> ClientId
         {
-            get => _HospitalId;
-            set => RaisePropertyChangedIfSet(ref _HospitalId, value);
+            get => _ClientId;
+            set => RaisePropertyChangedIfSet(ref _ClientId, value);
         }
         #endregion
 
@@ -90,17 +90,17 @@ namespace TimeRecorder.Domain.Domain.Tasks
         
         public static WorkTask ForNew()
         {
-            return new WorkTask { Id = Identity<WorkTask>.Temporary, HospitalId = Identity<Hospital>.Empty, ProcessId = Identity<Process>.Empty, };
+            return new WorkTask { Id = Identity<WorkTask>.Temporary, ClientId = Identity<Client>.Empty, ProcessId = Identity<Process>.Empty, };
         }
 
         // VSの場合、「クイックアクションとリファクタリング」からコンストラクタコードの生成が可能
-        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Product product, Identity<Hospital> hospitalId, Identity<Process> processId, string remarks, TaskProgress taskProgress)
+        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Product product, Identity<Client> ClientId, Identity<Process> processId, string remarks, TaskProgress taskProgress)
         {
             Id = id;
             _Title = title;
             _TaskCategory = taskCategory;
             _Product = product;
-            _HospitalId = hospitalId;
+            _ClientId = ClientId;
             _ProcessId = processId;
             _Remarks = remarks;
             TaskProgress = taskProgress;

@@ -17,7 +17,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
 
         public Product Product { get; set; }
 
-        public int HospitalId { get; set; }
+        public int ClientId { get; set; }
 
         public int ProcessId { get; set; }
 
@@ -44,7 +44,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 , Title
                 , TaskCategory
                 , Product
-                , new Identity<Domain.Domain.Hospitals.Hospital>(HospitalId)
+                , new Identity<Domain.Domain.Clients.Client>(ClientId)
                 , new Identity<Domain.Domain.Processes.Process>(ProcessId)
                 , Remarks
                 , taskProgress);
@@ -58,7 +58,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 Title = workTask.Title,
                 TaskCategory = workTask.TaskCategory,
                 Product = workTask.Product,
-                HospitalId = workTask.HospitalId.Value,
+                ClientId = workTask.ClientId.Value,
                 ProcessId = workTask.ProcessId.Value,
                 Remarks = workTask.Remarks,
                 PlanedStartDateTime = workTask.TaskProgress.PlanedPeriod.Start,

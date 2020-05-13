@@ -1,19 +1,19 @@
 ﻿using System;
-using TimeRecorder.Domain.Domain.Hospitals;
+using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Repository.InMemory
 {
-    public class HospitalRepository : IHospitalRepository
+    public class ClientRepository : IClientRepository
     {
-        public Hospital[] SelectAll()
+        public Client[] SelectAll()
         {
-            return new Hospital[]
+            return new Client[]
             {
-                new Hospital(new Identity<Hospital>(1), "朽木病院","クチキビョウイン"),
-                new Hospital(new Identity<Hospital>(2), "黒崎眼科", "クロサキガンカ"),
-                new Hospital(new Identity<Hospital>(3), "井上病院", "イノウエビョウイン"),
-                new Hospital(new Identity<Hospital>(4), "石田クリニック", "イシダクリニック"),
+                new Client(new Identity<Client>(1), "朽木病院","クチキビョウイン"),
+                new Client(new Identity<Client>(2), "黒崎眼科", "クロサキガンカ"),
+                new Client(new Identity<Client>(3), "井上病院", "イノウエビョウイン"),
+                new Client(new Identity<Client>(4), "石田クリニック", "イシダクリニック"),
             };
         }
     }

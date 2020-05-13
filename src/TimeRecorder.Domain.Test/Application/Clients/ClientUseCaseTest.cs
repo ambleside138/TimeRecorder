@@ -2,21 +2,21 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using TimeRecorder.UseCase.Hospitals;
+using TimeRecorder.UseCase.Clients;
 using TimeRecorder.Repository.InMemory;
 
-namespace TimeRecorder.Domain.Test.UseCase.Hospitals
+namespace TimeRecorder.Domain.Test.UseCase.Clients
 {
     [TestFixture]
-    class HospitalApplicationServiceTest
+    class ClientUseCaseTest
     {
 
         [Test]
         public void 病院一覧の取得()
         {
-            var interactor = new HospitalUseCase(new HospitalRepository());
+            var interactor = new ClientUseCase(new ClientRepository());
 
-            var list = interactor.GetHospitals();
+            var list = interactor.GetClients();
 
             Assert.IsNotNull(list);
 

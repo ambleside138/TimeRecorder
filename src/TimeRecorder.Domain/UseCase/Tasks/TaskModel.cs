@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using TimeRecorder.Domain.Domain.Hospitals;
+using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Utility;
@@ -18,7 +18,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
 
         public Product Product { get; set; }
 
-        public Identity<Hospital> HospitalId { get; set; }
+        public Identity<Client> ClientId { get; set; }
 
         public Identity<Process> ProcessId { get; set; }
 

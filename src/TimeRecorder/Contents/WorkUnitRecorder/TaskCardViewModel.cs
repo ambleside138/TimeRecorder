@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Text;
-using TimeRecorder.Domain.Domain.Hospitals;
+using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Helpers;
@@ -21,7 +21,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactiveProperty<Product> Product { get; }
 
-        public ReactiveProperty<Hospital> User { get; }
+        public ReactiveProperty<Client> User { get; }
 
         public ReactiveProperty<Process> Process { get; }
 
