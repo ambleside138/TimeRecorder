@@ -61,5 +61,19 @@ namespace TimeRecorder.Repository.SQLite.Tracking
 
             return results;
         }
+
+        public WorkingTimeRange SelectById(Identity<WorkingTimeRange> id)
+        {
+            WorkingTimeRange result = null;
+
+            RepositoryAction.Query(c =>
+            {
+                var dao = new WorkingTimeDao(c, null);
+
+                result = dao.SelectId(id.Value)?.ConvertToDomainObject();
+            });
+
+            return result;
+        }
     }
 }

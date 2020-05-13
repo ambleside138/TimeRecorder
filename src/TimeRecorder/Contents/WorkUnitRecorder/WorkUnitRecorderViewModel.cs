@@ -102,5 +102,10 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             _Model.AddWorkingTime(workingTime);
         }
 
+        public void StopCurrentTask()
+        {
+            _Model.StopCurrentTask();
+        }
+
     }
 }

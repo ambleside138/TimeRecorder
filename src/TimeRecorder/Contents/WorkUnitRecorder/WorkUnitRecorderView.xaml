@@ -76,6 +76,9 @@
                     <TextBlock
                         Grid.Column="1"
                         Width="80"
+                        Margin="8,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
                         Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                         Text="{Binding DoingTask.Value.TaskTitle}" />
 
@@ -83,6 +86,8 @@
                     <TextBlock
                         Grid.Column="2"
                         Width="128"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
                         Opacity="0.7"
                         Style="{StaticResource MaterialDesignBody2TextBlock}"
                         Text="{Binding DoingTask.Value.TaskRemarks}" />
@@ -93,7 +98,7 @@
                         Margin="4,0"
                         VerticalAlignment="Center"
                         Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                        Text="00:00:00" />
+                        Text="{Binding DoingTask.Value.DurationTimeText.Value}" />
 
                     <!--  Stop  -->
                     <Button

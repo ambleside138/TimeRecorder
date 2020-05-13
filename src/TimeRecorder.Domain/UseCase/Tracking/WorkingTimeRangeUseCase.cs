@@ -35,6 +35,20 @@ namespace TimeRecorder.Domain.UseCase.Tracking
             return _WorkingTimeRangeRepository.Add(workingTimeRange);
         }
 
+        public void StopWorkingTimeRange(Identity<WorkingTimeRange> id)
+        {
+            var target = _WorkingTimeRangeRepository.SelectById(id);
+
+            if(target == null)
+            {
+                throw new NotFoundException("終了対象の作業がみつかりませんでした");
+            }
+
+            target.Stop();
+
+            _WorkingTimeRangeRepository.Edit(target);
+        }
+        
         public void EditWorkingTimeRange(WorkingTimeRange workingTimeRange)
         {
             var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(workingTimeRange);

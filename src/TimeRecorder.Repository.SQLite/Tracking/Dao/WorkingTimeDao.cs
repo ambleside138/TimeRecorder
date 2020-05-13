@@ -94,5 +94,25 @@ WHERE
 
             return Connection.Query<WorkingTimeTableRow>(sql, new { ymd }).ToArray();
         }
+
+        public WorkingTimeTableRow SelectId(int id)
+        {
+            #region SQL
+            const string sql = @"
+SELECT
+  id
+  , taskid
+  , ymd
+  , starttime
+  , endtime
+FROM
+  workingtimes
+WHERE
+  id = @id
+";
+            #endregion
+
+            return Connection.Query<WorkingTimeTableRow>(sql, new { id }).FirstOrDefault();
+        }
     }
 }

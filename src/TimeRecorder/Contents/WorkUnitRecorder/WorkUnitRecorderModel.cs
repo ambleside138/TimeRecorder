@@ -11,6 +11,7 @@ using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain.Utility.SystemClocks;
 using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
@@ -93,6 +94,18 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             _WorkingTimeRangeUseCase.AddWorkingTimeRange(workingTimeRange);
 
             LoadWorkingTime();
+        }
+
+        public void StopCurrentTask()
+        {
+            if (DoingTask.Value == null)
+                return;
+
+            DoingTask.Value.EndDateTime = SystemClockServiceLocator.Current.Now;
+
+            _WorkingTimeRangeUseCase.StopWorkingTimeRange(DoingTask.Value.WorkingTimeId);
+
+            DoingTask.Value = null;
         }
     }
 }
