@@ -18,7 +18,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking.Dao
 
         public string EndTime { get; set; }
 
-        public WorkingTimeRange ConvertToDomainObject()
+        public WorkingTimeRange ToDomainObject()
         {
             var startDateTime = ToDateTime(StartTime);
             var endDateTime = ToDateTime(EndTime);
@@ -37,8 +37,8 @@ namespace TimeRecorder.Repository.SQLite.Tracking.Dao
                 Id = workingTimeRange.Id.Value,
                 TaskId = workingTimeRange.TaskId.Value,
                 Ymd = workingTimeRange.TargetYmd,
-                StartTime = workingTimeRange.StartDateTime.ToString("HHmm"),
-                EndTime = workingTimeRange.EndDateTime?.ToString("HHmm") ?? "",
+                StartTime = workingTimeRange.StartDateTime.ToString("HHmmss"),
+                EndTime = workingTimeRange.EndDateTime?.ToString("HHmmss") ?? "",
             };
         }
 
@@ -47,7 +47,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking.Dao
             if (string.IsNullOrEmpty(hhmm))
                 return null;
 
-            if (DateTime.TryParseExact(Ymd + hhmm, "yyyyMMddHHmm", null, System.Globalization.DateTimeStyles.AssumeLocal, out DateTime result))
+            if (DateTime.TryParseExact(Ymd + hhmm, "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.AssumeLocal, out DateTime result))
                 return result;
 
             return null;

@@ -185,7 +185,7 @@
                 <TextBlock
                     Margin="8,0,0,0"
                     Style="{StaticResource MaterialDesignHeadline4TextBlock}"
-                    Text="Doing" />
+                    Text="ToDo" />
 
                 <ScrollViewer Grid.Row="1" Margin="0,8,4,8">
                     <ItemsControl ItemsSource="{Binding PlanedTaskCards}">
@@ -197,7 +197,7 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <materialDesign:Card Width="280" Padding="16">
+                                <materialDesign:Card Width="280">
                                     <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
                                     <!--<TextBlock Text="test" />-->
                                 </materialDesign:Card>

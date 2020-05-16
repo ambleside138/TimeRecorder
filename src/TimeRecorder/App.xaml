@@ -73,6 +73,7 @@
             <converters:EnumToBooleanConverter x:Key="EnumToBooleanConverter" />
             <converters:EnumToDisplayTextConverter x:Key="EnumToDisplayTextConverter" />
             <converters:EnumToIconKeyConverter x:Key="EnumToIconKeyConverter" />
+            <converters:DateTimeToFormattedStringConverter x:Key="DateTimeToFormattedStringConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

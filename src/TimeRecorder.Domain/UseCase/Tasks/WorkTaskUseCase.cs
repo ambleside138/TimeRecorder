@@ -48,23 +48,23 @@ namespace TimeRecorder.Domain.UseCase.Tasks
             return target;
         }
 
-        public WorkTask[] GetPlanedTasks()
-        {
-            try
-            {
-                var list = _TaskRepository.SelectToDo();
+        //public WorkTask[] GetPlanedTasks()
+        //{
+        //    try
+        //    {
+        //        var list = _TaskRepository.SelectToDo();
 
-                //var listClient = _ClientRepository.SelectAll();
-                //var listProcess = _ProcessRepository.SelectAll();
+        //        //var listClient = _ClientRepository.SelectAll();
+        //        //var listProcess = _ProcessRepository.SelectAll();
 
 
-                return list;
-            }
-            catch (Exception)
-            {
-                return new WorkTask[0];
-            }
+        //        return list;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return new WorkTask[0];
+        //    }
 
-        }
+        //}
     }
 }

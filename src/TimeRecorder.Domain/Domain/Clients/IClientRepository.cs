@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TimeRecorder.Domain.Domain.Clients
 {
-    public interface IClientRepository
+    public interface IClientRepository : IRepository
     {
         Client[] SelectAll();
     }

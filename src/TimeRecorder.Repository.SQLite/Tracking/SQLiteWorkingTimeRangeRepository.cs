@@ -24,7 +24,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking
                 row.Id = id;
             });
 
-            return row.ConvertToDomainObject();
+            return row.ToDomainObject();
         }
 
         public void Edit(WorkingTimeRange workingTimeRange)
@@ -54,7 +54,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking
                 var dao = new WorkingTimeDao(c, null);
 
                 results = dao.SelectYmd(ymd)
-                             .Select(r => r.ConvertToDomainObject())
+                             .Select(r => r.ToDomainObject())
                              .OrderBy(r => r.StartDateTime)
                              .ToArray();
             });
@@ -70,7 +70,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking
             {
                 var dao = new WorkingTimeDao(c, null);
 
-                result = dao.SelectId(id.Value)?.ConvertToDomainObject();
+                result = dao.SelectId(id.Value)?.ToDomainObject();
             });
 
             return result;

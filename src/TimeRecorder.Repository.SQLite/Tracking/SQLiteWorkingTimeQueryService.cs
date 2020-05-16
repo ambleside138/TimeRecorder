@@ -67,8 +67,8 @@ WHERE
                 {
                     WorkingTimeId = new Domain.Utility.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
                     WorkTaskId = new Domain.Utility.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
-                    StartDateTime = DateTimeParser.ConvertFromHHmm(StartTime).Value,
-                    EndDateTime = DateTimeParser.ConvertFromHHmm(EndTime),
+                    StartDateTime = DateTimeParser.ConvertFromHHmmss(StartTime).Value,
+                    EndDateTime = DateTimeParser.ConvertFromHHmmss(EndTime),
                     TaskTitle = Title,
                     TaskCategory = TaskCategory,
                     TaskRemarks = Remarks,

@@ -30,7 +30,7 @@ create table
   , title varchar(64)
   , taskcategory int 
   , product int
-  , ClientId int
+  , clientId int
   , processId int
   , remarks varchar(128)
   , planedStartDateTime datetime
@@ -45,8 +45,8 @@ create table
   id INTEGER PRIMARY KEY AUTOINCREMENT
   , taskid int
   , ymd varchar(8)
-  , starttime varchar(4)
-  , endtime varchar(4)
+  , starttime varchar(6)
+  , endtime varchar(6)
 )
 ";
 

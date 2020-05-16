@@ -13,7 +13,7 @@ using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
-    public class TaskCardViewModel : ViewModel
+    public class WorkTaskViewModel : ViewModel
     {
         public ReactiveProperty<string> Title { get; }
 
@@ -29,7 +29,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public WorkTask DomainModel { get; }
 
-        public TaskCardViewModel(WorkTask task)
+        public WorkTaskViewModel(WorkTask task)
         {
             DomainModel = task;
 

@@ -8,6 +8,7 @@ using TimeRecorder.Contents.Configuration;
 using TimeRecorder.Contents.Exporter;
 using TimeRecorder.NavigationRail.ViewModels;
 using TimeRecorder.Contents.WorkUnitRecorder;
+using MaterialDesignThemes.Wpf;
 
 namespace TimeRecorder.Host
 {
@@ -17,6 +18,7 @@ namespace TimeRecorder.Host
 
         public ObservableSynchronizedCollection<NavigationIconButtonViewModel> NavigationIconButtons { get; } = new ObservableSynchronizedCollection<NavigationIconButtonViewModel>();
 
+        public SnackbarMessageQueue SnackMessageQueue { get; } = SnackbarService.Current.MessageQueue;
         public void Initialize()
         {
             Contents.Add(new WorkUnitRecorderViewModel());

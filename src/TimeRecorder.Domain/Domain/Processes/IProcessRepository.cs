@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TimeRecorder.Domain.Domain.Processes
 {
-    public interface IProcessRepository
+    public interface IProcessRepository : IRepository
     {
         Process Regist(Process process);
 

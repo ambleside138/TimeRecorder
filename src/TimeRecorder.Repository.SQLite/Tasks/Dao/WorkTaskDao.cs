@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Utilities;
 
 namespace TimeRecorder.Repository.SQLite.Tasks.Dao
@@ -22,7 +23,7 @@ insert into worktasks
   title 
   , taskcategory 
   , product
-  , ClientId 
+  , clientId 
   , processId 
   , remarks
   , planedStartDateTime 
@@ -35,7 +36,7 @@ values
   @title 
   , @taskcategory 
   , @product
-  , @ClientId 
+  , @clientId 
   , @processId 
   , @remarks
   , @planedStartDateTime 
@@ -74,7 +75,7 @@ set
   title = @title
   , taskcategory = @taskcategory 
   , product = @product
-  , ClientId = @ClientId
+  , clientId = @clientId
   , processId = @processId
   , remarks = @remarks
   , planedStartDateTime = @planedStartDateTime 
@@ -89,34 +90,35 @@ where
             Connection.Execute(sql, row, Transaction);
         }
 
-        public WorkTaskTableRow[] SelectPlaned()
+        /// <summary>
+        /// 作業時間の記録に利用するためのタスクを取得します
+        /// </summary>
+        /// <param name="ymd">日付</param>
+        /// <returns></returns>
+        public WorkTaskTableRow[] SelectPlaned(YmdString ymd)
         {
-            #region sql
-            const string sql = @"
-SELECT
-  id
-  , title 
-  , taskcategory 
-  , product
-  , ClientId 
-  , processId 
-  , remarks
-  , planedStartDateTime 
-  , planedEndDateTime 
-  , actualStartDateTime 
-  , actualEndDateTime 
-FROM
-  worktasks
-WHERE
-  actualenddatetime IS NULL
+            var where = @"
+actualenddatetime IS NULL
+OR EXISTS ( 
+     select 
+       1 
+     FROM 
+       workingtimes t 
+     WHERE 
+       t.taskid = worktasks.id 
+       AND t.ymd = @ymd 
+   )
 ";
-            #endregion
-
-            return Connection.Query<WorkTaskTableRow>(sql).ToArray();
+            return SelectCore(where, new { ymd = ymd.Value }).ToArray();
         }
 
         public WorkTaskTableRow SelectById(int taskId)
         {
+            return SelectCore("id = @Id", new { Id = taskId }).FirstOrDefault();
+        }
+
+        public IEnumerable<WorkTaskTableRow> SelectCore(string whereQuery, object param = null)
+        {
             #region sql
             const string sql = @"
 SELECT
@@ -124,7 +126,7 @@ SELECT
   , title 
   , taskcategory 
   , product
-  , ClientId 
+  , clientId 
   , processId 
   , remarks
   , planedStartDateTime 
@@ -134,11 +136,18 @@ SELECT
 FROM
   worktasks
 WHERE
-  id = @Id
+  1 = 1
 ";
             #endregion
 
-            return Connection.QueryFirstOrDefault<WorkTaskTableRow>(sql, new { Id = taskId });
+            var query = sql;
+            if(string.IsNullOrEmpty(whereQuery) == false)
+            {
+                query += "AND " + whereQuery;
+            }
+
+            return Connection.Query<WorkTaskTableRow>(query, param ?? new object());
         }
+
     }
 }

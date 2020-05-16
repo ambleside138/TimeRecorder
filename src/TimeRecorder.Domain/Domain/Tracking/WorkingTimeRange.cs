@@ -24,9 +24,13 @@ namespace TimeRecorder.Domain.Domain.Tracking
 
         public bool IsStopped => EndDateTime.HasValue;
 
+        public bool IsDoing => EndDateTime.HasValue == false;
+
+
+
         private static readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
 
-        public static WorkingTimeRange ForNew(Identity<WorkTask> taskId)
+        public static WorkingTimeRange ForStart(Identity<WorkTask> taskId)
         {
             return new WorkingTimeRange 
             { 

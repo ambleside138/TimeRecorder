@@ -16,7 +16,7 @@ using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
-    public class WorkUnitRecorderModel : NotificationObject
+    public class WorkUnitRecorderModel : NotificationObject, IDisposable
     {
 
         #region TargetYmd変更通知プロパティ
@@ -29,7 +29,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         }
         #endregion
 
-        public ObservableCollection<WorkTask> PlanedTaskModels { get; } = new ObservableCollection<WorkTask>();
+        public ObservableCollection<WorkTaskWithTimesDto> PlanedTaskModels { get; } = new ObservableCollection<WorkTaskWithTimesDto>();
 
         public ObservableCollection<WorkingTimeForTimelineDto> WorkingTimes { get; } = new ObservableCollection<WorkingTimeForTimelineDto>();
 
@@ -39,6 +39,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         #region UseCases
         private readonly WorkTaskUseCase _WorkTaskUseCase;
+        private readonly GetWorkTaskWithTimesUseCase _GetWorkTaskWithTimesUseCase;
         private readonly WorkingTimeRangeUseCase _WorkingTimeRangeUseCase;
         private readonly GetWorkingTimeForTimelineUseCase _GetWorkingTimeForTimelineUseCase;
         #endregion
@@ -46,13 +47,18 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public WorkUnitRecorderModel()
         {
             _WorkTaskUseCase = new WorkTaskUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());
-            _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>());
+            _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(
+                                            ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
+                                            ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());
             _GetWorkingTimeForTimelineUseCase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.Resolver.Resolve<IWorkingTimeQueryService>());
+            _GetWorkTaskWithTimesUseCase = new GetWorkTaskWithTimesUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskWithTimesQueryService>());
+
+            ObjectChangedNotificator.Instance.WorkTaskEdited += Load;
         }
 
         public void Load()
         {
-            var list = _WorkTaskUseCase.GetPlanedTasks();
+            var list = _GetWorkTaskWithTimesUseCase.GetByYmd(new YmdString(TargetYmd));
 
             PlanedTaskModels.Clear();
             PlanedTaskModels.AddRange(list);
@@ -72,40 +78,58 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public void AddWorkTask(WorkTask workTask)
         {
-            var registed =_WorkTaskUseCase.Add(workTask);
-
-            PlanedTaskModels.Add(registed);
-        }
-
-        public void EditWorkTask(WorkTask workTask)
-        {
-            _WorkTaskUseCase.Edit(workTask);
+            _WorkTaskUseCase.Add(workTask);
 
             Load();
         }
 
-        public WorkTask SelectWorkTask(Identity<WorkTask> identity)
-        {
-            return _WorkTaskUseCase.SelectById(identity);
-        }
 
-        public void AddWorkingTime(WorkingTimeRange workingTimeRange)
-        {
-            _WorkingTimeRangeUseCase.AddWorkingTimeRange(workingTimeRange);
-
-            LoadWorkingTime();
-        }
 
         public void StopCurrentTask()
         {
             if (DoingTask.Value == null)
                 return;
 
-            DoingTask.Value.EndDateTime = SystemClockServiceLocator.Current.Now;
+            _WorkingTimeRangeUseCase.StopWorking(DoingTask.Value.WorkingTimeId);
 
-            _WorkingTimeRangeUseCase.StopWorkingTimeRange(DoingTask.Value.WorkingTimeId);
-
-            DoingTask.Value = null;
+            Load();
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; // 重複する呼び出しを検出するには
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    // Mangedリソースの解放
+                    ObjectChangedNotificator.Instance.WorkTaskEdited -= Load;
+                }
+
+                // TODO: アンマネージ リソース (アンマネージ オブジェクト) を解放し、下のファイナライザーをオーバーライドします。
+                // TODO: 大きなフィールドを null に設定します。
+
+                disposedValue = true;
+            }
+        }
+
+        // TODO: 上の Dispose(bool disposing) にアンマネージ リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします。
+        // ~WorkUnitRecorderModel()
+        // {
+        //   // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
+        //   Dispose(false);
+        // }
+
+        // このコードは、破棄可能なパターンを正しく実装できるように追加されました。
+        public void Dispose()
+        {
+            // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
+            Dispose(true);
+            // TODO: 上のファイナライザーがオーバーライドされる場合は、次の行のコメントを解除してください。
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
     }
 }

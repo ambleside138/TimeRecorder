@@ -7,7 +7,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
 {
     // RepositoryはList<T>のような使い心地・実装を目指す
 
-    public interface IWorkTaskRepository
+    public interface IWorkTaskRepository : IRepository
     {
         WorkTask Add(WorkTask task);
 

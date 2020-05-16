@@ -108,10 +108,5 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
 
         private WorkTask() { }
-
-        public WorkingTimeRange StartTask()
-        {
-            return WorkingTimeRange.ForNew(Id);
-        }
     }
 }

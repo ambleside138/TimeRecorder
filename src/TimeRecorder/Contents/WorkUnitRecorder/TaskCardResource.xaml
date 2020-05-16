@@ -13,131 +13,151 @@
         <Setter Property="Padding" Value="12,0,12,0" />
     </Style>
 
-    <DataTemplate x:Key="TaskCardKey" DataType="{x:Type local:TaskCardViewModel}">
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+    <DataTemplate x:Key="TaskCardKey" DataType="{x:Type local:WorkTaskWithTimesCardViewModel}">
+        <Expander x:Name="CardExpander">
+            <Expander.Header>
+                <Grid>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="56" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
 
-            <Border
-                Width="40"
-                Height="40"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Background="{StaticResource MaterialDesignBodyLight}"
-                CornerRadius="20"
-                Opacity="0.7">
-                <materialDesign:PackIcon
-                    Width="24"
-                    Height="24"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Kind="{Binding TaskCategory.Value, Converter={StaticResource EnumToIconKeyConverter}}" />
-            </Border>
+                    <Border
+                        Width="40"
+                        Height="40"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Background="{StaticResource MaterialDesignBodyLight}"
+                        CornerRadius="20"
+                        Opacity="0.7">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="{Binding Dto.TaskCategory, Converter={StaticResource EnumToIconKeyConverter}}" />
+                    </Border>
 
-            <StackPanel Grid.Column="1" Orientation="Vertical">
-                <!--  Title  -->
-                <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="{Binding Title.Value}" />
-                <!--  Remarks  -->
-                <TextBlock
-                    Opacity="0.7"
-                    Style="{StaticResource MaterialDesignBody2TextBlock}"
-                    Text="{Binding Remarks.Value}" />
-            </StackPanel>
+                    <ProgressBar
+                        Width="40"
+                        Height="40"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        IsIndeterminate="{Binding IsIndeterminate.Value}"
+                        Style="{StaticResource MaterialDesignCircularProgressBar}"
+                        Value="{Binding ProgressValue.Value}" />
 
-            <!--  chips  -->
-            <StackPanel
-                Grid.Row="1"
-                Grid.ColumnSpan="2"
-                Height="32"
-                Orientation="Horizontal">
-                <!--  Category  -->
-                <Border Style="{StaticResource ChipBorderStyleKey}">
+                    <StackPanel Grid.Column="1" Orientation="Vertical">
+                        <!--  Title  -->
+                        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="{Binding Dto.Title}" />
+                        <!--  Remarks  -->
+                        <TextBlock
+                            Opacity="0.7"
+                            Style="{StaticResource MaterialDesignBody2TextBlock}"
+                            Text="{Binding Dto.Remarks}" />
+                    </StackPanel>
+
+                    <StackPanel
+                        x:Name="ActionPanel"
+                        Grid.Column="1"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+
+                        <StackPanel.Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Visibility" Value="Collapsed" />
+
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsMouseOver, ElementName=CardExpander}" Value="True">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </StackPanel.Style>
+
+                        <Button
+                            Width="24"
+                            Height="24"
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="タスクの開始">
+
+                            <behaviors:Interaction.Triggers>
+                                <behaviors:EventTrigger EventName="Click">
+                                    <l:LivetCallMethodAction MethodName="StartWorkTask" MethodTarget="{Binding}" />
+                                </behaviors:EventTrigger>
+                            </behaviors:Interaction.Triggers>
+
+                            <materialDesign:PackIcon
+                                Width="16"
+                                Height="16"
+                                Kind="Play" />
+                        </Button>
+
+                        <Button
+                            Width="24"
+                            Height="24"
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="MaterialDesignIconButton">
+
+                            <behaviors:Interaction.Triggers>
+                                <behaviors:EventTrigger EventName="Click">
+                                    <l:LivetCallMethodAction MethodName="EditWorkTask" MethodTarget="{Binding}" />
+                                </behaviors:EventTrigger>
+                            </behaviors:Interaction.Triggers>
+
+                            <materialDesign:PackIcon
+                                Width="16"
+                                Height="16"
+                                Kind="Pencil" />
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Expander.Header>
+
+
+            <Grid Margin="16,0,16,16">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <!--  chips  -->
+                <StackPanel Orientation="Horizontal">
+                    <!--  Category  -->
+                    <!--<Border Style="{StaticResource ChipBorderStyleKey}">
                     <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding TaskCategory.Value, Converter={StaticResource EnumToDisplayTextConverter}}" />
-                </Border>
+                </Border>-->
 
-                <!--  Product  -->
-                <Border Style="{StaticResource ChipBorderStyleKey}">
-                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding Product.Value, Converter={StaticResource EnumToDisplayTextConverter}}" />
-                </Border>
+                    <!--  Product  -->
+                    <Border Style="{StaticResource ChipBorderStyleKey}">
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding Dto.Product, Converter={StaticResource EnumToDisplayTextConverter}}" />
+                    </Border>
 
-                <!--  User  -->
-                <Border Style="{StaticResource ChipBorderStyleKey}">
-                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="user" />
-                </Border>
-            </StackPanel>
+                    <!--  User  -->
+                    <Border Style="{StaticResource ChipBorderStyleKey}">
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="user" />
+                    </Border>
+                </StackPanel>
 
-            <!--<Border
-                Grid.Row="2"
-                Grid.ColumnSpan="2"
-                Height="1"
-                Margin="0,8,0,20"
-                Background="{StaticResource MaterialDesignDivider}"
-                BorderThickness="0" />-->
+                <ItemsControl
+                    Grid.Row="1"
+                    Margin="8,4,0,0"
+                    ItemsSource="{Binding Dto.WorkingTimes}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding StartDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}}" />
+                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="～" />
+                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding EndDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}, ConverterParameter=HH:mm}" />
 
-            <TextBlock
-                Grid.Row="3"
-                Grid.ColumnSpan="2"
-                HorizontalAlignment="Left"
-                Text="2019/4/6" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </Grid>
 
-            <StackPanel
-                Grid.Row="3"
-                Grid.ColumnSpan="2"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
-                <Button
-                    Width="24"
-                    Height="24"
-                    Style="{StaticResource MaterialDesignIconButton}"
-                    ToolTip="タスクの開始">
+        </Expander>
 
-                    <behaviors:Interaction.Triggers>
-                        <behaviors:EventTrigger EventName="Click">
-                            <l:LivetCallMethodAction
-                                MethodName="StartWorkTask"
-                                MethodParameter="{Binding}"
-                                MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:WorkUnitRecorderView}}}" />
-                        </behaviors:EventTrigger>
-                    </behaviors:Interaction.Triggers>
-
-                    <materialDesign:PackIcon
-                        Width="16"
-                        Height="16"
-                        Kind="Play" />
-                </Button>
-
-                <Button
-                    Width="24"
-                    Height="24"
-                    Style="{StaticResource MaterialDesignIconButton}"
-                    ToolTip="MaterialDesignIconButton">
-
-                    <behaviors:Interaction.Triggers>
-                        <behaviors:EventTrigger EventName="Click">
-                            <l:LivetCallMethodAction
-                                MethodName="EditWorkTask"
-                                MethodParameter="{Binding}"
-                                MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType={x:Type local:WorkUnitRecorderView}}}" />
-                        </behaviors:EventTrigger>
-                    </behaviors:Interaction.Triggers>
-
-                    <materialDesign:PackIcon
-                        Width="16"
-                        Height="16"
-                        Kind="Pencil" />
-                </Button>
-            </StackPanel>
-
-
-        </Grid>
     </DataTemplate>
 </ResourceDictionary>

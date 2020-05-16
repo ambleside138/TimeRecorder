@@ -9,7 +9,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 {
     class TaskEditDialogViewModel : ViewModel
     {
-        public TaskCardViewModel TaskCardViewModel { get; }
+        public WorkTaskViewModel TaskCardViewModel { get; }
 
         public ReactivePropertySlim<bool> IsEditMode = new ReactivePropertySlim<bool>(false);
 
@@ -18,7 +18,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 
         public TaskEditDialogViewModel(WorkTask model)
         {
-            TaskCardViewModel = new TaskCardViewModel(model);
+            TaskCardViewModel = new WorkTaskViewModel(model);
             IsEditMode.Value = true;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.Tracking.Specifications;
 using TimeRecorder.Domain.Utility;
@@ -14,28 +15,36 @@ namespace TimeRecorder.Domain.UseCase.Tracking
     public class WorkingTimeRangeUseCase
     {
         private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
+        private readonly IWorkTaskRepository _WorkTaskRepository;
 
         private readonly WorkingTimeRegistSpecification _WorkingTimeRegistSpecification;
          
 
-        public WorkingTimeRangeUseCase(IWorkingTimeRangeRepository workingTimeRangeRepository)
+        public WorkingTimeRangeUseCase(IWorkingTimeRangeRepository workingTimeRangeRepository, IWorkTaskRepository workTaskRepository)
         {
             _WorkingTimeRangeRepository = workingTimeRangeRepository;
             _WorkingTimeRegistSpecification = new WorkingTimeRegistSpecification(workingTimeRangeRepository);
+            _WorkTaskRepository = workTaskRepository;
         }
 
-        public WorkingTimeRange AddWorkingTimeRange(WorkingTimeRange workingTimeRange)
+        public WorkingTimeRange StartWorking(Identity<WorkTask> id)
         {
-            var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(workingTimeRange);
+            var targetTask = _WorkTaskRepository.SelectById(id);
+            if (targetTask == null)
+                throw new NotFoundException("開始対象のタスクがみつかりませんでした");
+
+            var newWorkingTime = WorkingTimeRange.ForStart(id);
+
+            var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(newWorkingTime);
             if(validationResult != null)
             {
                 throw new SpecificationCheckException(validationResult);
             }
 
-            return _WorkingTimeRangeRepository.Add(workingTimeRange);
+            return _WorkingTimeRangeRepository.Add(newWorkingTime);
         }
 
-        public void StopWorkingTimeRange(Identity<WorkingTimeRange> id)
+        public void StopWorking(Identity<WorkingTimeRange> id)
         {
             var target = _WorkingTimeRangeRepository.SelectById(id);
 

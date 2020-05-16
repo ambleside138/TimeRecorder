@@ -25,6 +25,7 @@ namespace TimeRecorder
             resolver.Register<IWorkingTimeRangeRepository, SQLiteWorkingTimeRangeRepository>(Lifestyle.Singleton);
             resolver.Register<IDailyWorkRecordQueryService, SQLiteDailyWorkRecordQueryService>(Lifestyle.Singleton);
             resolver.Register<IWorkingTimeQueryService, SQLiteWorkingTimeQueryService>(Lifestyle.Singleton);
+            resolver.Register<IWorkTaskWithTimesQueryService, SQLiteWorkTaskWithTimesQueryService>(Lifestyle.Singleton);
 
             // You can configure lifestyle - Transient, Singleton or Scoped
             //resolver.Register<ILogger, MailLogger>(Lifestyle.Singleton);

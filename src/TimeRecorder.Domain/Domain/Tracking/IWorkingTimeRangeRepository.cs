@@ -5,7 +5,7 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.Tracking
 {
-    public interface IWorkingTimeRangeRepository
+    public interface IWorkingTimeRangeRepository : IRepository
     {
         WorkingTimeRange Add(WorkingTimeRange workingTimeRange);
 
