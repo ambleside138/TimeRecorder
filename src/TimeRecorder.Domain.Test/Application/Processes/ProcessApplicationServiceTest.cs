@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TimeRecorder.Domain.UseCase.Processes;
+using TimeRecorder.Domain.UseCase.WorkProcesses;
 using TimeRecorder.Repository.InMemory;
 
 namespace TimeRecorder.Domain.Test.Application.Processes
@@ -11,12 +11,12 @@ namespace TimeRecorder.Domain.Test.Application.Processes
     [TestFixture]
     class ProcessApplicationServiceTest
     {
-        private ProcessUseCase _Service;
+        private WorkProcessUseCase _Service;
  
         [SetUp]
         public void SetUp()
         {
-            _Service = new ProcessUseCase(new ProcessRepository());
+            _Service = new WorkProcessUseCase(new ProcessRepository());
         }
 
         [Test]

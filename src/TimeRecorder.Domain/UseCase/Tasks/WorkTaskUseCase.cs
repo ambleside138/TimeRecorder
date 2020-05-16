@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
-using TimeRecorder.Domain.Domain.Processes;
+using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
 

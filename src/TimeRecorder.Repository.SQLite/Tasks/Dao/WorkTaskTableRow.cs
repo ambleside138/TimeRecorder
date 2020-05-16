@@ -45,7 +45,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 , TaskCategory
                 , Product
                 , new Identity<Domain.Domain.Clients.Client>(ClientId)
-                , new Identity<Domain.Domain.Processes.Process>(ProcessId)
+                , new Identity<Domain.Domain.WorkProcesses.WorkProcess>(ProcessId)
                 , Remarks
                 , taskProgress);
         }

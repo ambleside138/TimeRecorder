@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TimeRecorder.Domain.Domain.Processes;
+using TimeRecorder.Domain.Domain.WorkProcesses;
 
 namespace TimeRecorder.Repository.InMemory
 {
-    public class ProcessRepository : IProcessRepository
+    public class ProcessRepository : IWorkProcessRepository
     {
-        private readonly List<Process> _ListProcess = new List<Process>()
+        private readonly List<WorkProcess> _ListProcess = new List<WorkProcess>()
         {
-            new Process(new Domain.Utility.Identity<Process>(1), "コーディング"),
-            new Process(new Domain.Utility.Identity<Process>(2), "テスト"),
+            new WorkProcess(new Domain.Utility.Identity<WorkProcess>(1), "コーディング"),
+            new WorkProcess(new Domain.Utility.Identity<WorkProcess>(2), "テスト"),
         };
 
-        public Process Regist(Process process)
+        public WorkProcess Regist(WorkProcess process)
         {
             var newId = 1;
             if(_ListProcess.Any())
@@ -22,13 +22,13 @@ namespace TimeRecorder.Repository.InMemory
                 newId = _ListProcess.Max(i => i.Id.Value) + 1;
             }
 
-            var newProcess = new Process(new Domain.Utility.Identity<Process>(newId), process.Title);
+            var newProcess = new WorkProcess(new Domain.Utility.Identity<WorkProcess>(newId), process.Title);
             _ListProcess.Add(newProcess);
             
             return newProcess;
         }
 
-        public Process[] SelectAll()
+        public WorkProcess[] SelectAll()
         {
             return _ListProcess.ToArray();
         }

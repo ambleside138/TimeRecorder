@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TimeRecorder.Domain.Domain.Processes;
+using TimeRecorder.Domain.Domain.WorkProcesses;
 
-namespace TimeRecorder.Domain.UseCase.Processes
+namespace TimeRecorder.Domain.UseCase.WorkProcesses
 {
     // １クラスに複数メソッドを定義するときは「関心事」＋UseCaseと命名
 
@@ -12,23 +12,23 @@ namespace TimeRecorder.Domain.UseCase.Processes
     /// </summary>
     public class ProcessUseCase
     {
-        private readonly IProcessRepository _ProcessRepository;
-        private readonly ProcessService _ProcessService;
+        private readonly IWorkProcessRepository _ProcessRepository;
+        private readonly Domain.WorkProcesses.WorkProcessService _ProcessService;
 
-        public ProcessUseCase(IProcessRepository processRepository)
+        public ProcessUseCase(IWorkProcessRepository processRepository)
         {
             _ProcessRepository = processRepository;
-            _ProcessService = new ProcessService(processRepository);
+            _ProcessService = new Domain.WorkProcesses.WorkProcessService(processRepository);
         }
 
-        public Process[] GetProcesses()
+        public WorkProcess[] GetProcesses()
         {
             return _ProcessRepository.SelectAll();
         }
 
-        public Process Regist(string title)
+        public WorkProcess Regist(string title)
         {
-            var process = new Process(title);
+            var process = new WorkProcess(title);
 
             if (_ProcessService.IsDuplicated(process))
             {

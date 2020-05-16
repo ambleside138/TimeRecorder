@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
-using TimeRecorder.Domain.Domain.Processes;
+using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
@@ -57,9 +57,9 @@ namespace TimeRecorder.Domain.Domain.Tasks
         #endregion
 
         #region ProcessId変更通知プロパティ
-        private Identity<Process> _ProcessId;
+        private Identity<WorkProcess> _ProcessId;
 
-        public Identity<Process> ProcessId
+        public Identity<WorkProcess> ProcessId
         {
             get => _ProcessId;
             set => RaisePropertyChangedIfSet(ref _ProcessId, value);
@@ -90,11 +90,11 @@ namespace TimeRecorder.Domain.Domain.Tasks
         
         public static WorkTask ForNew()
         {
-            return new WorkTask { Id = Identity<WorkTask>.Temporary, ClientId = Identity<Client>.Empty, ProcessId = Identity<Process>.Empty, };
+            return new WorkTask { Id = Identity<WorkTask>.Temporary, ClientId = Identity<Client>.Empty, ProcessId = Identity<WorkProcess>.Empty, };
         }
 
         // VSの場合、「クイックアクションとリファクタリング」からコンストラクタコードの生成が可能
-        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Product product, Identity<Client> ClientId, Identity<Process> processId, string remarks, TaskProgress taskProgress)
+        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Product product, Identity<Client> ClientId, Identity<WorkProcess> processId, string remarks, TaskProgress taskProgress)
         {
             Id = id;
             _Title = title;

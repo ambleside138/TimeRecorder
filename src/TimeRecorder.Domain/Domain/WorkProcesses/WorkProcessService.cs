@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace TimeRecorder.Domain.Domain.Processes
+namespace TimeRecorder.Domain.Domain.WorkProcesses
 {
     public class ProcessService
     {
-        private readonly IProcessRepository _ProcessRepository;
+        private readonly IWorkProcessRepository _ProcessRepository;
 
-        public ProcessService(IProcessRepository processRepository)
+        public ProcessService(IWorkProcessRepository processRepository)
         {
             _ProcessRepository = processRepository;
         }
@@ -21,7 +21,7 @@ namespace TimeRecorder.Domain.Domain.Processes
         /// </summary>
         /// <param name="process">テスト対象のProcess</param>
         /// <returns></returns>
-        public bool IsDuplicated(Process process)
+        public bool IsDuplicated(WorkProcess process)
         {
             var list = _ProcessRepository.SelectAll();
 

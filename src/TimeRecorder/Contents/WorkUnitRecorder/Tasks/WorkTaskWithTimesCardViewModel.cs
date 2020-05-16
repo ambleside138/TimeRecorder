@@ -40,7 +40,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         {
             var targetData = _Model.SelectWorkTask(Dto.TaskId);
 
-            var editDialogVm = new TaskEditDialogViewModel(targetData);
+            var editDialogVm = new WorkTaskEditDialogViewModel(targetData);
 
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new TaskEditDialog

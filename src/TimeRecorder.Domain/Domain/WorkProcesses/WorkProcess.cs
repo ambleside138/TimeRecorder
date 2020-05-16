@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Domain.Domain.Processes
+namespace TimeRecorder.Domain.Domain.WorkProcesses
 {
     /// <summary>
     /// 工程
     /// </summary>
-    public class Process
+    public class WorkProcess
     {
-        public Identity<Process> Id { get; }
+        public Identity<WorkProcess> Id { get; }
 
         /// <summary>
         /// 名称
@@ -21,11 +21,11 @@ namespace TimeRecorder.Domain.Domain.Processes
         /// Domain層内のみで、titleのみでの生成を許可する
         /// </summary>
         /// <param name="title"></param>
-        internal Process(string title)
-            : this(Identity<Process>.Temporary, title) { }
+        internal WorkProcess(string title)
+            : this(Identity<WorkProcess>.Temporary, title) { }
 
 
-        public Process(Identity<Process> identity, string title)
+        public WorkProcess(Identity<WorkProcess> identity, string title)
         {
             Id = identity;
             Title = title;
