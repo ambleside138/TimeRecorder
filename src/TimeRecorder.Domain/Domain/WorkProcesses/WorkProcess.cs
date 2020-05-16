@@ -8,7 +8,7 @@ namespace TimeRecorder.Domain.Domain.WorkProcesses
     /// <summary>
     /// 工程
     /// </summary>
-    public class WorkProcess
+    public class WorkProcess : Entity<WorkProcess>
     {
         public Identity<WorkProcess> Id { get; }
 
@@ -29,6 +29,11 @@ namespace TimeRecorder.Domain.Domain.WorkProcesses
         {
             Id = identity;
             Title = title;
+        }
+
+        protected override IEnumerable<object> GetIdentityValues()
+        {
+            yield return Id;
         }
     }
 }
