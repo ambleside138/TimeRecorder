@@ -27,7 +27,7 @@ namespace TimeRecorder.Domain.Utility
             if ((obj is T) == false)
                 return false;
 
-            return Equals(obj);
+            return Equals((T)obj);
         }
 
         protected abstract IEnumerable<object> GetAtomicValues();

@@ -8,7 +8,7 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Repository.SQLite.WorkProcesses
 {
-    class SQLiteWorkProcessRepository : IWorkProcessRepository
+    public class SQLiteWorkProcessRepository : IWorkProcessRepository
     {
         public WorkProcess Regist(WorkProcess process)
         {

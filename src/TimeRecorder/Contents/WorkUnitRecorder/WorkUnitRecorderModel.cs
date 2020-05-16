@@ -6,6 +6,7 @@ using System.Reactive.Joins;
 using System.Text;
 using Livet;
 using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
@@ -19,15 +20,23 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
     public class WorkUnitRecorderModel : NotificationObject, IDisposable
     {
 
-        #region TargetYmd変更通知プロパティ
-        private string _TargetYmd = DateTime.Today.ToString("yyyyMMdd");
+        //#region TargetYmd変更通知プロパティ
+        //private DateTime _TargetDate = DateTime.Today;
 
-        public string TargetYmd
-        {
-            get => _TargetYmd;
-            set => RaisePropertyChangedIfSet(ref _TargetYmd, value);
-        }
-        #endregion
+        //public DateTime TargetDate
+        //{
+        //    get => _TargetDate;
+        //    set
+        //    {
+        //        RaisePropertyChangedIfSet(ref _TargetDate, value);
+        //        Load();
+        //    }
+        //}
+        //#endregion
+
+        public ReactivePropertySlim<DateTime> TargetDate { get; }
+
+        public YmdString TargetYmd => new YmdString(TargetDate.Value.ToString("yyyyMMdd"));
 
         public ObservableCollection<WorkTaskWithTimesDto> PlanedTaskModels { get; } = new ObservableCollection<WorkTaskWithTimesDto>();
 
@@ -36,6 +45,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactiveProperty<WorkingTimeForTimelineDto> DoingTask { get; } = new ReactiveProperty<WorkingTimeForTimelineDto>();
 
+        private LivetCompositeDisposable _Disposables = new LivetCompositeDisposable();
 
         #region UseCases
         private readonly WorkTaskUseCase _WorkTaskUseCase;
@@ -54,11 +64,14 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             _GetWorkTaskWithTimesUseCase = new GetWorkTaskWithTimesUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskWithTimesQueryService>());
 
             ObjectChangedNotificator.Instance.WorkTaskEdited += Load;
+
+            TargetDate = new ReactivePropertySlim<DateTime>(DateTime.Today);
+            TargetDate.Subscribe(_ => Load()).AddTo(_Disposables);
         }
 
         public void Load()
         {
-            var list = _GetWorkTaskWithTimesUseCase.GetByYmd(new YmdString(TargetYmd));
+            var list = _GetWorkTaskWithTimesUseCase.GetByYmd(TargetYmd);
 
             PlanedTaskModels.Clear();
             PlanedTaskModels.AddRange(list);
@@ -68,7 +81,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public void LoadWorkingTime()
         {
-            var list = _GetWorkingTimeForTimelineUseCase.SelectByYmd(TargetYmd);
+            var list = _GetWorkingTimeForTimelineUseCase.SelectByYmd(TargetYmd.Value);
 
             WorkingTimes.Clear();
             WorkingTimes.AddRange(list);
@@ -106,6 +119,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                 {
                     // Mangedリソースの解放
                     ObjectChangedNotificator.Instance.WorkTaskEdited -= Load;
+                    _Disposables.Dispose();
+                    _Disposables = null;
                 }
 
                 // TODO: アンマネージ リソース (アンマネージ オブジェクト) を解放し、下のファイナライザーをオーバーライドします。

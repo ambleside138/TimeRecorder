@@ -15,12 +15,15 @@
 
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type materialDesignColors:Swatch}">
-            <Border Width="120" Margin="2,2,6,6" Padding="8,4">
+            <Border
+                Width="120"
+                Margin="2,2,6,6"
+                Padding="8,4">
                 <Border.Background>
                     <SolidColorBrush Color="{Binding ExemplarHue.Color, Mode=OneTime}" />
                 </Border.Background>
                 <StackPanel>
-                    <TextBlock Text="{Binding Name}" Foreground="{Binding ExemplarHue.Foreground}" />
+                    <TextBlock Foreground="{Binding ExemplarHue.Foreground}" Text="{Binding Name}" />
                 </StackPanel>
             </Border>
         </DataTemplate>

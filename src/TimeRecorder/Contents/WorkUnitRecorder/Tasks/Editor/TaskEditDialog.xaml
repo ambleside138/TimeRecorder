@@ -91,14 +91,20 @@
             <TextBlock
                 Margin="0,16,0,4"
                 Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                Text="作業工程" />
+            <ComboBox ItemsSource="{Binding Processes}" SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" DisplayMemberPath="Title" Width="240" HorizontalAlignment="Left"/>
+
+            <TextBlock
+                Margin="0,16,0,4"
+                Style="{StaticResource MaterialDesignCaptionTextBlock}"
                 Text="ユーザ" />
             <TextBox Text="" />
 
-            <TextBlock
+            <!--<TextBlock
                 Margin="0,16,0,0"
                 Style="{StaticResource MaterialDesignCaptionTextBlock}"
                 Text="備考*" />
-            <TextBox materialDesign:TextFieldAssist.HasClearButton="True" Text="{Binding TaskCardViewModel.Remarks.Value}" />
+            <TextBox materialDesign:TextFieldAssist.HasClearButton="True" Text="{Binding TaskCardViewModel.Remarks.Value}" />-->
 
         </StackPanel>
 

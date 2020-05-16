@@ -23,10 +23,13 @@ SELECT
   , task.title as title
   , task.taskcategory as taskcategory
   , task.remarks as remarks
+  , processes.title as workprocessname
 FROM
   workingtimes time
 INNER JOIN
   worktasks task ON task.id = time.taskid
+INNER JOIN
+  processes ON processes.id = task.processid
 WHERE
   time.ymd = @ymd
 ";
@@ -60,6 +63,8 @@ WHERE
 
             public string Remarks { get; set; }
 
+            public string WorkProcessName { get; set; }
+
             public WorkingTimeForTimelineDto ConvertToDto()
             {
                 
@@ -72,6 +77,7 @@ WHERE
                     TaskTitle = Title,
                     TaskCategory = TaskCategory,
                     TaskRemarks = Remarks,
+                    WorkProcessName = WorkProcessName,
                 };
             }
         }

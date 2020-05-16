@@ -21,7 +21,7 @@ namespace TimeRecorder.Repository.SQLite
         {
             using (var con = ConnectionFactory.Create())
             {
-                // Enumはintで定義するとマッピングしてくれる
+                // dapperを利用する場合、Enumはintで定義するとマッピングしてくれる
                 var sql = @"
 create table 
   worktasks
@@ -48,7 +48,14 @@ create table
   , starttime varchar(6)
   , endtime varchar(6)
 )
-";
+
+CREATE TABLE 
+  processes
+(
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+  , title varchar(64)
+);
+                ";
 
                 using (var cmd = new SQLiteCommand(sql, con))
                 {

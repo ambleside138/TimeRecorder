@@ -42,9 +42,22 @@ namespace TimeRecorder
             //            if (result == MessageBoxResult.Yes)
             //                e.Handled = true;
 
-            SnackbarService.Current.ShowMessage(e.Exception.Message);
+            
+
+            SnackbarService.Current.ShowMessage(GetExceptionMessage(e.Exception));
 
             e.Handled = true;
         }
+
+        private string GetExceptionMessage(Exception ex)
+        {
+            if(ex.InnerException!= null)
+            {
+                return GetExceptionMessage(ex.InnerException);
+            }
+
+            return ex.Message;
+        }
+
     }
 }

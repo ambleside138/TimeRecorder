@@ -18,5 +18,6 @@ namespace TimeRecorder.Domain.UseCase.Tracking
         public string TaskTitle { get; set; }
         public string TaskRemarks { get; set; }
         public TaskCategory TaskCategory { get; set; }
+        public string WorkProcessName { get; set; }
     }
 }

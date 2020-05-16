@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.Tracking.Specifications;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Utility.Exceptions;
+using TimeRecorder.Domain.Utility.SystemClocks;
 
 namespace TimeRecorder.Domain.UseCase.Tracking
 {
@@ -33,6 +35,14 @@ namespace TimeRecorder.Domain.UseCase.Tracking
             if (targetTask == null)
                 throw new NotFoundException("開始対象のタスクがみつかりませんでした");
 
+            // 実行中のタスクがあれば終了する
+            var today = SystemClockServiceLocator.Current.Now.ToString("yyyyMMdd");
+            var working = _WorkingTimeRangeRepository.SelectByYmd(today).FirstOrDefault(w => w.IsDoing);
+            if (working != null)
+            {
+                StopWorkingCore(working);
+            }
+
             var newWorkingTime = WorkingTimeRange.ForStart(id);
 
             var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(newWorkingTime);
@@ -53,6 +63,11 @@ namespace TimeRecorder.Domain.UseCase.Tracking
                 throw new NotFoundException("終了対象の作業がみつかりませんでした");
             }
 
+            StopWorkingCore(target);
+        }
+
+        private void StopWorkingCore(WorkingTimeRange target)
+        {
             target.Stop();
 
             _WorkingTimeRangeRepository.Edit(target);

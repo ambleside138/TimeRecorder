@@ -10,12 +10,12 @@ namespace TimeRecorder.Domain.UseCase.WorkProcesses
     /// <summary>
     /// 工程 に関するPresentation層との相互作用を実装します
     /// </summary>
-    public class ProcessUseCase
+    public class WorkProcessUseCase
     {
         private readonly IWorkProcessRepository _ProcessRepository;
         private readonly Domain.WorkProcesses.WorkProcessService _ProcessService;
 
-        public ProcessUseCase(IWorkProcessRepository processRepository)
+        public WorkProcessUseCase(IWorkProcessRepository processRepository)
         {
             _ProcessRepository = processRepository;
             _ProcessService = new Domain.WorkProcesses.WorkProcessService(processRepository);

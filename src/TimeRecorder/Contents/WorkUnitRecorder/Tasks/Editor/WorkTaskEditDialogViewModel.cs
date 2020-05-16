@@ -20,25 +20,15 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 
         public WorkProcess[] Processes { get; }
 
-        public ReactivePropertySlim<WorkProcess> SelectedProcess { get; }
-
         public WorkTaskEditDialogViewModel()
             : this(WorkTask.ForNew()) { }
 
         public WorkTaskEditDialogViewModel(WorkTask model)
         {
-            TaskCardViewModel = new WorkTaskViewModel(model);
             IsEditMode.Value = true;
 
             Processes = _WorkTaskEditDialogModel.GetProcesses().ToArray();
-
-            SelectedProcess = new ReactivePropertySlim<WorkProcess>(Processes.FirstOrDefault(p => p.Id == model.ProcessId));
-            //SelectedProcess.Subscribe(p => TaskCardViewModel.Process)
-        }
-
-        public void Regist()
-        {
-
+            TaskCardViewModel = new WorkTaskViewModel(model, Processes);
         }
     }
 }

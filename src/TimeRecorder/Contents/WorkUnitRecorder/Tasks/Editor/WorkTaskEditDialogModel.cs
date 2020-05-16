@@ -8,11 +8,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor
 {
     class WorkTaskEditDialogModel
     {
-        private readonly ProcessUseCase _ProcessUseCase;
+        private readonly WorkProcessUseCase _ProcessUseCase;
 
         public WorkTaskEditDialogModel()
         {
-            _ProcessUseCase = new ProcessUseCase(ContainerHelper.Resolver.Resolve<IWorkProcessRepository>());
+            _ProcessUseCase = new WorkProcessUseCase(ContainerHelper.Resolver.Resolve<IWorkProcessRepository>());
         }
 
         public WorkProcess[] GetProcesses()

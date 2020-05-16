@@ -49,13 +49,19 @@
                         Value="{Binding ProgressValue.Value}" />
 
                     <StackPanel Grid.Column="1" Orientation="Vertical">
-                        <!--  Title  -->
-                        <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="{Binding Dto.Title}" />
-                        <!--  Remarks  -->
+                        <!--  Process  -->
                         <TextBlock
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
                             Opacity="0.7"
-                            Style="{StaticResource MaterialDesignBody2TextBlock}"
-                            Text="{Binding Dto.Remarks}" />
+                            Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                            Text="{Binding Dto.ProcessName, StringFormat=[{0}]}" />
+                        <!--  Title  -->
+                        <TextBlock
+                            Margin="0,2,0,0"
+                            Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                            Text="{Binding Dto.Title}" />
+
                     </StackPanel>
 
                     <StackPanel

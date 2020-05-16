@@ -5,11 +5,11 @@ using System.Text;
 
 namespace TimeRecorder.Domain.Domain.WorkProcesses
 {
-    public class ProcessService
+    public class WorkProcessService
     {
         private readonly IWorkProcessRepository _ProcessRepository;
 
-        public ProcessService(IWorkProcessRepository processRepository)
+        public WorkProcessService(IWorkProcessRepository processRepository)
         {
             _ProcessRepository = processRepository;
         }

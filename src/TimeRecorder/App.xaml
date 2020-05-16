@@ -74,6 +74,7 @@
             <converters:EnumToDisplayTextConverter x:Key="EnumToDisplayTextConverter" />
             <converters:EnumToIconKeyConverter x:Key="EnumToIconKeyConverter" />
             <converters:DateTimeToFormattedStringConverter x:Key="DateTimeToFormattedStringConverter" />
+            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

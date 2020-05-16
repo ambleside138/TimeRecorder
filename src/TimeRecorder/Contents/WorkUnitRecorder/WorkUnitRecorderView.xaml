@@ -23,7 +23,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="40" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -41,41 +41,51 @@
 
             <!--  表示日付  -->
             <DatePicker
-                Width="140"
-                Height="32"
-                Margin="0,0,0,16"
+                Width="120"
+                Margin="0,0,0,8"
                 HorizontalAlignment="Left"
-                materialDesign:HintAssist.Hint="Pick Date"
-                Style="{StaticResource MaterialDesignFilledDatePicker}" />
+                VerticalAlignment="Center"
+                FontSize="16"
+                SelectedDate="{Binding TargetDateTime.Value, Mode=TwoWay}" />
 
             <!--  現在のタスク  -->
 
             <Border
                 Grid.Column="1"
                 Height="32"
-                Margin="16,0,0,0"
+                Margin="16,0,0,8"
                 VerticalAlignment="Top"
                 Background="{StaticResource MaterialDesignChipBackground}"
                 CornerRadius="3">
                 <Grid Margin="8,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
 
                     <materialDesign:PackIcon
-                        Width="24"
-                        Height="24"
+                        Width="20"
+                        Height="20"
+                        Margin="8,0"
                         VerticalAlignment="Center"
-                        Kind="FileCodeOutline" />
+                        Kind="{Binding DoingTask.Value.TaskCategory, Converter={StaticResource EnumToIconKeyConverter}}" />
+
+                    <!--  Process  -->
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="8,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Opacity="0.7"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="{Binding DoingTask.Value.WorkProcessName, StringFormat=[{0}]}" />
 
                     <!--  Title  -->
                     <TextBlock
-                        Grid.Column="1"
-                        Width="80"
+                        Grid.Column="2"
                         Margin="8,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
@@ -83,14 +93,14 @@
                         Text="{Binding DoingTask.Value.TaskTitle}" />
 
                     <!--  Remarks  -->
-                    <TextBlock
+                    <!--<TextBlock
                         Grid.Column="2"
                         Width="128"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Opacity="0.7"
                         Style="{StaticResource MaterialDesignBody2TextBlock}"
-                        Text="{Binding DoingTask.Value.TaskRemarks}" />
+                        Text="{Binding DoingTask.Value.TaskRemarks}" />-->
 
                     <!--  DurationTime  -->
                     <TextBlock
@@ -109,12 +119,13 @@
                         Padding="1"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
-                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}">
+                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                        Visibility="{Binding DoingTask.Value.ShowStopButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Button.Background>
-                            <SolidColorBrush Color="{StaticResource RedPrimary500}" />
+                            <SolidColorBrush Color="{StaticResource RedPrimary400}" />
                         </Button.Background>
                         <Button.BorderBrush>
-                            <SolidColorBrush Color="{StaticResource RedPrimary500}" />
+                            <SolidColorBrush Color="{StaticResource RedPrimary400}" />
                         </Button.BorderBrush>
 
                         <materialDesign:PackIcon

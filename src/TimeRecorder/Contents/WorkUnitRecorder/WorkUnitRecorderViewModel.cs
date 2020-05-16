@@ -11,6 +11,7 @@ using Reactive.Bindings.Extensions;
 using TimeRecorder.Contents.WorkUnitRecorder.Timeline;
 using System.Reactive.Linq;
 using TimeRecorder.Domain.UseCase.Tasks;
+using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -26,6 +27,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactiveProperty<WorkingTimeCardViewModel> DoingTask { get; }
 
+        public ReactiveProperty<DateTime> TargetDateTime { get; }
 
         public WorkUnitRecorderViewModel()
         {
@@ -42,6 +44,10 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                               .ToReactiveProperty()
                               .AddTo(CompositeDisposable);
 
+            TargetDateTime = _Model.TargetDate
+                                   .ToReactivePropertyAsSynchronized(d => d.Value)
+                                   .AddTo(CompositeDisposable);
+
             CompositeDisposable.Add(_Model);
 
             Initialize();          
@@ -49,12 +55,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public void Initialize()
         {
-            _Model.Load();
+            // 初回の変更通知でよばれるようになったので不要
+           //  _Model.Load();
         }
 
         public async void ExecuteNewTaskDialog()
         {
-            var editDialogVm = new TaskEditDialogViewModel();
+            var editDialogVm = new WorkTaskEditDialogViewModel();
 
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new TaskEditDialog

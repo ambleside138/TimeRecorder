@@ -24,14 +24,19 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             {
                 TaskTitle = "お休み中";
                 TaskCategory = TaskCategory.Develop;
+                WorkProcessName = "‐‐‐";
+                ShowStopButton.Value = false;
                 return;
             }
 
             TaskTitle = workingTimeRange.TaskTitle;
             TaskCategory = workingTimeRange.TaskCategory;
+            WorkProcessName = workingTimeRange.WorkProcessName;
 
             StartHHmm = workingTimeRange.StartDateTime.ToString("HHmm");
             EndHHmm = workingTimeRange.EndDateTime?.ToString("HHmm") ?? "";
+
+            
 
             CanvasTop = CalcTop();
             Height = CalcHeight();
@@ -89,6 +94,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
         public TaskCategory TaskCategory { get; }
 
+        public string WorkProcessName { get; }
+
         public string StartHHmm { get; set; } = "";
 
         public string EndHHmm { get; set; } = "";
@@ -97,6 +104,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
         public int Height { get; }
 
-        public ReactiveProperty<string> DurationTimeText { get; } = new ReactiveProperty<string>();
+        public ReactivePropertySlim<string> DurationTimeText { get; } = new ReactivePropertySlim<string>();
+
+        public ReactivePropertySlim<bool> ShowStopButton { get; } = new ReactivePropertySlim<bool>(true);
     }
 }
