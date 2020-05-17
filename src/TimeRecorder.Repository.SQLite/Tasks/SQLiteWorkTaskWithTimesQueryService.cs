@@ -25,7 +25,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks
                 var processes = new SQLiteWorkProcessRepository().SelectAll();
 
                 var tasks = workTaskDao.SelectPlaned(ymd);
-                var times = workingTimeDao.SelectYmd(ymd.Value);
+                var times = workingTimeDao.SelectByTaskIds(tasks.Select(t => t.Id).Distinct().ToArray());
 
                 foreach(var task in tasks)
                 {

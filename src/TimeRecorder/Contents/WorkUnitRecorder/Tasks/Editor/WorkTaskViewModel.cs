@@ -23,7 +23,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactiveProperty<Product> Product { get; }
 
-        public ReactiveProperty<Client> User { get; }
+        public ReactiveProperty<Client> Client { get; }
 
         public ReactiveProperty<WorkProcess> WorkProcess { get; }
 
@@ -33,10 +33,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         private readonly WorkProcess[] _Processes;
 
-        public WorkTaskViewModel(WorkTask task, WorkProcess[] processes)
+        private readonly Client[] _Clients;
+
+        public WorkTaskViewModel(WorkTask task, WorkProcess[] processes, Client[] clients)
         {
             DomainModel = task;
             _Processes = processes;
+            _Clients = clients;
 
             Title = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Title)
                                 .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "タイトルは入力必須です" : null)
@@ -53,7 +56,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                                         m => _Processes.FirstOrDefault(p => p.Id == m),
                                         vm => vm?.Id ?? Identity<WorkProcess>.Empty)
                                      .AddTo(CompositeDisposable);
-                                        
+
+            Client = DomainModel.ToReactivePropertyAsSynchronized(
+                                        x => x.ClientId,
+                                        m => _Clients.FirstOrDefault(p => p.Id == m),
+                                        vm => vm?.Id ?? Identity<Client>.Empty)
+                                     .AddTo(CompositeDisposable);
 
             //Remarks = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Remarks)
             //                      .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "備考は入力必須です" : null)

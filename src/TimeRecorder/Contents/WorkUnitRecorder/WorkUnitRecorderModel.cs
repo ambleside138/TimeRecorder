@@ -19,21 +19,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 {
     public class WorkUnitRecorderModel : NotificationObject, IDisposable
     {
-
-        //#region TargetYmd変更通知プロパティ
-        //private DateTime _TargetDate = DateTime.Today;
-
-        //public DateTime TargetDate
-        //{
-        //    get => _TargetDate;
-        //    set
-        //    {
-        //        RaisePropertyChangedIfSet(ref _TargetDate, value);
-        //        Load();
-        //    }
-        //}
-        //#endregion
-
         public ReactivePropertySlim<DateTime> TargetDate { get; }
 
         public YmdString TargetYmd => new YmdString(TargetDate.Value.ToString("yyyyMMdd"));
@@ -95,8 +80,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
             Load();
         }
-
-
 
         public void StopCurrentTask()
         {

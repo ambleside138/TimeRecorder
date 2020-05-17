@@ -55,7 +55,15 @@ CREATE TABLE
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
   , title varchar(64)
 );
-                ";
+
+CREATE TABLE 
+  clients
+(
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
+  , name varchar(128)
+  , kananame varchar(128)
+);
+";
 
                 using (var cmd = new SQLiteCommand(sql, con))
                 {

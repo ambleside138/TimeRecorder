@@ -7,6 +7,7 @@ using System.Text;
 using TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Domain.Tasks;
+using TimeRecorder.Domain.Domain.Clients;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 {
@@ -20,6 +21,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 
         public WorkProcess[] Processes { get; }
 
+        public Client[] Clients { get; }
+
         public WorkTaskEditDialogViewModel()
             : this(WorkTask.ForNew()) { }
 
@@ -27,8 +30,10 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
         {
             IsEditMode.Value = true;
 
-            Processes = _WorkTaskEditDialogModel.GetProcesses().ToArray();
-            TaskCardViewModel = new WorkTaskViewModel(model, Processes);
+            Processes = _WorkTaskEditDialogModel.GetProcesses();
+            Clients = _WorkTaskEditDialogModel.GetClients();
+
+            TaskCardViewModel = new WorkTaskViewModel(model, Processes, Clients);
         }
     }
 }

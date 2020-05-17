@@ -7,7 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    Width="560"
+    Width="400"
     d:DesignHeight="450"
     d:DesignWidth="800"
     Background="{StaticResource MaterialDesignBackground}"
@@ -27,10 +27,7 @@
 
         <!--  Contents  -->
         <StackPanel Grid.Row="1" Margin="0,8">
-            <TextBlock
-                Margin="0,0,0,4"
-                Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                Text="タイトル*" />
+            <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="タイトル*" />
             <TextBox materialDesign:TextFieldAssist.HasClearButton="True" Text="{Binding TaskCardViewModel.Title.Value}" />
 
             <TextBlock
@@ -89,16 +86,26 @@
             </StackPanel>
 
             <TextBlock
-                Margin="0,16,0,4"
+                Margin="0,16,0,0"
                 Style="{StaticResource MaterialDesignCaptionTextBlock}"
                 Text="作業工程" />
-            <ComboBox ItemsSource="{Binding Processes}" SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" DisplayMemberPath="Title" Width="240" HorizontalAlignment="Left"/>
+            <ComboBox
+                Width="240"
+                HorizontalAlignment="Left"
+                DisplayMemberPath="Title"
+                ItemsSource="{Binding Processes}"
+                SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" />
 
             <TextBlock
-                Margin="0,16,0,4"
+                Margin="0,16,0,0"
                 Style="{StaticResource MaterialDesignCaptionTextBlock}"
                 Text="ユーザ" />
-            <TextBox Text="" />
+            <ComboBox
+                Width="240"
+                HorizontalAlignment="Left"
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding Clients}"
+                SelectedItem="{Binding TaskCardViewModel.Client.Value}" />
 
             <!--<TextBlock
                 Margin="0,16,0,0"

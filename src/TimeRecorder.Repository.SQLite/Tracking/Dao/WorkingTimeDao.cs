@@ -114,5 +114,27 @@ WHERE
 
             return Connection.Query<WorkingTimeTableRow>(sql, new { id }).FirstOrDefault();
         }
+
+        public WorkingTimeTableRow[] SelectByTaskIds(int[] taskids)
+        {
+            #region SQL
+            const string sql = @"
+SELECT
+  id
+  , taskid
+  , ymd
+  , starttime
+  , endtime
+FROM
+  workingtimes
+WHERE
+  taskid in @taskids
+";
+            #endregion
+
+            // DapperならIN句も配列を使える
+            // ＃実装は、配列の数だけプレースホルダを用意する仕掛けのようなのでパフォーマンス的にはびみょうなのかもしれない
+            return Connection.Query<WorkingTimeTableRow>(sql, new { taskids }).ToArray();
+        }
     }
 }

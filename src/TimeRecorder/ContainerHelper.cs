@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
+using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Tasks;
 using TimeRecorder.Repository.SQLite.Tracking;
 using TimeRecorder.Repository.SQLite.WorkProcesses;
@@ -25,6 +27,7 @@ namespace TimeRecorder
             // Register interface->type map, default is transient(instantiate every request)
             resolver.Register<IWorkTaskRepository, SQLiteWorkTaskRepository>(Lifestyle.Singleton);
             resolver.Register<IWorkProcessRepository, SQLiteWorkProcessRepository>(Lifestyle.Singleton);
+            resolver.Register<IClientRepository, SQLiteClientRepository>(Lifestyle.Singleton);
             resolver.Register<IWorkingTimeRangeRepository, SQLiteWorkingTimeRangeRepository>(Lifestyle.Singleton);
             resolver.Register<IDailyWorkRecordQueryService, SQLiteDailyWorkRecordQueryService>(Lifestyle.Singleton);
             resolver.Register<IWorkingTimeQueryService, SQLiteWorkingTimeQueryService>(Lifestyle.Singleton);
