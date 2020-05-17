@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 
-namespace TimeRecorder.Domain.UseCase.Tracking
+namespace TimeRecorder.Domain.UseCase.Tracking.Reports
 {
     public interface IDailyWorkRecordQueryService
     {
-        DailyWorkRecordHeader SelectByYmd(string ymd);
+        WorkingTimeRecordForReport[] SelectByYearMonth(YearMonth yearMonth);
     }
 }

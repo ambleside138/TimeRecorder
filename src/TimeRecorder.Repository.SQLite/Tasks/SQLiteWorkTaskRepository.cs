@@ -57,21 +57,5 @@ namespace TimeRecorder.Repository.SQLite.Tasks
 
             return results;
         }
-
-        public WorkTask[] SelectToDo()
-        {
-            WorkTask[] results = null;
-
-            //RepositoryAction.Query(c =>
-            //{
-            //    var dao = new WorkTaskDao(c, null);
-                
-            //    results = dao.SelectPlaned()
-            //                 .Select(t => t.ConvertToDomainObject())
-            //                 .ToArray();
-            //});
-
-            return results;
-        }
     }
 }

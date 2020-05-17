@@ -16,7 +16,5 @@ namespace TimeRecorder.Domain.Domain.Tasks
         void Delete(Identity<WorkTask> identity);
 
         WorkTask SelectById(Identity<WorkTask> identity);
-
-        WorkTask[] SelectToDo();
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Repository.SQLite.Products.Dao;
 
 namespace TimeRecorder.Repository.SQLite.Products
 {
@@ -13,34 +14,15 @@ namespace TimeRecorder.Repository.SQLite.Products
  
         public Product[] SelectAll()
         {
-            #region SQL
-            const string sql = @"
-SELECT
-  id
-  , name
-  , shortname
-FROM
-  products
-";
-            #endregion
-
             var list = new List<Product>();
 
             RepositoryAction.Query(c =>
             {
-                list.AddRange(c.Query<ProductTableRow>(sql).Select(r => new Product(new Identity<Product>(r.Id), r.Name, r.ShortName)));
+                var rows = new ProductDao(c, null).SelectAll();
+                list.AddRange(rows.Select(r => r.ToDomainObject()));
             });
 
             return list.ToArray();
-        }
-
-        class ProductTableRow
-        {
-            public int Id { get; set; }
-
-            public string Name { get; set; }
-
-            public string ShortName { get; set; }
         }
     }
 }

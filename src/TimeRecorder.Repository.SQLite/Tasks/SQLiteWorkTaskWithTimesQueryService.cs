@@ -6,10 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Repository.SQLite.Clients;
+using TimeRecorder.Repository.SQLite.Clients.Dao;
 using TimeRecorder.Repository.SQLite.Products;
+using TimeRecorder.Repository.SQLite.Products.Dao;
 using TimeRecorder.Repository.SQLite.Tasks.Dao;
 using TimeRecorder.Repository.SQLite.Tracking.Dao;
 using TimeRecorder.Repository.SQLite.WorkProcesses;
+using TimeRecorder.Repository.SQLite.WorkProcesses.Dao;
 
 namespace TimeRecorder.Repository.SQLite.Tasks
 {
@@ -20,11 +24,12 @@ namespace TimeRecorder.Repository.SQLite.Tasks
             var list = new List<WorkTaskWithTimesDto>();
 
             RepositoryAction.Query(c =>
-            {
+            { 
                 var workTaskDao = new WorkTaskDao(c, null);
                 var workingTimeDao = new WorkingTimeDao(c, null);
-                var processes = new SQLiteWorkProcessRepository().SelectAll();
-                var products = new SQLiteProductRepository().SelectAll();
+                var processes = new WorkProcessDao(c, null).SelectAll();
+                var products = new ProductDao(c, null).SelectAll();
+                var clients = new ClientDao(c, null).SelectAll();
 
                 var tasks = workTaskDao.SelectPlaned(ymd);
                 var times = workingTimeDao.SelectByTaskIds(tasks.Select(t => t.Id).Distinct().ToArray());
@@ -34,9 +39,9 @@ namespace TimeRecorder.Repository.SQLite.Tasks
                     var dto = new WorkTaskWithTimesDto
                     {
                         TaskId = new Identity<Domain.Domain.Tasks.WorkTask>(task.Id),
-                        ClientName = "",
-                        ProcessName = processes.FirstOrDefault(p => p.Id.Value == task.ProcessId)?.Title ?? "",
-                        ProductName = products.FirstOrDefault(p => p.Id.Value == task.ProductId)?.Name ?? "",
+                        ClientName = clients.FirstOrDefault(c => c.Id == task.ClientId)?.Name ?? "",
+                        ProcessName = processes.FirstOrDefault(p => p.Id == task.ProcessId)?.Title ?? "",
+                        ProductName = products.FirstOrDefault(p => p.Id == task.ProductId)?.Name ?? "",
                         Remarks = task.Remarks,
                         TaskCategory = task.TaskCategory,
                         Title = task.Title,

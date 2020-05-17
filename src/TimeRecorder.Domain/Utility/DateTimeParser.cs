@@ -11,14 +11,7 @@ namespace TimeRecorder.Domain.Utility
             if (string.IsNullOrEmpty(HHmmss))
                 return null;
 
-            if(DateTime.TryParseExact(HHmmss, "HHmmss", null, System.Globalization.DateTimeStyles.None, out DateTime result))
-            {
-                return result;
-            }
-            else
-            {
-                return null;
-            }
+            return ConvertFromCore(HHmmss, "HHmmss");
         }
 
         public static DateTime? ConvertFromYmd(string ymd)
@@ -26,7 +19,23 @@ namespace TimeRecorder.Domain.Utility
             if (string.IsNullOrEmpty(ymd))
                 return null;
 
-            if (DateTime.TryParseExact(ymd, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime result))
+            return ConvertFromCore(ymd, "yyyyMMdd");
+        }
+
+        public static DateTime? ConvertFromYmdHHmmss(string ymd, string HHmmss)
+        {
+            if (string.IsNullOrEmpty(ymd))
+                return null;
+
+            if (string.IsNullOrEmpty(HHmmss))
+                return null;
+
+            return ConvertFromCore(ymd+ HHmmss, "yyyyMMddHHmmss");
+        }
+
+        private static DateTime? ConvertFromCore(string value, string format)
+        {
+            if (DateTime.TryParseExact(value, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime result))
             {
                 return result;
             }

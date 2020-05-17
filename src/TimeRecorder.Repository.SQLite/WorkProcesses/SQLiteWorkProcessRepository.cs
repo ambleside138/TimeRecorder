@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Repository.SQLite.WorkProcesses.Dao;
 
 namespace TimeRecorder.Repository.SQLite.WorkProcesses
 {
@@ -17,31 +18,17 @@ namespace TimeRecorder.Repository.SQLite.WorkProcesses
 
         public WorkProcess[] SelectAll()
         {
-            #region SQL
-            const string sql = @"
-SELECT
-  id
-  , title
-FROM
-  processes
-";
-            #endregion
-
             var list = new List<WorkProcess>();
 
             RepositoryAction.Query(c =>
             {
-                list.AddRange(c.Query<ProcessTableRow>(sql).Select(r => new WorkProcess(new Identity<WorkProcess>(r.Id), r.Title)));
+                var rows = new WorkProcessDao(c, null).SelectAll();
+                list.AddRange(rows.Select(r => r.ToDomainObject()));
             });
 
             return list.ToArray();
         }
 
-        class ProcessTableRow
-        {
-            public int Id { get; set; }
-
-            public string Title { get; set; }
-        }
+        
     }
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Repository.SQLite.Clients.Dao;
 
 namespace TimeRecorder.Repository.SQLite.Clients
 {
@@ -11,36 +12,17 @@ namespace TimeRecorder.Repository.SQLite.Clients
     {
         public Client[] SelectAll()
         {
-            #region SQL
-            const string sql = @"
-SELECT
-  id
-  , name
-  , kananame
-FROM
-  clients
-";
-            #endregion
-
             var list = new List<Client>();
 
             RepositoryAction.Query(c =>
             {
-                list.AddRange(c.Query<ClientTableRow>(sql).Select(r => new Client(new Identity<Client>(r.Id), r.Name, r.KanaName)));
+                var listRow = new ClientDao(c, null).SelectAll();
+                list.AddRange(listRow.Select(r => r.ToDomainObject()));
             });
 
             return list.OrderBy(i => i.KanaName)
                        .ThenBy(i => i.Id.Value)
                        .ToArray();
-        }
-
-        class ClientTableRow
-        {
-            public int Id { get; set; }
-
-            public string Name { get; set; }
-
-            public string KanaName { get; set; }
         }
     }
 }

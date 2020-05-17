@@ -4,7 +4,7 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Domain.UseCase.Tracking
+namespace TimeRecorder.Domain.Domain.Tracking.Reports
 {
     /// <summary>
     /// 日々記録していく作業単位

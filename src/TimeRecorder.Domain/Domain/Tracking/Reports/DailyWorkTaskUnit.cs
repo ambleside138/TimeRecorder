@@ -5,7 +5,7 @@ using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Domain.UseCase.Tracking
+namespace TimeRecorder.Domain.Domain.Tracking.Reports
 {
     public class DailyWorkTaskUnit
     {
@@ -14,6 +14,10 @@ namespace TimeRecorder.Domain.UseCase.Tracking
         private readonly List<WorkingTimeRange> _WorkingTimeRanges = new List<WorkingTimeRange>();
 
         public IReadOnlyList<WorkingTimeRange> WorkingTimeRanges => _WorkingTimeRanges;
+
+        public string Title { get; set; }
+
+        public int WorkMinutes { get; set; }
 
     }
 }

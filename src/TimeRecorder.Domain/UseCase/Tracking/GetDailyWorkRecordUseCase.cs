@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tracking;
+using TimeRecorder.Domain.Domain.Tracking.Reports;
+using TimeRecorder.Domain.UseCase.Tracking.Reports;
 
 namespace TimeRecorder.Domain.UseCase.Tracking
 {
