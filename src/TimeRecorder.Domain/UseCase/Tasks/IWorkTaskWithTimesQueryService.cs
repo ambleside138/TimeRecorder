@@ -24,7 +24,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
 
         public TaskCategory TaskCategory { get; set; }
 
-        public Product Product { get; set; }
+        public string ProductName { get; set; }
 
         public string ClientName { get; set; }
 

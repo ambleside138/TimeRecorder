@@ -4,8 +4,8 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
-using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain.Domain.Products;
 
 namespace TimeRecorder.Domain.Domain.Tasks
 {
@@ -37,13 +37,17 @@ namespace TimeRecorder.Domain.Domain.Tasks
         #endregion
 
         #region Product変更通知プロパティ
-        private Product _Product;
 
-        public Product Product
+        #region ProductId変更通知プロパティ
+        private Identity<Product> _ProductId;
+
+        public Identity<Product> ProductId
         {
-            get => _Product;
-            set => RaisePropertyChangedIfSet(ref _Product, value);
+            get => _ProductId;
+            set => RaisePropertyChangedIfSet(ref _ProductId, value);
         }
+        #endregion
+
         #endregion
 
         #region ClientId変更通知プロパティ
@@ -90,16 +94,22 @@ namespace TimeRecorder.Domain.Domain.Tasks
         
         public static WorkTask ForNew()
         {
-            return new WorkTask { Id = Identity<WorkTask>.Temporary, ClientId = Identity<Client>.Empty, ProcessId = Identity<WorkProcess>.Empty, };
+            return new WorkTask 
+            { 
+                Id = Identity<WorkTask>.Temporary, 
+                ClientId = Identity<Client>.Empty, 
+                ProductId = Identity<Product>.Empty, 
+                ProcessId = Identity<WorkProcess>.Empty, 
+            };
         }
 
         // VSの場合、「クイックアクションとリファクタリング」からコンストラクタコードの生成が可能
-        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Product product, Identity<Client> ClientId, Identity<WorkProcess> processId, string remarks, TaskProgress taskProgress)
+        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Identity<Product> productid, Identity<Client> ClientId, Identity<WorkProcess> processId, string remarks, TaskProgress taskProgress)
         {
             Id = id;
             _Title = title;
             _TaskCategory = taskCategory;
-            _Product = product;
+            _ProductId = productid;
             _ClientId = ClientId;
             _ProcessId = processId;
             _Remarks = remarks;

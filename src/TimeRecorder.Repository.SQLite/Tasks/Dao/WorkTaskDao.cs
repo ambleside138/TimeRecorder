@@ -22,7 +22,7 @@ insert into worktasks
 (
   title 
   , taskcategory 
-  , product
+  , productid
   , clientId 
   , processId 
   , remarks
@@ -35,7 +35,7 @@ values
 (
   @title 
   , @taskcategory 
-  , @product
+  , @productId
   , @clientId 
   , @processId 
   , @remarks
@@ -74,7 +74,7 @@ update worktasks
 set
   title = @title
   , taskcategory = @taskcategory 
-  , product = @product
+  , productId = @productId
   , clientId = @clientId
   , processId = @processId
   , remarks = @remarks
@@ -125,7 +125,7 @@ SELECT
   id
   , title 
   , taskcategory 
-  , product
+  , productId
   , clientId 
   , processId 
   , remarks

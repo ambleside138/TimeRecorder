@@ -137,7 +137,7 @@
 
                     <!--  Product  -->
                     <Border Style="{StaticResource ChipBorderStyleKey}">
-                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding Dto.Product, Converter={StaticResource EnumToDisplayTextConverter}}" />
+                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding Dto.ProductName}" />
                     </Border>
 
                     <!--  User  -->

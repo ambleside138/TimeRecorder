@@ -7,6 +7,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
+using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -35,11 +36,14 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         private readonly Client[] _Clients;
 
-        public WorkTaskViewModel(WorkTask task, WorkProcess[] processes, Client[] clients)
+        private readonly Product[] _Products;
+
+        public WorkTaskViewModel(WorkTask task, WorkProcess[] processes, Client[] clients, Product[] products)
         {
             DomainModel = task;
             _Processes = processes;
             _Clients = clients;
+            _Products = products;
 
             Title = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Title)
                                 .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "タイトルは入力必須です" : null)
@@ -48,8 +52,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             TaskCategory = DomainModel.ToReactivePropertyAsSynchronized(x => x.TaskCategory)
                                       .AddTo(CompositeDisposable);
 
-            Product = DomainModel.ToReactivePropertyAsSynchronized(x => x.Product)
-                                 .AddTo(CompositeDisposable);
+            Product = DomainModel.ToReactivePropertyAsSynchronized(
+                                        x => x.ProductId,
+                                        m => _Products.FirstOrDefault(p => p.Id == m),
+                                        vm => vm?.Id ?? Identity<Product>.Empty)
+                                     .AddTo(CompositeDisposable);
 
             WorkProcess = DomainModel.ToReactivePropertyAsSynchronized(
                                         x => x.ProcessId,

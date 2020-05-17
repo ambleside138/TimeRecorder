@@ -29,7 +29,7 @@ create table
   id INTEGER PRIMARY KEY AUTOINCREMENT
   , title varchar(64)
   , taskcategory int 
-  , product int
+  , productId int
   , clientId int
   , processId int
   , remarks varchar(128)
@@ -63,6 +63,15 @@ CREATE TABLE
   , name varchar(128)
   , kananame varchar(128)
 );
+
+CREATE TABLE 
+  products 
+(
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  name  varchar(32),
+  shortname varchar(8)
+);
+
 ";
 
                 using (var cmd = new SQLiteCommand(sql, con))

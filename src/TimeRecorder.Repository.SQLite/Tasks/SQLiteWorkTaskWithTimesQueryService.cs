@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Repository.SQLite.Products;
 using TimeRecorder.Repository.SQLite.Tasks.Dao;
 using TimeRecorder.Repository.SQLite.Tracking.Dao;
 using TimeRecorder.Repository.SQLite.WorkProcesses;
@@ -23,6 +24,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks
                 var workTaskDao = new WorkTaskDao(c, null);
                 var workingTimeDao = new WorkingTimeDao(c, null);
                 var processes = new SQLiteWorkProcessRepository().SelectAll();
+                var products = new SQLiteProductRepository().SelectAll();
 
                 var tasks = workTaskDao.SelectPlaned(ymd);
                 var times = workingTimeDao.SelectByTaskIds(tasks.Select(t => t.Id).Distinct().ToArray());
@@ -34,7 +36,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks
                         TaskId = new Identity<Domain.Domain.Tasks.WorkTask>(task.Id),
                         ClientName = "",
                         ProcessName = processes.FirstOrDefault(p => p.Id.Value == task.ProcessId)?.Title ?? "",
-                        Product = task.Product,
+                        ProductName = products.FirstOrDefault(p => p.Id.Value == task.ProductId)?.Name ?? "",
                         Remarks = task.Remarks,
                         TaskCategory = task.TaskCategory,
                         Title = task.Title,

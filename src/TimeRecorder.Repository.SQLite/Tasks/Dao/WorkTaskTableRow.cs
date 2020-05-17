@@ -15,7 +15,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
 
         public TaskCategory TaskCategory { get; set; }
 
-        public Product Product { get; set; }
+        public int ProductId { get; set; }
 
         public int ClientId { get; set; }
 
@@ -43,7 +43,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 new Identity<WorkTask>(Id)
                 , Title
                 , TaskCategory
-                , Product
+                , new Identity<Domain.Domain.Products.Product>(ProductId)
                 , new Identity<Domain.Domain.Clients.Client>(ClientId)
                 , new Identity<Domain.Domain.WorkProcesses.WorkProcess>(ProcessId)
                 , Remarks
@@ -57,7 +57,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 Id = workTask.Id.Value,
                 Title = workTask.Title,
                 TaskCategory = workTask.TaskCategory,
-                Product = workTask.Product,
+                ProductId = workTask.ProductId.Value,
                 ClientId = workTask.ClientId.Value,
                 ProcessId = workTask.ProcessId.Value,
                 Remarks = workTask.Remarks,

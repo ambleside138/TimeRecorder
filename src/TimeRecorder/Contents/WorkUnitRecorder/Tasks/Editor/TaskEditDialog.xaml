@@ -62,36 +62,16 @@
                 Margin="0,16,0,4"
                 Style="{StaticResource MaterialDesignCaptionTextBlock}"
                 Text="製品" />
-            <StackPanel Orientation="Horizontal">
-                <RadioButton
-                    Content="Product1"
-                    GroupName="Product"
-                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=Product1, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                    Style="{StaticResource HorizontalMarginStyleKey}" />
-                <RadioButton
-                    Content="Product2"
-                    GroupName="Product"
-                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=Product2, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                    Style="{StaticResource HorizontalMarginStyleKey}" />
-                <RadioButton
-                    Content="Product3"
-                    GroupName="Product"
-                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=Product3, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                    Style="{StaticResource HorizontalMarginStyleKey}" />
-                <RadioButton
-                    Content="[なし]"
-                    GroupName="Product"
-                    IsChecked="{Binding TaskCardViewModel.Product.Value, ConverterParameter=None, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                    Style="{StaticResource HorizontalMarginStyleKey}" />
-            </StackPanel>
+            <ComboBox
+                DisplayMemberPath="Name"
+                ItemsSource="{Binding Products}"
+                SelectedItem="{Binding TaskCardViewModel.Product.Value}" />
 
             <TextBlock
                 Margin="0,16,0,0"
                 Style="{StaticResource MaterialDesignCaptionTextBlock}"
                 Text="作業工程" />
             <ComboBox
-                Width="240"
-                HorizontalAlignment="Left"
                 DisplayMemberPath="Title"
                 ItemsSource="{Binding Processes}"
                 SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" />
@@ -101,8 +81,6 @@
                 Style="{StaticResource MaterialDesignCaptionTextBlock}"
                 Text="ユーザ" />
             <ComboBox
-                Width="240"
-                HorizontalAlignment="Left"
                 DisplayMemberPath="Name"
                 ItemsSource="{Binding Clients}"
                 SelectedItem="{Binding TaskCardViewModel.Client.Value}" />
