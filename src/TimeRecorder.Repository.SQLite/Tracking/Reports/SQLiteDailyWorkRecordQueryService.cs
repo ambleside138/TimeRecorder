@@ -78,6 +78,11 @@ WHERE
                     products.TryGetValue(new Identity<Product>(task.ProductId), out Product targetProduct);
                     clients.TryGetValue(new Identity<Client>(task.ClientId), out Client targetClient);
 
+                    if(string.IsNullOrEmpty(task.EndTime))
+                    {
+                        continue;
+                    }
+
                     var dto = new WorkingTimeRecordForReport
                     {
                         Ymd = new YmdString(task.Ymd),

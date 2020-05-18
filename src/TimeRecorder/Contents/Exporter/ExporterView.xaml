@@ -13,30 +13,51 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
-    <Grid>
-        <StackPanel>
-            <TextBox
-                metro:TextBoxHelper.IsMonitoring="True"
-                metro:TextBoxHelper.SelectAllOnFocus="True"
-                Text="hoge" />
+    <StackPanel VerticalAlignment="Top" Orientation="Horizontal">
+        <ComboBox
+            Width="64"
+            HorizontalContentAlignment="Right"
+            FontSize="15"
+            ItemsSource="{Binding Years}"
+            SelectedItem="{Binding SelectedYear.Value}" />
 
-            <TextBox
-                VerticalAlignment="Center"
-                materialDesign:HintAssist.Hint="Floating Hint"
-                Style="{StaticResource MaterialDesignFloatingHintTextBox}" />
+        <TextBlock
+            Margin="4,0"
+            VerticalAlignment="Bottom"
+            Style="{StaticResource MaterialDesignBody1TextBlock}"
+            Text="年" />
 
-            <Button Margin="0,4,0,0" Content="出力">
-                <behaviors:Interaction.Triggers>
-                    <behaviors:EventTrigger EventName="Click">
-                        <l:FolderBrowserDialogInteractionMessageAction>
+        <ComboBox
+            Width="32"
+            Margin="8,0"
+            HorizontalContentAlignment="Right"
+            FontSize="15"
+            ItemsSource="{Binding Months}"
+            SelectedItem="{Binding SelectedMonth.Value}" />
+        <TextBlock
+            Margin="4,0"
+            VerticalAlignment="Bottom"
+            Style="{StaticResource MaterialDesignBody1TextBlock}"
+            Text="月分" />
+
+        <Button
+            Margin="16,0"
+            HorizontalAlignment="Left"
+            Content="CSV出力">
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="Click">
+                    <!--<l:FolderBrowserDialogInteractionMessageAction>
                             <l:DirectInteractionMessage CallbackMethodName="FolderSelected" CallbackMethodTarget="{Binding}">
                                 <l:FolderSelectionMessage Description="フォルダーの選択" DialogPreference="None" />
                             </l:DirectInteractionMessage>
-                        </l:FolderBrowserDialogInteractionMessageAction>
-                    </behaviors:EventTrigger>
-                </behaviors:Interaction.Triggers>
-            </Button>
-        </StackPanel>
-
-    </Grid>
+                        </l:FolderBrowserDialogInteractionMessageAction>-->
+                    <l:SaveFileDialogInteractionMessageAction>
+                        <l:DirectInteractionMessage CallbackMethodName="Export" CallbackMethodTarget="{Binding}">
+                            <l:SavingFileSelectionMessage Filter="{Binding ExportFilter}" />
+                        </l:DirectInteractionMessage>
+                    </l:SaveFileDialogInteractionMessageAction>
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+        </Button>
+    </StackPanel>
 </UserControl>

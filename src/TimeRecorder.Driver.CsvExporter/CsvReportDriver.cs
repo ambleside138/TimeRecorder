@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tracking.Reports;
 using TimeRecorder.Domain.UseCase.Tracking;
@@ -11,17 +12,24 @@ namespace TimeRecorder.Driver.CsvExporter
 {
     public class CsvReportDriver : IReportDriver
     {
+        private DailyWorkRecordHeaderToWorkTimeRowConverter _Converter = new DailyWorkRecordHeaderToWorkTimeRowConverter();
+        
         public void ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath)
         {
-            using (var sw = new StreamWriter(filePath, true, Encoding.GetEncoding("SHIFT_JIS")))
+            var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h)).ToArray();
+
+            // .Net CoreでSJISを扱うために呼ぶ必要がある
+            // パッケージも必要: System.Text.Encoding.CodePages
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+
+            using (var sw = new StreamWriter(filePath, true, Encoding.GetEncoding("shift_jis")))
             using (var csv = new CsvHelper.CsvWriter(sw, CultureInfo.CurrentCulture))
             {
-                //// ヘッダーあり
-                //csv.Configuration.HasHeaderRecord = true;
-                //// マッパーを登録
-                //csv.Configuration.RegisterClassMap<PersonMapper>();
-                //// データを読み出し
-                //csv.WriteRecords(Personのリスト);
+                // ヘッダーなし
+                csv.Configuration.HasHeaderRecord = false;
+
+                // データを読み出し
+                csv.WriteRecords(rows);
             }
         }
     }

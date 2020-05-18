@@ -9,10 +9,13 @@ using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
+using TimeRecorder.Domain.UseCase.Tracking.Reports;
+using TimeRecorder.Driver.CsvExporter;
 using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Products;
 using TimeRecorder.Repository.SQLite.Tasks;
 using TimeRecorder.Repository.SQLite.Tracking;
+using TimeRecorder.Repository.SQLite.Tracking.Reports;
 using TimeRecorder.Repository.SQLite.WorkProcesses;
 
 namespace TimeRecorder
@@ -35,6 +38,8 @@ namespace TimeRecorder
             resolver.Register<IDailyWorkRecordQueryService, SQLiteDailyWorkRecordQueryService>(Lifestyle.Singleton);
             resolver.Register<IWorkingTimeQueryService, SQLiteWorkingTimeQueryService>(Lifestyle.Singleton);
             resolver.Register<IWorkTaskWithTimesQueryService, SQLiteWorkTaskWithTimesQueryService>(Lifestyle.Singleton);
+
+            resolver.Register<IReportDriver, CsvReportDriver>(Lifestyle.Singleton);
 
             // You can configure lifestyle - Transient, Singleton or Scoped
             //resolver.Register<ILogger, MailLogger>(Lifestyle.Singleton);
