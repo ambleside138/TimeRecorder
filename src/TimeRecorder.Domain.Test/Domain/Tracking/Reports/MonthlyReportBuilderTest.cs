@@ -85,20 +85,82 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
 
             var list = _MonthlyReportBuilder.Build(records);
 
-            Assert.IsTrue(list.Length == 2);
+            Assert.IsTrue(list.Length == 31);
             Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits.Count == 1);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits.Count == 2);
+
             Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TaskId.Value == 1);
             Assert.IsTrue(list[0].DailyWorkTaskUnits[0].WorkingTimeRanges.Count == 1);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].WorkMinutes == 30);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TotalWorkMinutes == 30);
             Assert.IsTrue(list[0].DailyWorkTaskUnits[0].Title == "サンプル作業１");
 
-            Assert.IsTrue(list[1].WorkYmd == _Ymd0501.Value);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TaskId.Value == 2);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].WorkingTimeRanges.Count == 1);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TotalWorkMinutes == 60);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].Title == "サンプル作業２");
         }
 
+        [Test]
         public void 同日複数レコードあり_同一種別含む()
         {
+            var records = new WorkingTimeRecordForReport[]
+           {
+                new WorkingTimeRecordForReport
+                {
+                    Ymd = _Ymd0501,
+                    TaskCategory = TaskCategory.Develop,
+                    WorkProcess = _Process01,
+                    Product = _Product01,
+                    Client = _Client01,
+                    StartDateTime = DateTimeParser.ConvertFromYmdHHmmss(_Ymd0501.Value, "100000").Value,
+                    EndDateTime   = DateTimeParser.ConvertFromYmdHHmmss(_Ymd0501.Value, "103000").Value,
+                    Title = "サンプル作業１",
+                    WorkingTimeId = new Identity<WorkingTimeRange>(1),
+                    WorkTaskId = new Identity<WorkTask>(1),
+                },
+                new WorkingTimeRecordForReport
+                {
+                    Ymd = _Ymd0501,
+                    TaskCategory = TaskCategory.Develop,
+                    WorkProcess = _Process02,
+                    Product = _Product01,
+                    Client = _Client01,
+                    StartDateTime = DateTimeParser.ConvertFromYmdHHmmss(_Ymd0501.Value, "103000").Value,
+                    EndDateTime   = DateTimeParser.ConvertFromYmdHHmmss(_Ymd0501.Value, "113000").Value,
+                    Title = "サンプル作業２",
+                    WorkingTimeId = new Identity<WorkingTimeRange>(2),
+                    WorkTaskId = new Identity<WorkTask>(2),
+                },
+                new WorkingTimeRecordForReport
+                {
+                    Ymd = _Ymd0501,
+                    TaskCategory = TaskCategory.Develop,
+                    WorkProcess = _Process01,
+                    Product = _Product01,
+                    Client = _Client01,
+                    StartDateTime = DateTimeParser.ConvertFromYmdHHmmss(_Ymd0501.Value, "120000").Value,
+                    EndDateTime   = DateTimeParser.ConvertFromYmdHHmmss(_Ymd0501.Value, "143000").Value,
+                    Title = "サンプル作業１",
+                    WorkingTimeId = new Identity<WorkingTimeRange>(3),
+                    WorkTaskId = new Identity<WorkTask>(1),
+                },
+           };
 
+            var list = _MonthlyReportBuilder.Build(records);
+
+            Assert.IsTrue(list.Length == 31);
+            Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits.Count == 2);
+
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TaskId.Value == 1);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].WorkingTimeRanges.Count == 2);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TotalWorkMinutes == 180);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].Title == "サンプル作業１");
+
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TaskId.Value == 2);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].WorkingTimeRanges.Count == 1);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TotalWorkMinutes == 60);
+            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].Title == "サンプル作業２");
         }
     }
 }

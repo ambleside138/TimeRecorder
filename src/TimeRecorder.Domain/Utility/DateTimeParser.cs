@@ -30,12 +30,12 @@ namespace TimeRecorder.Domain.Utility
             if (string.IsNullOrEmpty(HHmmss))
                 return null;
 
-            return ConvertFromCore(ymd+ HHmmss, "yyyyMMddHHmmss");
+            return ConvertFromCore(ymd + HHmmss, "yyyyMMddHHmmss");
         }
 
         private static DateTime? ConvertFromCore(string value, string format)
         {
-            if (DateTime.TryParseExact(value, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime result))
+            if (DateTime.TryParseExact(value, format, null, System.Globalization.DateTimeStyles.None, out DateTime result))
             {
                 return result;
             }

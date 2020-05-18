@@ -26,7 +26,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
 
         public bool IsDoing => EndDateTime.HasValue == false;
 
-
+        public int WorkSpan => EndDateTime.HasValue ? (int)(EndDateTime.Value - StartDateTime).TotalMinutes : 0;
 
         private static readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
 

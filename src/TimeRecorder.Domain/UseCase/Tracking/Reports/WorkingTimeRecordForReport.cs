@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
@@ -32,5 +33,10 @@ namespace TimeRecorder.Domain.UseCase.Tracking.Reports
         public Identity<WorkingTimeRange> WorkingTimeId { get; set; }
 
         public Identity<WorkTask> WorkTaskId { get; set; }
+
+        public WorkingTimeRange ConvertToWorkingTimeRange()
+        {
+            return new WorkingTimeRange(WorkingTimeId, WorkTaskId, StartDateTime, EndDateTime);
+        }
     }
 }

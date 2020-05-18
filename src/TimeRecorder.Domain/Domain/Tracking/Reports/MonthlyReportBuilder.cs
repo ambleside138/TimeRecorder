@@ -25,12 +25,15 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
             var date = _YearMonth.StartDate;
             while(date.Month == _YearMonth.StartDate.Month)
             {
-                
+                // 日付のループ
+                var oHeader = new DailyWorkRecordHeader { WorkYmd = date.ToString("yyyyMMdd") };
+
                 foreach(var record in records.Where(r => r.Ymd.ToDateTime().Value.Day == date.Day))
                 {
-
+                    oHeader.AddWorkTask(record);
                 }
 
+                list.Add(oHeader);
                 date = date.AddDays(1);
             }
 
