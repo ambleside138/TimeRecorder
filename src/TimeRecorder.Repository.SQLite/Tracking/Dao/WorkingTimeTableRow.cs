@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
@@ -47,7 +48,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking.Dao
             if (string.IsNullOrEmpty(hhmm))
                 return null;
 
-            if (DateTime.TryParseExact(Ymd + hhmm, "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.AssumeLocal, out DateTime result))
+            if (DateTime.TryParseExact(Ymd + hhmm, "yyyyMMddHHmmss", null, DateTimeStyles.AssumeLocal, out DateTime result))
                 return result;
 
             return null;

@@ -19,8 +19,15 @@ namespace TimeRecorder.Host
         public ObservableSynchronizedCollection<NavigationIconButtonViewModel> NavigationIconButtons { get; } = new ObservableSynchronizedCollection<NavigationIconButtonViewModel>();
 
         public SnackbarMessageQueue SnackMessageQueue { get; } = SnackbarService.Current.MessageQueue;
+
+        private readonly MainModel _MainModel = new MainModel();
+
         public void Initialize()
         {
+            var message = _MainModel.CheckHealth();
+            if (string.IsNullOrEmpty(message) == false)
+                SnackbarService.Current.ShowMessage(message);
+
             Contents.Add(new WorkUnitRecorderViewModel());
             Contents.Add(new ExporterViewModel());
             Contents.Add(new ConfigurationViewModel());

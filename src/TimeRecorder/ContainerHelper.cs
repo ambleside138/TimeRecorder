@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -13,6 +14,7 @@ using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Driver.CsvExporter;
 using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Products;
+using TimeRecorder.Repository.SQLite.System;
 using TimeRecorder.Repository.SQLite.Tasks;
 using TimeRecorder.Repository.SQLite.Tracking;
 using TimeRecorder.Repository.SQLite.Tracking.Reports;
@@ -38,6 +40,7 @@ namespace TimeRecorder
             resolver.Register<IDailyWorkRecordQueryService, SQLiteDailyWorkRecordQueryService>(Lifestyle.Singleton);
             resolver.Register<IWorkingTimeQueryService, SQLiteWorkingTimeQueryService>(Lifestyle.Singleton);
             resolver.Register<IWorkTaskWithTimesQueryService, SQLiteWorkTaskWithTimesQueryService>(Lifestyle.Singleton);
+            resolver.Register<IHealthChecker, SQLiteHealthChecker>(Lifestyle.Singleton);
 
             resolver.Register<IReportDriver, CsvReportDriver>(Lifestyle.Singleton);
 

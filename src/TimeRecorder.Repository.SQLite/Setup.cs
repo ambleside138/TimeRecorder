@@ -1,7 +1,10 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 using System.Text;
+using TimeRecorder.Repository.SQLite.System.Versions;
 
 namespace TimeRecorder.Repository.SQLite
 {
@@ -19,65 +22,19 @@ namespace TimeRecorder.Repository.SQLite
 
         private static void CreateTables()
         {
-            using (var con = ConnectionFactory.Create())
+            foreach (var command in VersionManager.Versions)
             {
-                // dapperを利用する場合、Enumはintで定義するとマッピングしてくれる
-                var sql = @"
-create table 
-  worktasks
-(
-  id INTEGER PRIMARY KEY AUTOINCREMENT
-  , title varchar(64)
-  , taskcategory int 
-  , productId int
-  , clientId int
-  , processId int
-  , remarks varchar(128)
-  , planedStartDateTime datetime
-  , planedEndDateTime datetime
-  , actualStartDateTime datetime
-  , actualEndDateTime datetime
-);
-
-create table
-  workingtimes
-(
-  id INTEGER PRIMARY KEY AUTOINCREMENT
-  , taskid int
-  , ymd varchar(8)
-  , starttime varchar(6)
-  , endtime varchar(6)
-)
-
-CREATE TABLE 
-  processes
-(
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-  , title varchar(64)
-);
-
-CREATE TABLE 
-  clients
-(
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT
-  , name varchar(128)
-  , kananame varchar(128)
-);
-
-CREATE TABLE 
-  products 
-(
-  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  name  varchar(32),
-  shortname varchar(8)
-);
-
-";
-
-                using (var cmd = new SQLiteCommand(sql, con))
+                RepositoryAction.Transaction((connection, transaction) =>
                 {
-                    cmd.ExecuteNonQuery();
-                }
+                    using (var cmd = new SQLiteCommand(command.CommandQuery, connection, transaction))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    const string sql = "INSERT INTO systemversionlog (version, updatetime) VALUES (@version, @now)";
+                    connection.Execute(sql, new { version = command.Version, now = DateTime.Now }, transaction);
+                });
+   
             }
 
         }
