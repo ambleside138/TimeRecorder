@@ -11,6 +11,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="clock_32.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="LivetCask" Version="3.2.2.2" />
     <PackageReference Include="LivetExtensions" Version="3.2.2.2" />
     <PackageReference Include="MahApps.Metro" Version="1.6.5" />
@@ -27,6 +31,12 @@
     <ProjectReference Include="..\TimeRecorder.Domain\TimeRecorder.Domain.csproj" />
     <ProjectReference Include="..\TimeRecorder.Driver.CsvExporter\TimeRecorder.Driver.CsvExporter.csproj" />
     <ProjectReference Include="..\TimeRecorder.Repository.SQLite\TimeRecorder.Repository.SQLite.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="clock_32.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
 </Project>

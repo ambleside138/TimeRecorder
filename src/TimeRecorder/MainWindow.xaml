@@ -49,6 +49,7 @@
             <DataTemplate DataType="{x:Type configuration:ConfigurationViewModel}">
                 <configuration:ConfigurationView />
             </DataTemplate>
+
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
 
