@@ -28,6 +28,7 @@ namespace TimeRecorder.Host
                         return "";
 
                     case SystemStatus.InvalidVersion:
+
                         return "";
 
                     case SystemStatus.NotInitialized:

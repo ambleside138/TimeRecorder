@@ -9,12 +9,17 @@ using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.Utility.SystemClocks;
+using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 {
     public class WorkingTimeCardViewModel : ViewModel
     {
         private readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
+
+        private int _NoValueCount = 0;
+
+        private const int _AlertCount = 60 * 5;
 
         public WorkingTimeCardViewModel(WorkingTimeForTimelineDto workingTimeRange)
         {
@@ -40,14 +45,24 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
             CanvasTop = CalcTop();
             Height = CalcHeight();
-
-            var timer = new ReactiveTimer(TimeSpan.FromSeconds(1)).AddTo(CompositeDisposable); // 1秒スパン
-            timer.Subscribe(_ => UpdateDurationTime());
-            timer.Start();
         }
 
-        private void UpdateDurationTime()
+        public void UpdateDurationTime()
         {
+            if (DomainModel == null)
+            {
+                // 一定時間タスク開始していないなら通知する
+                _NoValueCount++;
+                if(_NoValueCount > 0 && _NoValueCount % _AlertCount == 0)
+                {
+                    NotificationService.Current.Info("⏰ TimeRecorder ⏰", "作業タスクが設定されていません");
+                }
+
+                return;
+            }
+
+            _NoValueCount = 0;
+
             if(_SystemClock.Now < DomainModel.StartDateTime)
             {
                 DurationTimeText.Value = "--:--:--";

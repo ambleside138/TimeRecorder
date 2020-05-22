@@ -60,6 +60,10 @@ namespace TimeRecorder
             this.ShowInTaskbar = true;
         }
 
+        public void Notify(ToolTipIconKind kind, string title, string message)
+        {
+            _NotifyIcon.ShowBalloonTip(1000, title, message, kind);
+        }
 
     }
 }

@@ -12,6 +12,8 @@ using TimeRecorder.Contents.WorkUnitRecorder.Timeline;
 using System.Reactive.Linq;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.Utility;
+using System.Reactive.Concurrency;
+using System.Threading;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -56,7 +58,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public void Initialize()
         {
             // 初回の変更通知でよばれるようになったので不要
-           //  _Model.Load();
+            //  _Model.Load();
+
+
+            var timer = new ReactiveTimer(TimeSpan.FromSeconds(1), new SynchronizationContextScheduler(SynchronizationContext.Current)) // 1秒スパン
+                            .AddTo(CompositeDisposable);
+            timer.Subscribe(_ => DoingTask.Value?.UpdateDurationTime());
+            timer.Start();
         }
 
         public async void ExecuteNewTaskDialog()

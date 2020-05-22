@@ -12,6 +12,7 @@ namespace TimeRecorder.Repository.SQLite.System.Versions
         public static IEnumerable<IVersion> Versions => new IVersion[]
         {
             new Version_000_000_000_000(),
+            new Version_000_001_000_000(),
         };
     }
 }
