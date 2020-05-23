@@ -1,5 +1,100 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder.Timeline">
-    
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder.Timeline"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <DataTemplate DataType="{x:Type local:WorkingTimeCardViewModel}">
+        <Grid
+            x:Name="rootGrid"
+            Width="172"
+            Height="{Binding ActualHeight}">
+
+            <Grid.Triggers>
+                <EventTrigger RoutedEvent="Grid.MouseEnter">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="Height"
+                                    To="80"
+                                    Duration="0:0:0.2">
+                                    <DoubleAnimation.EasingFunction>
+                                        <PowerEase EasingMode="EaseOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                                <Int32Animation Storyboard.Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type ContentPresenter}}}" Storyboard.TargetProperty="(Panel.ZIndex)" To="100" Duration="0:0:0.2" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+
+                <!--  Returns the button's opacity to 1 when the mouse leaves.  -->
+                <EventTrigger RoutedEvent="Grid.MouseLeave">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation
+                                    Storyboard.TargetProperty="Height"
+                                    To="{Binding ActualHeight}"
+                                    Duration="0:0:0.2">
+                                    <DoubleAnimation.EasingFunction>
+                                        <PowerEase EasingMode="EaseOut" />
+                                    </DoubleAnimation.EasingFunction>
+                                </DoubleAnimation>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Grid.Triggers>
+
+            <!--<Grid.Style>
+                <Style TargetType="Grid">
+                    <Setter Property="Height" Value="{Binding ActualHeight}" />
+
+            -->
+            <!--<Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <BeginStoryboard Storyboard="{StaticResource rectAnimation}" />
+                        </Trigger>
+                    </Style.Triggers>-->
+            <!--
+                </Style>
+            </Grid.Style>-->
+
+            <Grid.Background>
+                <SolidColorBrush Color="{StaticResource Blue GreyPrimary50}" />
+            </Grid.Background>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Border
+                Width="8"
+                HorizontalAlignment="Left"
+                Background="{Binding TaskCategory, Converter={StaticResource TaskCategoryToSolidBrushConverter}}" />
+
+            <StackPanel
+                Grid.Column="1"
+                Margin="8,0"
+                Orientation="Vertical">
+                <!--  Process  -->
+                <TextBlock
+                    HorizontalAlignment="Left"
+                    VerticalAlignment="Center"
+                    Opacity="0.7"
+                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                    Text="{Binding WorkProcessName, StringFormat=[{0}]}" />
+                <!--  Title  -->
+                <TextBlock
+                    Margin="0"
+                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                    Text="{Binding TaskTitle}" />
+
+            </StackPanel>
+
+
+        </Grid>
+    </DataTemplate>
 </ResourceDictionary>

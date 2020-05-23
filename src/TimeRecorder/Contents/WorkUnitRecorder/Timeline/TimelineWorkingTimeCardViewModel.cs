@@ -13,6 +13,9 @@ using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 {
+    /// <summary>
+    /// 時系列エリアに表示するためのViewModelを表します
+    /// </summary>
     public class WorkingTimeCardViewModel : ViewModel
     {
         private readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
@@ -41,10 +44,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             StartHHmm = workingTimeRange.StartDateTime.ToString("HHmm");
             EndHHmm = workingTimeRange.EndDateTime?.ToString("HHmm") ?? "";
 
-            
-
             CanvasTop = CalcTop();
-            Height = CalcHeight();
+            ActualHeight = CalcActualHeight();
         }
 
         public void UpdateDurationTime()
@@ -88,7 +89,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             return result;
         }
 
-        private int CalcHeight()
+        private int CalcActualHeight()
         {
             if (DomainModel == null)
                 return 0;
@@ -117,7 +118,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
         public int CanvasTop { get; }
 
-        public int Height { get; }
+        /// <summary>
+        /// 実際の時間を反映した高さ
+        /// </summary>
+        public int ActualHeight { get; }
+
 
         public ReactivePropertySlim<string> DurationTimeText { get; } = new ReactivePropertySlim<string>();
 

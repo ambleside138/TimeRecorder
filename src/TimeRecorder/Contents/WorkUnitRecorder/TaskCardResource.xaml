@@ -28,9 +28,9 @@
                         Height="40"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Background="{StaticResource MaterialDesignBodyLight}"
+                        Background="{Binding Dto.TaskCategory, Converter={StaticResource TaskCategoryToSolidBrushConverter}}"
                         CornerRadius="20"
-                        Opacity="0.7">
+                        Opacity="0.5">
                         <materialDesign:PackIcon
                             Width="24"
                             Height="24"

@@ -16,7 +16,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="TaskCardResource.xaml" />
-
+                <ResourceDictionary Source="Timeline/TimelineWorkingTimeCardResource.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -158,15 +158,6 @@
                             <Canvas HorizontalAlignment="Stretch" />
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
-
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock
-                                Height="{Binding Height}"
-                                Background="LightGoldenrodYellow"
-                                Text="hoge" />
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
 
                     <ItemsControl.ItemContainerStyle>
                         <Style>
