@@ -78,19 +78,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             };
 
             //show the dialog
-            var result = (bool?)await DialogHost.Show(view, ClosingEventHandler);
+            var result = (bool?)await DialogHost.Show(view);
 
-            if(result.HasValue && result.Value)
+            if (result.HasValue && result.Value)
             {
                 var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
                 _Model.AddWorkTask(inputValue);
             }
-        }
-
-
-        private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
-        {
-            Console.WriteLine("You can intercept the closing event, and cancel here.");
         }
 
      

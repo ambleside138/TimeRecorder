@@ -9,6 +9,8 @@ using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Host;
+using MaterialDesignThemes.Wpf;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 {
@@ -39,5 +41,14 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 
             TaskCardViewModel = new WorkTaskViewModel(model, Processes, Clients, Products);
         }
+
+        public void Regist()
+        {
+            if(TaskCardViewModel.TryValidate())
+            {
+                Messenger.Raise(new Livet.Messaging.InteractionMessage("RegistKey"));
+            }
+        }
+
     }
 }

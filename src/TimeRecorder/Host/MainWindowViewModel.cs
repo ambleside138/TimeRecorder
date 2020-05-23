@@ -9,6 +9,7 @@ using TimeRecorder.Contents.Exporter;
 using TimeRecorder.NavigationRail.ViewModels;
 using TimeRecorder.Contents.WorkUnitRecorder;
 using MaterialDesignThemes.Wpf;
+using Reactive.Bindings;
 
 namespace TimeRecorder.Host
 {
@@ -21,6 +22,13 @@ namespace TimeRecorder.Host
         public SnackbarMessageQueue SnackMessageQueue { get; } = SnackbarService.Current.MessageQueue;
 
         private readonly MainModel _MainModel = new MainModel();
+
+        public static MainWindowViewModel Instance { get; } = new MainWindowViewModel();
+
+        private MainWindowViewModel()
+        {
+
+        }
 
         public void Initialize()
         {

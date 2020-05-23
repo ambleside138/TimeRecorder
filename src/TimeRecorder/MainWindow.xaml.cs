@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TimeRecorder.Host;
 
 namespace TimeRecorder
 {
@@ -27,6 +28,7 @@ namespace TimeRecorder
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = MainWindowViewModel.Instance;
 
             var iconPath = new Uri("pack://application:,,,/TimeRecorder;component/clock_32.ico", UriKind.Absolute);
             _NotifyIcon = new NotifyIconProxy(iconPath, "工数管理");

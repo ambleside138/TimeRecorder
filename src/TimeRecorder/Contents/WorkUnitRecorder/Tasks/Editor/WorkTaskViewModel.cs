@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
@@ -61,7 +62,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             WorkProcess = DomainModel.ToReactivePropertyAsSynchronized(
                                         x => x.ProcessId,
                                         m => _Processes.FirstOrDefault(p => p.Id == m),
-                                        vm => vm?.Id ?? Identity<WorkProcess>.Empty)
+                                        vm => vm?.Id ?? Identity<WorkProcess>.Empty,
+                                        ReactivePropertyMode.IgnoreInitialValidationError)
+                                     .SetValidateNotifyError(x => (x == null || x.Id == Identity<WorkProcess>.Empty) ? "工程は選択必須です" : null)
                                      .AddTo(CompositeDisposable);
 
             Client = DomainModel.ToReactivePropertyAsSynchronized(
@@ -70,11 +73,31 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                                         vm => vm?.Id ?? Identity<Client>.Empty)
                                      .AddTo(CompositeDisposable);
 
+            if(task.Id.IsTemporary)
+            {
+                DomainModel.TaskCategory = Domain.Domain.Tasks.Definitions.TaskCategory.Develop;
+            }
+
             //Remarks = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Remarks)
             //                      .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "備考は入力必須です" : null)
             //                      .AddTo(CompositeDisposable);
 
         }
+
+        public bool TryValidate()
+        {
+            var result = true;
+
+            Title.ForceValidate();
+            result &= Title.HasErrors == false;
+
+            WorkProcess.ForceValidate();
+            result &= WorkProcess.HasErrors == false;
+            
+            return result;
+        }
+
+
     }
 }
  

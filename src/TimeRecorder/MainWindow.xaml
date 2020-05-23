@@ -53,10 +53,6 @@
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
 
-    <metro:MetroWindow.DataContext>
-        <vm:MainWindowViewModel />
-    </metro:MetroWindow.DataContext>
-
     <behaviors:Interaction.Triggers>
         <!--  When ContentRendered event raised, Initialize method of ViewModel would be called.  -->
         <behaviors:EventTrigger EventName="ContentRendered">
