@@ -99,15 +99,6 @@ where
         {
             var where = @"
 actualenddatetime IS NULL
-OR EXISTS ( 
-     select 
-       1 
-     FROM 
-       workingtimes t 
-     WHERE 
-       t.taskid = worktasks.id 
-       AND t.ymd = @ymd 
-   )
 ";
             return SelectCore(where, new { ymd = ymd.Value }).ToArray();
         }

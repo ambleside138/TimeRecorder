@@ -63,8 +63,8 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 Remarks = workTask.Remarks,
                 PlanedStartDateTime = workTask.TaskProgress.PlanedPeriod.Start,
                 PlanedEndDateTime = workTask.TaskProgress.PlanedPeriod.End,
-                ActualStartDateTime = workTask.TaskProgress.PlanedPeriod.Start,
-                ActualEndDateTime = workTask.TaskProgress.PlanedPeriod.End,
+                ActualStartDateTime = workTask.TaskProgress.ActualPeriod.Start,
+                ActualEndDateTime = workTask.TaskProgress.ActualPeriod.End,
             };
         }
     }

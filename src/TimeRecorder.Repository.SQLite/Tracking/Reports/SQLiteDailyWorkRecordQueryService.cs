@@ -35,6 +35,7 @@ SELECT
   , task.taskcategory as taskcategory
   , task.clientid as clientid
   , task.processid as workprocessid
+  , task.productid as productid
 FROM
   workingtimes time
 INNER JOIN
