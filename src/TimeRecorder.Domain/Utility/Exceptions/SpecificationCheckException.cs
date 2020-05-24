@@ -8,16 +8,13 @@ namespace TimeRecorder.Domain.Utility.Exceptions
     public class SpecificationCheckException : Exception
     {
         public SpecificationCheckException(ValidationResult validationResult)
-            :base(validationResult.ErrorMessage)
+            :base("[エラー] " + validationResult.ErrorMessage)
         {
             ValidationResult = validationResult;
         }
 
         public SpecificationCheckException(string message)
-            :base(message)
-        {
-            ValidationResult = new ValidationResult(message);
-        }
+            : this(new ValidationResult(message)) { }
 
         public ValidationResult ValidationResult { get; }
     }

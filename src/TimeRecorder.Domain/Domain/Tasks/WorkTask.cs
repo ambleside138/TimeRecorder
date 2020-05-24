@@ -36,8 +36,6 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
         #endregion
 
-        #region Product変更通知プロパティ
-
         #region ProductId変更通知プロパティ
         private Identity<Product> _ProductId;
 
@@ -46,8 +44,6 @@ namespace TimeRecorder.Domain.Domain.Tasks
             get => _ProductId;
             set => RaisePropertyChangedIfSet(ref _ProductId, value);
         }
-        #endregion
-
         #endregion
 
         #region ClientId変更通知プロパティ
@@ -80,7 +76,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
         #endregion
 
-        public TaskProgress TaskProgress { get; private set; }
+        public TaskProgress TaskProgress { get; private set; } = new TaskProgress();
 
         #region IsPlaned変更通知プロパティ
         private bool _IsPlaned = true;
@@ -91,7 +87,9 @@ namespace TimeRecorder.Domain.Domain.Tasks
             set => RaisePropertyChangedIfSet(ref _IsPlaned, value);
         }
         #endregion
+
         
+
         public static WorkTask ForNew()
         {
             return new WorkTask 
@@ -115,6 +113,11 @@ namespace TimeRecorder.Domain.Domain.Tasks
             _Remarks = remarks;
             TaskProgress = taskProgress;
             
+        }
+
+        public void Complete(DateTime start, DateTime end)
+        {
+            TaskProgress.ActualPeriod = new DateTimePeriod { Start = start, End = end };
         }
 
         private WorkTask() { }

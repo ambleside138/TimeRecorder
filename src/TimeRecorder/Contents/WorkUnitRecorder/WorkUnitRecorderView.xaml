@@ -199,10 +199,19 @@
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <materialDesign:Card Width="280">
-                                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
-                                    <!--<TextBlock Text="test" />-->
-                                </materialDesign:Card>
+                                <Grid>
+                                    <materialDesign:Card>
+                                        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
+                                        <!--<TextBlock Text="test" />-->
+                                    </materialDesign:Card>
+                                    <ProgressBar
+                                        Margin="0,-2,0,0"
+                                        VerticalAlignment="Top"
+                                        IsIndeterminate="{Binding IsIndeterminate.Value}"
+                                        Visibility="{Binding IsIndeterminate.Value, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Value="0" />
+                                </Grid>
+
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

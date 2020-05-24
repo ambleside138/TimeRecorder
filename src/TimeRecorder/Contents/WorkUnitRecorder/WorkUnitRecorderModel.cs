@@ -41,7 +41,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public WorkUnitRecorderModel()
         {
-            _WorkTaskUseCase = new WorkTaskUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());
+            _WorkTaskUseCase = new WorkTaskUseCase(
+                                        ContainerHelper.Resolver.Resolve<IWorkTaskRepository>(), 
+                                        ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>());
             _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(
                                             ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
                                             ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());

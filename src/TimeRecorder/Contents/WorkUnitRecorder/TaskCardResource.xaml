@@ -19,36 +19,18 @@
                 <Grid>
 
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="56" />
+                        <ColumnDefinition Width="28" />
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
-                    <Border
-                        Width="40"
-                        Height="40"
+                    <CheckBox
+                        Margin="-8,0,0,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
-                        Background="{Binding Dto.TaskCategory, Converter={StaticResource TaskCategoryToSolidBrushConverter}}"
-                        CornerRadius="20"
-                        Opacity="0.5">
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Kind="{Binding Dto.TaskCategory, Converter={StaticResource EnumToIconKeyConverter}}" />
-                    </Border>
+                        materialDesign:CheckBoxAssist.CheckBoxSize="24"
+                        IsChecked="{Binding IsCompleted.Value}" />
 
-                    <ProgressBar
-                        Width="40"
-                        Height="40"
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        IsIndeterminate="{Binding IsIndeterminate.Value}"
-                        Style="{StaticResource MaterialDesignCircularProgressBar}"
-                        Value="{Binding ProgressValue.Value}" />
-
-                    <StackPanel Grid.Column="1" Orientation="Vertical">
+                    <StackPanel Grid.Column="1">
                         <!--  Process  -->
                         <TextBlock
                             HorizontalAlignment="Left"
@@ -62,11 +44,41 @@
                             Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                             Text="{Binding Dto.Title}" />
 
+                        <!--  chips  -->
+                        <StackPanel Orientation="Horizontal">
+                            <Border
+                                Width="20"
+                                Height="20"
+                                Margin="0,4,8,4"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="{Binding Dto.TaskCategory, Converter={StaticResource TaskCategoryToSolidBrushConverter}}"
+                                CornerRadius="20"
+                                Opacity="0.5">
+                                <materialDesign:PackIcon
+                                    Width="12"
+                                    Height="12"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="{Binding Dto.TaskCategory, Converter={StaticResource EnumToIconKeyConverter}}" />
+                            </Border>
+
+                            <!--  Product  -->
+                            <Border Style="{StaticResource ChipBorderStyleKey}" Visibility="{Binding Dto.ProductName, Converter={StaticResource StringToVisibilityConverter}}">
+                                <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding Dto.ProductName}" />
+                            </Border>
+
+                            <!--  User  -->
+                            <Border Style="{StaticResource ChipBorderStyleKey}" Visibility="{Binding Dto.ClientName, Converter={StaticResource StringToVisibilityConverter}}">
+                                <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding Dto.ClientName}" />
+                            </Border>
+                        </StackPanel>
                     </StackPanel>
 
                     <StackPanel
                         x:Name="ActionPanel"
-                        Grid.Column="1"
+                        Grid.Column="2"
+                        Margin="0,0,0,8"
                         HorizontalAlignment="Right"
                         Orientation="Horizontal">
 
@@ -104,7 +116,7 @@
                             Width="24"
                             Height="24"
                             Style="{StaticResource MaterialDesignIconButton}"
-                            ToolTip="MaterialDesignIconButton">
+                            ToolTip="タスクの編集">
 
                             <behaviors:Interaction.Triggers>
                                 <behaviors:EventTrigger EventName="Click">
@@ -117,135 +129,110 @@
                                 Height="16"
                                 Kind="Pencil" />
                         </Button>
+
+                        <Button
+                            Width="24"
+                            Height="24"
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="タスクの削除">
+
+                            <behaviors:Interaction.Triggers>
+                                <behaviors:EventTrigger EventName="Click">
+                                    <l:LivetCallMethodAction MethodName="DeleteWorkTask" MethodTarget="{Binding}" />
+                                </behaviors:EventTrigger>
+                            </behaviors:Interaction.Triggers>
+
+                            <materialDesign:PackIcon
+                                Width="16"
+                                Height="16"
+                                Kind="CloseCircle">
+                                <materialDesign:PackIcon.Foreground>
+                                    <SolidColorBrush Color="{StaticResource RedPrimary600}" />
+                                </materialDesign:PackIcon.Foreground>
+                            </materialDesign:PackIcon>
+                        </Button>
                     </StackPanel>
                 </Grid>
+
             </Expander.Header>
 
 
-            <Grid Margin="16,0,16,16">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="32" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <ListBox
+                Grid.Row="1"
+                Margin="24,2,32,16"
+                ItemsSource="{Binding Dto.WorkingTimes}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel
+                            x:Name="rootPanel"
+                            Background="Transparent"
+                            Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding StartDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}}" />
+                            <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="～" />
+                            <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding EndDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}, ConverterParameter=HH:mm}" />
 
-                <!--  chips  -->
-                <StackPanel Orientation="Horizontal">
-                    <!--  Category  -->
-                    <!--<Border Style="{StaticResource ChipBorderStyleKey}">
-                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding TaskCategory.Value, Converter={StaticResource EnumToDisplayTextConverter}}" />
-                </Border>-->
+                            <Button
+                                Width="24"
+                                Height="24"
+                                Margin="32,0,0,0"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                ToolTip="編集">
 
-                    <!--  Product  -->
-                    <Border Style="{StaticResource ChipBorderStyleKey}">
-                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding Dto.ProductName}" />
-                    </Border>
+                                <behaviors:Interaction.Triggers>
+                                    <behaviors:EventTrigger EventName="Click">
+                                        <l:LivetCallMethodAction
+                                            MethodName="EditWorkingTime"
+                                            MethodParameter="{Binding}"
+                                            MethodTarget="{Binding DataContext, ElementName=CardExpander}" />
+                                    </behaviors:EventTrigger>
+                                </behaviors:Interaction.Triggers>
 
-                    <!--  User  -->
-                    <Border Style="{StaticResource ChipBorderStyleKey}">
-                        <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="user" />
-                    </Border>
-                </StackPanel>
+                                <materialDesign:PackIcon
+                                    Width="16"
+                                    Height="16"
+                                    Kind="Pencil" />
+                            </Button>
 
-                <ListBox
-                    Grid.Row="1"
-                    Margin="8,4,0,0"
-                    ItemsSource="{Binding Dto.WorkingTimes}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel
-                                x:Name="rootPanel"
-                                Background="Transparent"
-                                Orientation="Horizontal">
-                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding StartDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}}" />
-                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="～" />
-                                <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding EndDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}, ConverterParameter=HH:mm}" />
+                            <Button
+                                Width="24"
+                                Height="24"
+                                Style="{StaticResource MaterialDesignIconButton}"
+                                ToolTip="取消">
 
-                                <Button
-                                    Width="24"
-                                    Height="24"
-                                    Margin="32,0,0,0"
-                                    Style="{StaticResource MaterialDesignIconButton}"
-                                    ToolTip="編集">
+                                <behaviors:Interaction.Triggers>
+                                    <behaviors:EventTrigger EventName="Click">
+                                        <l:LivetCallMethodAction
+                                            MethodName="DeleteWorkingTime"
+                                            MethodParameter="{Binding}"
+                                            MethodTarget="{Binding DataContext, ElementName=CardExpander}" />
+                                    </behaviors:EventTrigger>
+                                </behaviors:Interaction.Triggers>
 
-                                    <!--<Button.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="Button">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=rootPanel}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>-->
+                                <materialDesign:PackIcon
+                                    Width="16"
+                                    Height="16"
+                                    Kind="CloseCircle">
+                                    <materialDesign:PackIcon.Foreground>
+                                        <SolidColorBrush Color="{StaticResource RedPrimary300}" />
+                                    </materialDesign:PackIcon.Foreground>
+                                </materialDesign:PackIcon>
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
 
-                                    <behaviors:Interaction.Triggers>
-                                        <behaviors:EventTrigger EventName="Click">
-                                            <l:LivetCallMethodAction
-                                                MethodName="EditWorkingTime"
-                                                MethodParameter="{Binding}"
-                                                MethodTarget="{Binding DataContext, ElementName=CardExpander}" />
-                                        </behaviors:EventTrigger>
-                                    </behaviors:Interaction.Triggers>
-
-                                    <materialDesign:PackIcon
-                                        Width="16"
-                                        Height="16"
-                                        Kind="Pencil" />
-                                </Button>
-
-                                <Button
-                                    Width="24"
-                                    Height="24"
-                                    Style="{StaticResource MaterialDesignIconButton}"
-                                    ToolTip="取消">
-
-                                    <!--<Button.Style>
-                                        <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="Button">
-                                            <Setter Property="Visibility" Value="Collapsed" />
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=rootPanel}" Value="True">
-                                                    <Setter Property="Visibility" Value="Visible" />
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>-->
-
-                                    <behaviors:Interaction.Triggers>
-                                        <behaviors:EventTrigger EventName="Click">
-                                            <l:LivetCallMethodAction
-                                                MethodName="DeleteWorkingTime"
-                                                MethodParameter="{Binding}"
-                                                MethodTarget="{Binding DataContext, ElementName=CardExpander}" />
-                                        </behaviors:EventTrigger>
-                                    </behaviors:Interaction.Triggers>
-
-                                    <materialDesign:PackIcon
-                                        Width="16"
-                                        Height="16"
-                                        Kind="CloseCircle">
-                                        <materialDesign:PackIcon.Foreground>
-                                            <SolidColorBrush Color="{StaticResource RedPrimary300}" />
-                                        </materialDesign:PackIcon.Foreground>
-                                    </materialDesign:PackIcon>
-                                </Button>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-
-                    <ListBox.ItemContainerStyle>
-                        <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                            <!--<Style.Resources>
+                <ListBox.ItemContainerStyle>
+                    <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                        <!--<Style.Resources>
                                 <Style TargetType="ItemsPresenter" BasedOn="{StaticResource {x:Type ItemsPresenter}}">
                                     <Setter Property="Margin" Value="0" />
                                 </Style>
                             </Style.Resources>-->
-                            <Setter Property="Margin" Value="0" />
-                            <Setter Property="Padding" Value="4,2" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                </ListBox>
-            </Grid>
-
+                        <Setter Property="Margin" Value="0" />
+                        <Setter Property="Padding" Value="4,2" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
         </Expander>
 
     </DataTemplate>

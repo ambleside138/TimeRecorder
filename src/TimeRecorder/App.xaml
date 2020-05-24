@@ -86,6 +86,7 @@
             <converters:DateTimeToFormattedStringConverter x:Key="DateTimeToFormattedStringConverter" />
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:TaskCategoryToSolidBrushConverter x:Key="TaskCategoryToSolidBrushConverter" />
+            <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

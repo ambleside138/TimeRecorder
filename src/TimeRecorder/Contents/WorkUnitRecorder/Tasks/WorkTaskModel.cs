@@ -8,6 +8,7 @@ using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
 {
@@ -18,7 +19,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
 
         public WorkTaskModel()
         {
-            _WorkTaskUseCase = new WorkTaskUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());
+            _WorkTaskUseCase = new WorkTaskUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskRepository>(), ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>());
 
             _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(
                                             ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
@@ -28,6 +29,18 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
         public void EditWorkTask(WorkTask workTask)
         {
             _WorkTaskUseCase.Edit(workTask);
+            ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
+        }
+
+        public void CompleteWorkTask(Identity<WorkTask> id)
+        {
+            _WorkTaskUseCase.Complete(id);
+            ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
+        }
+
+        public void DeleteWorkTask(Identity<WorkTask> id)
+        {
+            _WorkTaskUseCase.Delete(id);
             ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
         }
 

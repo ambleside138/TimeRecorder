@@ -7,7 +7,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
     /// <summary>
     /// タスクの進捗
     /// </summary>
-    public struct TaskProgress
+    public class TaskProgress
     {
         /// <summary>
         /// 予定期間
@@ -18,6 +18,11 @@ namespace TimeRecorder.Domain.Domain.Tasks
         /// 実績期間
         /// </summary>
         public DateTimePeriod ActualPeriod { get; internal set; }
+
+        public TaskProgress()
+        {
+
+        }
 
         public TaskProgress(DateTimePeriod planedPeriod, DateTimePeriod actualPeriod)
         {

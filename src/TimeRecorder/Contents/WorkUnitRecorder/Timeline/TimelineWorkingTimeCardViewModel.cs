@@ -16,7 +16,7 @@ using TimeRecorder.Host;
 namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 {
     /// <summary>
-    /// 時系列エリアに表示するためのViewModelを表します
+    /// 時系列エリアに表示するための作業時間ViewModelを表します
     /// </summary>
     public class TimelineWorkingTimeCardViewModel : ViewModel
     {
@@ -51,12 +51,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
                 
             if(workingTimeRange.EndDateTime == null)
             {
-                 // 1minスパンで更新する
-                 new ReactiveTimer(TimeSpan.FromMinutes(1), new SynchronizationContextScheduler(SynchronizationContext.Current)) 
-                            .Subscribe(_ => ActualHeight.Value = CalcActualHeight())
-                            .AddTo(CompositeDisposable); 
+                // 1minスパンで更新する
+                var timer = new ReactiveTimer(TimeSpan.FromMinutes(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
+                timer.Subscribe(_ => ActualHeight.Value = CalcActualHeight());
+                timer.AddTo(CompositeDisposable);
+                timer.Start();
             }
-
         }
 
         public void UpdateDurationTime()
