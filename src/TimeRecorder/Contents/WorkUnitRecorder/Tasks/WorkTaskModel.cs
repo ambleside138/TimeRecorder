@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-
 using Livet;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
@@ -37,6 +36,20 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
             _WorkingTimeRangeUseCase.StartWorking(id);
             ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
         }
+
+        public void EditWorkingTime(WorkingTimeRange target)
+        {
+            _WorkingTimeRangeUseCase.EditWorkingTimeRange(target.Id, target.StartDateTime, target.EndDateTime);
+            ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
+        }
+
+        public void DeleteWorkingTime(WorkingTimeRange target)
+        {
+            _WorkingTimeRangeUseCase.DeleteWorkingTimeRange(target.Id);
+            ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
+        }
+
+
 
         public WorkTask SelectWorkTask(Identity<WorkTask> identity)
         {
