@@ -66,7 +66,7 @@ WHERE
             #region SQL
             const string sql = @"
 DELETE FROM
-  workintimes
+  workingtimes
 WHERE
   id = @id
 ";

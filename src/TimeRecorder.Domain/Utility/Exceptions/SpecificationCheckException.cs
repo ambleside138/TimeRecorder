@@ -13,6 +13,12 @@ namespace TimeRecorder.Domain.Utility.Exceptions
             ValidationResult = validationResult;
         }
 
+        public SpecificationCheckException(string message)
+            :base(message)
+        {
+            ValidationResult = new ValidationResult(message);
+        }
+
         public ValidationResult ValidationResult { get; }
     }
 }

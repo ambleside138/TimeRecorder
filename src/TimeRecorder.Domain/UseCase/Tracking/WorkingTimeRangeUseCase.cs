@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
@@ -27,6 +28,11 @@ namespace TimeRecorder.Domain.UseCase.Tracking
             _WorkingTimeRangeRepository = workingTimeRangeRepository;
             _WorkingTimeRegistSpecification = new WorkingTimeRegistSpecification(workingTimeRangeRepository);
             _WorkTaskRepository = workTaskRepository;
+        }
+
+        public WorkingTimeRange[] GetByTaskId(Identity<WorkTask> id)
+        {
+            return _WorkingTimeRangeRepository.SelectByTaskId(id);
         }
 
         public WorkingTimeRange StartWorking(Identity<WorkTask> id)
@@ -73,15 +79,24 @@ namespace TimeRecorder.Domain.UseCase.Tracking
             _WorkingTimeRangeRepository.Edit(target);
         }
         
-        public void EditWorkingTimeRange(WorkingTimeRange workingTimeRange)
+        public void EditWorkingTimeRange(Identity<WorkingTimeRange> id, DateTime startTime, DateTime? endTime)
         {
-            var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(workingTimeRange);
-            if (string.IsNullOrEmpty(validationResult.ErrorMessage) == false)
+            var target = _WorkingTimeRangeRepository.SelectById(id);
+
+            if (target == null)
+            {
+                throw new NotFoundException("編集対象の作業がみつかりませんでした");
+            }
+
+            target.EditTimes(startTime, endTime);
+
+            var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(target);
+            if (validationResult != ValidationResult.Success)
             {
                 throw new SpecificationCheckException(validationResult);
             }
 
-            _WorkingTimeRangeRepository.Edit(workingTimeRange);
+            _WorkingTimeRangeRepository.Edit(target);
         }
 
         public void DeleteWorkingTimeRange(Identity<WorkingTimeRange> identity)

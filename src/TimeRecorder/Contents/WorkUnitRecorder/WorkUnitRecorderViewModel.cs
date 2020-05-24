@@ -25,9 +25,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReadOnlyReactiveCollection<WorkTaskWithTimesCardViewModel> PlanedTaskCards { get; }
 
-        public ReadOnlyReactiveCollection<WorkingTimeCardViewModel> WorkingTimes { get; }
+        public ReadOnlyReactiveCollection<TimelineWorkingTimeCardViewModel> WorkingTimes { get; }
 
-        public ReactiveProperty<WorkingTimeCardViewModel> DoingTask { get; }
+        public ReactiveProperty<TimelineWorkingTimeCardViewModel> DoingTask { get; }
 
         public ReactiveProperty<DateTime> TargetDateTime { get; }
 
@@ -38,11 +38,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                                     .AddTo(CompositeDisposable);
 
             WorkingTimes = _Model.WorkingTimes
-                                 .ToReadOnlyReactiveCollection(w => new WorkingTimeCardViewModel(w))
+                                 .ToReadOnlyReactiveCollection(w => new TimelineWorkingTimeCardViewModel(w))
                                  .AddTo(CompositeDisposable);
 
             DoingTask = _Model.DoingTask
-                              .Select(t => new WorkingTimeCardViewModel(t))
+                              .Select(t => new TimelineWorkingTimeCardViewModel(t))
                               .ToReactiveProperty()
                               .AddTo(CompositeDisposable);
 

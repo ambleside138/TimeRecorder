@@ -3,7 +3,9 @@ using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Reactive.Concurrency;
 using System.Text;
+using System.Threading;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
@@ -16,7 +18,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
     /// <summary>
     /// 時系列エリアに表示するためのViewModelを表します
     /// </summary>
-    public class WorkingTimeCardViewModel : ViewModel
+    public class TimelineWorkingTimeCardViewModel : ViewModel
     {
         private readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
 
@@ -24,7 +26,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
         private const int _AlertCount = 60 * 5;
 
-        public WorkingTimeCardViewModel(WorkingTimeForTimelineDto workingTimeRange)
+        public TimelineWorkingTimeCardViewModel(WorkingTimeForTimelineDto workingTimeRange)
         {
             DomainModel = workingTimeRange;
 
@@ -45,7 +47,16 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             EndHHmm = workingTimeRange.EndDateTime?.ToString("HHmm") ?? "";
 
             CanvasTop = CalcTop();
-            ActualHeight = CalcActualHeight();
+            ActualHeight.Value = CalcActualHeight();
+                
+            if(workingTimeRange.EndDateTime == null)
+            {
+                 // 1minスパンで更新する
+                 new ReactiveTimer(TimeSpan.FromMinutes(1), new SynchronizationContextScheduler(SynchronizationContext.Current)) 
+                            .Subscribe(_ => ActualHeight.Value = CalcActualHeight())
+                            .AddTo(CompositeDisposable); 
+            }
+
         }
 
         public void UpdateDurationTime()
@@ -94,12 +105,10 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             if (DomainModel == null)
                 return 0;
 
+            var endDateTime = DomainModel.EndDateTime ?? _SystemClock.Now;
+
+            var d = endDateTime - DomainModel.StartDateTime;
             var hourHeight = TimelineProperties.Current.HourHeight;
-
-            if (DomainModel.EndDateTime.HasValue == false)
-                return hourHeight;
-
-            var d = DomainModel.EndDateTime.Value - DomainModel.StartDateTime;
             return (hourHeight / 60) * (int)d.TotalMinutes;
         }
 
@@ -121,7 +130,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
         /// <summary>
         /// 実際の時間を反映した高さ
         /// </summary>
-        public int ActualHeight { get; }
+        public ReactivePropertySlim<int> ActualHeight { get; } = new ReactivePropertySlim<int>();
 
 
         public ReactivePropertySlim<string> DurationTimeText { get; } = new ReactivePropertySlim<string>();

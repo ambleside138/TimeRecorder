@@ -6,6 +6,14 @@ namespace TimeRecorder.Domain.Utility
 {
     public static class DateTimeParser
     {
+        public static DateTime? ConvertFromHHmm(string HHmm)
+        {
+            if (string.IsNullOrEmpty(HHmm))
+                return null;
+
+            return ConvertFromHHmmss(HHmm + "00");
+        }
+
         public static DateTime? ConvertFromHHmmss(string HHmmss)
         {
             if (string.IsNullOrEmpty(HHmmss))
@@ -43,6 +51,11 @@ namespace TimeRecorder.Domain.Utility
             {
                 return null;
             }
+        }
+
+        public static string ToYmd(this DateTime source)
+        {
+            return source.ToString("yyyyMMdd");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
         WorkTaskWithTimesDto[] SelectByYmd(YmdString ymd);
     }
 
-    public class WorkTaskWithTimesDto
+    public class WorkTaskWithTimesDto : NotificationDomainModel
     {
         public Identity<WorkTask> TaskId { get; set; }
 
@@ -32,6 +32,15 @@ namespace TimeRecorder.Domain.UseCase.Tasks
 
         public string Remarks { get; set; }
 
-        public WorkingTimeRange[] WorkingTimes { get; set; }
+        #region WorkingTimes変更通知プロパティ
+        private WorkingTimeRange[] _WorkingTimes;
+
+        public WorkingTimeRange[] WorkingTimes
+        {
+            get => _WorkingTimes;
+            set => RaisePropertyChangedIfSet(ref _WorkingTimes, value);
+        }
+        #endregion
+
     }
 }

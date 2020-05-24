@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain.Utility.Exceptions;
 using TimeRecorder.Domain.Utility.SystemClocks;
 
 namespace TimeRecorder.Domain.Domain.Tracking
@@ -63,6 +64,12 @@ namespace TimeRecorder.Domain.Domain.Tracking
 
         public void EditTimes(DateTime start, DateTime? end)
         {
+            if(end.HasValue
+                && start > end.Value)
+            {
+                throw new SpecificationCheckException("終了時刻は開始時刻以降である必要があります");
+            }
+
             StartDateTime = start;
             EndDateTime = end;
         }

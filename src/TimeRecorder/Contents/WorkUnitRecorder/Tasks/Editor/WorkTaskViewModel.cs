@@ -17,6 +17,9 @@ using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
+    /// <summary>
+    /// タスク（編集機能有）のViewModelを表します
+    /// </summary>
     public class WorkTaskViewModel : ViewModel
     {
         public ReactiveProperty<string> Title { get; }
@@ -88,12 +91,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         {
             var result = true;
 
+            // TODO: 検証対象をListでまとめてぐるぐる処理したいが...どう実装していいのかわからない
             Title.ForceValidate();
             result &= Title.HasErrors == false;
 
             WorkProcess.ForceValidate();
             result &= WorkProcess.HasErrors == false;
-            
+
             return result;
         }
 

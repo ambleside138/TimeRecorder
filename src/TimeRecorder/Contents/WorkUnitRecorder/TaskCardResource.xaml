@@ -146,21 +146,104 @@
                     </Border>
                 </StackPanel>
 
-                <ItemsControl
+                <ListBox
                     Grid.Row="1"
                     Margin="8,4,0,0"
                     ItemsSource="{Binding Dto.WorkingTimes}">
-                    <ItemsControl.ItemTemplate>
+                    <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel
+                                x:Name="rootPanel"
+                                Background="Transparent"
+                                Orientation="Horizontal">
                                 <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding StartDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}}" />
                                 <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="～" />
                                 <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding EndDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}, ConverterParameter=HH:mm}" />
 
+                                <Button
+                                    Width="24"
+                                    Height="24"
+                                    Margin="32,0,0,0"
+                                    Style="{StaticResource MaterialDesignIconButton}"
+                                    ToolTip="編集">
+
+                                    <!--<Button.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="Button">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=rootPanel}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>-->
+
+                                    <behaviors:Interaction.Triggers>
+                                        <behaviors:EventTrigger EventName="Click">
+                                            <l:LivetCallMethodAction
+                                                MethodName="EditWorkingTime"
+                                                MethodParameter="{Binding}"
+                                                MethodTarget="{Binding DataContext, ElementName=CardExpander}" />
+                                        </behaviors:EventTrigger>
+                                    </behaviors:Interaction.Triggers>
+
+                                    <materialDesign:PackIcon
+                                        Width="16"
+                                        Height="16"
+                                        Kind="Pencil" />
+                                </Button>
+
+                                <Button
+                                    Width="24"
+                                    Height="24"
+                                    Style="{StaticResource MaterialDesignIconButton}"
+                                    ToolTip="取消">
+
+                                    <!--<Button.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignIconButton}" TargetType="Button">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsMouseOver, ElementName=rootPanel}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>-->
+
+                                    <behaviors:Interaction.Triggers>
+                                        <behaviors:EventTrigger EventName="Click">
+                                            <l:LivetCallMethodAction
+                                                MethodName="DeleteWorkingTime"
+                                                MethodParameter="{Binding}"
+                                                MethodTarget="{Binding DataContext, ElementName=CardExpander}" />
+                                        </behaviors:EventTrigger>
+                                    </behaviors:Interaction.Triggers>
+
+                                    <materialDesign:PackIcon
+                                        Width="16"
+                                        Height="16"
+                                        Kind="CloseCircle">
+                                        <materialDesign:PackIcon.Foreground>
+                                            <SolidColorBrush Color="{StaticResource RedPrimary300}" />
+                                        </materialDesign:PackIcon.Foreground>
+                                    </materialDesign:PackIcon>
+                                </Button>
                             </StackPanel>
                         </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                    </ListBox.ItemTemplate>
+
+                    <ListBox.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                            <!--<Style.Resources>
+                                <Style TargetType="ItemsPresenter" BasedOn="{StaticResource {x:Type ItemsPresenter}}">
+                                    <Setter Property="Margin" Value="0" />
+                                </Style>
+                            </Style.Resources>-->
+                            <Setter Property="Margin" Value="0" />
+                            <Setter Property="Padding" Value="4,2" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                </ListBox>
             </Grid>
 
         </Expander>

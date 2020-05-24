@@ -1,0 +1,81 @@
+﻿<UserControl
+    x:Class="TimeRecorder.Contents.WorkUnitRecorder.Tracking.WorkingTimeRangeEditDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    Width="280"
+    d:DesignHeight="100"
+    d:DesignWidth="280"
+    Background="{StaticResource MaterialDesignBackground}"
+    mc:Ignorable="d">
+
+    <behaviors:Interaction.Triggers>
+
+        <!--  入力内容検証後に閉じるために必要  -->
+        <l:InteractionMessageTrigger MessageKey="RegistKey" Messenger="{Binding Messenger}">
+            <behaviors:InvokeCommandAction Command="materialDesign:DialogHost.CloseDialogCommand">
+                <behaviors:InvokeCommandAction.CommandParameter>
+                    <system:Boolean>True</system:Boolean>
+                </behaviors:InvokeCommandAction.CommandParameter>
+            </behaviors:InvokeCommandAction>
+        </l:InteractionMessageTrigger>
+        <!--  If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior.  -->
+
+    </behaviors:Interaction.Triggers>
+
+    <StackPanel Margin="16">
+        <StackPanel Orientation="Horizontal">
+            <DatePicker
+                Width="96"
+                HorizontalAlignment="Left"
+                materialDesign:HintAssist.Hint="Pick Date"
+                SelectedDate="{Binding WorkingTimeViewModel.TargetDate.Value, Mode=TwoWay}" />
+
+            <TextBox
+                Width="40"
+                Margin="16,0,0,0"
+                HorizontalContentAlignment="Center"
+                MaxLength="4"
+                Text="{Binding WorkingTimeViewModel.StartTimeText.Value, UpdateSourceTrigger=PropertyChanged}" />
+            <TextBlock
+                Margin="8,0"
+                VerticalAlignment="Center"
+                Text="～" />
+            <TextBox
+                Width="40"
+                Margin="8,0,0,0"
+                HorizontalContentAlignment="Center"
+                MaxLength="4"
+                Text="{Binding WorkingTimeViewModel.EndTimeText.Value, UpdateSourceTrigger=PropertyChanged}" />
+        </StackPanel>
+
+        <StackPanel
+            Margin="0,16,0,0"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+
+            <Button Content="登録">
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="Click">
+                        <l:LivetCallMethodAction MethodName="Regist" MethodTarget="{Binding}" />
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+            </Button>
+
+            <Button
+                Command="materialDesign:DialogHost.CloseDialogCommand"
+                Content="キャンセル"
+                Style="{StaticResource MaterialDesignFlatButton}">
+                <Button.CommandParameter>
+                    <system:Boolean>False</system:Boolean>
+                </Button.CommandParameter>
+            </Button>
+
+        </StackPanel>
+    </StackPanel>
+</UserControl>

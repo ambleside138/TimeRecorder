@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Tracking.Dao;
@@ -71,6 +72,22 @@ namespace TimeRecorder.Repository.SQLite.Tracking
                 var dao = new WorkingTimeDao(c, null);
 
                 result = dao.SelectId(id.Value)?.ToDomainObject();
+            });
+
+            return result;
+        }
+
+        public WorkingTimeRange[] SelectByTaskId(Identity<WorkTask> taskId)
+        {
+            WorkingTimeRange[] result = null;
+
+            RepositoryAction.Query(c =>
+            {
+                var dao = new WorkingTimeDao(c, null);
+
+                result = dao.SelectByTaskIds(new int[] { taskId.Value })
+                            .Select(t => t.ToDomainObject())
+                            .ToArray();
             });
 
             return result;
