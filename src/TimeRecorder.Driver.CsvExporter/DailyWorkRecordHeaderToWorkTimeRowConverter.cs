@@ -12,7 +12,7 @@ namespace TimeRecorder.Driver.CsvExporter
         public WorkTimeRow[] Convert(DailyWorkRecordHeader dailyWorkRecordHeader)
         {
             var targetDate = DateTimeParser.ConvertFromYmd(dailyWorkRecordHeader.WorkYmd);
-            var dateText = targetDate.Value.ToString("yyyy/M/d");
+            var dateText = targetDate.Value.ToString("M月d日");
 
             var listRow = new List<WorkTimeRow>();
 
@@ -41,15 +41,15 @@ namespace TimeRecorder.Driver.CsvExporter
                 case TaskCategory.UnKnown:
                     return "不明";
                 case TaskCategory.Develop:
-                    return "開発";
+                    return "*開発作業(ｿﾌﾄｳｪｱ)";
                 case TaskCategory.ResearchAndDevelopment:
-                    return "研究";
+                    return "研究開発";
                 case TaskCategory.Introduce:
-                    return "契約後の導入";
+                    return "*契約後の導入作業";
                 case TaskCategory.Maintain:
-                    return "保守";
+                    return "保守・客先対応・障害対策";
                 case TaskCategory.Other:
-                    return "その他";
+                    return "その他営業・事務作業等";
                 default:
                     return "";
             }
