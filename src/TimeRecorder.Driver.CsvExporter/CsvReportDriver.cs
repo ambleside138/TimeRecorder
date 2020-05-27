@@ -22,7 +22,7 @@ namespace TimeRecorder.Driver.CsvExporter
             // パッケージも必要: System.Text.Encoding.CodePages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            using (var sw = new StreamWriter(filePath, true, Encoding.GetEncoding("shift_jis")))
+            using (var sw = new StreamWriter(filePath, false, Encoding.GetEncoding("shift_jis")))
             using (var csv = new CsvHelper.CsvWriter(sw, CultureInfo.CurrentCulture))
             {
                 // ヘッダーなし
