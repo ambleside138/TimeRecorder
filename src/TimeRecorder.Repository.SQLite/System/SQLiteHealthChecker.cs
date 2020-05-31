@@ -17,10 +17,6 @@ namespace TimeRecorder.Repository.SQLite.System
             if (File.Exists(ConnectionFactory.DbFileName) == false)
                 return SystemStatus.NotInitialized;
 
-            // バージョン管理テーブル存在有無
-            if (ExistVersionTable() == false)
-                return SystemStatus.InvalidVersion;
-
             // バージョン一致確認
             var dbVersion = GetSystemVersion();
             if (dbVersion != VersionManager.CurrentVersion)

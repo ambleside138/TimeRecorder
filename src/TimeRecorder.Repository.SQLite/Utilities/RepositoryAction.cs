@@ -26,8 +26,9 @@ namespace TimeRecorder.Repository.SQLite
 
                     tran.Commit();
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Console.WriteLine(ex);
                     tran.Rollback();
                 }
             }

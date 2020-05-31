@@ -28,8 +28,8 @@ namespace TimeRecorder.Host
                         return "";
 
                     case SystemStatus.InvalidVersion:
-
-                        return "";
+                        Setup.VersionUp();
+                        return "ローカルDBファイルのバージョンアップを行いました";
 
                     case SystemStatus.NotInitialized:
                         Setup.CreateDatabaseFile();
