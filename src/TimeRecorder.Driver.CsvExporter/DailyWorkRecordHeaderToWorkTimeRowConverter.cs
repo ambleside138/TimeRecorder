@@ -41,7 +41,7 @@ namespace TimeRecorder.Driver.CsvExporter
                 case TaskCategory.UnKnown:
                     return "不明";
                 case TaskCategory.Develop:
-                    return "*開発作業(ｿﾌﾄｳｪｱ)";
+                    return "*開発作業 (ｿﾌﾄｳｪｱ)";
                 case TaskCategory.ResearchAndDevelopment:
                     return "研究開発";
                 case TaskCategory.Introduce:
