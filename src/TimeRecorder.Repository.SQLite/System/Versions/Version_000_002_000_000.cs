@@ -16,7 +16,7 @@ ADD COLUMN
 ALTER TABLE 
   worktasks
 ADD COLUMN
-  importid varchar(1024)
+  importkey varchar(1024)
 ";
 
         public string Version => "000.002.000.000";

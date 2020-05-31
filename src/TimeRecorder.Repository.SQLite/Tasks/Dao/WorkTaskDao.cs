@@ -30,6 +30,8 @@ insert into worktasks
   , planedEndDateTime 
   , actualStartDateTime 
   , actualEndDateTime 
+  , source
+  , importkey
 )
 values
 (
@@ -43,6 +45,8 @@ values
   , @planedEndDateTime 
   , @actualStartDateTime 
   , @actualEndDateTime 
+  , @source
+  , @importkey
 )
 ";
             #endregion
@@ -108,6 +112,11 @@ actualenddatetime IS NULL
             return SelectCore("id = @Id", new { Id = taskId }).FirstOrDefault();
         }
 
+        public WorkTaskTableRow[] SelectByImportKeys(string[] importKeys)
+        {
+            return SelectCore("importkey in @importKeys", new { importKeys }).ToArray();
+        }
+
         public IEnumerable<WorkTaskTableRow> SelectCore(string whereQuery, object param = null)
         {
             #region sql
@@ -124,6 +133,8 @@ SELECT
   , planedEndDateTime 
   , actualStartDateTime 
   , actualEndDateTime 
+  , source
+  , importkey
 FROM
   worktasks
 WHERE

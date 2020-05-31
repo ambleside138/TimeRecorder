@@ -6,6 +6,7 @@ using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Domain.Domain.Calendar;
 
 namespace TimeRecorder.Domain.Domain.Tasks
 {
@@ -78,17 +79,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
 
         public TaskProgress TaskProgress { get; private set; } = new TaskProgress();
 
-        #region IsPlaned変更通知プロパティ
-        private bool _IsPlaned = true;
-
-        public bool IsPlaned
-        {
-            get => _IsPlaned;
-            set => RaisePropertyChangedIfSet(ref _IsPlaned, value);
-        }
-        #endregion
-
-        
+        public WorkTaskImportSource ImportSource { get; private set; } = new WorkTaskImportSource("", "");
 
         public static WorkTask ForNew()
         {
@@ -101,8 +92,23 @@ namespace TimeRecorder.Domain.Domain.Tasks
             };
         }
 
+        public static WorkTask FromScheduledEvent(ScheduledEvent scheduledEvent)
+        {
+            var workTask = ForNew();
+            workTask.ImportSource = new WorkTaskImportSource(scheduledEvent.Id, scheduledEvent.Kind);
+            workTask.TaskProgress.PlanedPeriod = new DateTimePeriod
+            {
+                Start = scheduledEvent.StartTime,
+                End = scheduledEvent.EndTime
+            };
+            workTask.Title = scheduledEvent.Title;
+            workTask.TaskCategory = Tasks.Definitions.TaskCategory.Develop; // そのうち設定にしたい
+
+            return workTask;
+        }
+
         // VSの場合、「クイックアクションとリファクタリング」からコンストラクタコードの生成が可能
-        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Identity<Product> productid, Identity<Client> ClientId, Identity<WorkProcess> processId, string remarks, TaskProgress taskProgress)
+        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Identity<Product> productid, Identity<Client> ClientId, Identity<WorkProcess> processId, string remarks, TaskProgress taskProgress, WorkTaskImportSource workTaskImportSource)
         {
             Id = id;
             _Title = title;
@@ -112,7 +118,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
             _ProcessId = processId;
             _Remarks = remarks;
             TaskProgress = taskProgress;
-            
+            ImportSource = workTaskImportSource;
         }
 
         public void Complete(DateTime start, DateTime end)

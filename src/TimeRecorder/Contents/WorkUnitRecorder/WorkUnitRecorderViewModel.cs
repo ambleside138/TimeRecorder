@@ -14,6 +14,9 @@ using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.Utility;
 using System.Reactive.Concurrency;
 using System.Threading;
+using System.Linq;
+using TimeRecorder.Host;
+using System.Threading.Tasks;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -55,16 +58,17 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             Initialize();          
         }
 
-        public void Initialize()
+        public async void Initialize()
         {
             // 初回の変更通知でよばれるようになったので不要
             //  _Model.Load();
-
 
             var timer = new ReactiveTimer(TimeSpan.FromSeconds(1), new SynchronizationContextScheduler(SynchronizationContext.Current)) // 1秒スパン
                             .AddTo(CompositeDisposable);
             timer.Subscribe(_ => DoingTask.Value?.UpdateDurationTime());
             timer.Start();
+
+            await ImportTaskFromCalendarCore(true);
         }
 
         public async void ExecuteNewTaskDialog()
@@ -87,7 +91,28 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             }
         }
 
-     
+        public async void ImportTaskFromCalendar()
+        {
+            await ImportTaskFromCalendarCore(true);
+        }
+
+        private async Task ImportTaskFromCalendarCore(bool needMessage)
+        {
+            var imported = await _Model.ImportFromCalendarAsync();
+
+            if (needMessage || imported.Any())
+            {
+                if(imported.Any())
+                {
+                    SnackbarService.Current.ShowMessage($"{imported.Length}件の予定を取り込みました");
+                }
+                else
+                {
+                    SnackbarService.Current.ShowMessage($"取込対象の予定は見つかりませんでした");
+                }
+            }
+        }
+
 
         public void StopCurrentTask()
         {

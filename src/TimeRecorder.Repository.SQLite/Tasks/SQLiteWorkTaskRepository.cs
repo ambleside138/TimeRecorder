@@ -57,5 +57,19 @@ namespace TimeRecorder.Repository.SQLite.Tasks
 
             return results;
         }
+
+        public WorkTask[] SelectByImportKeys(string[] importKeys)
+        {
+            WorkTask[] results = null;
+
+            RepositoryAction.Query(c =>
+            {
+                var dao = new WorkTaskDao(c, null);
+
+                results = dao.SelectByImportKeys(importKeys).Select(d => d.ConvertToDomainObject()).ToArray();
+            });
+
+            return results;
+        }
     }
 }

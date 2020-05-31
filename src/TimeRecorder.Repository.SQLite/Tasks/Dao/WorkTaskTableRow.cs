@@ -31,6 +31,10 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
 
         public DateTime? ActualEndDateTime { get; set; }
 
+        public string Source { get; set; }
+
+        public string ImportKey { get; set; }
+
         public WorkTask ConvertToDomainObject()
         {
             var taskProgress = new TaskProgress
@@ -47,7 +51,8 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 , new Identity<Domain.Domain.Clients.Client>(ClientId)
                 , new Identity<Domain.Domain.WorkProcesses.WorkProcess>(ProcessId)
                 , Remarks
-                , taskProgress);
+                , taskProgress
+                , new WorkTaskImportSource(ImportKey, Source));
         }
 
         public static WorkTaskTableRow FromDomainObject(WorkTask workTask)
@@ -65,6 +70,8 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 PlanedEndDateTime = workTask.TaskProgress.PlanedPeriod.End,
                 ActualStartDateTime = workTask.TaskProgress.ActualPeriod.Start,
                 ActualEndDateTime = workTask.TaskProgress.ActualPeriod.End,
+                Source = workTask.ImportSource.Kind,
+                ImportKey = workTask.ImportSource.Key,
             };
         }
     }

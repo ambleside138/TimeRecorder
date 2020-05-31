@@ -24,6 +24,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="40" />
+            <RowDefinition Height="32" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
@@ -141,14 +142,39 @@
                     </Button>
                 </Grid>
             </Border>
-
         </Grid>
 
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+            <TextBlock Text="始業" />
+            <TextBlock Margin="16,0,0,0" Text="終業" />
+        </StackPanel>
 
+        <Button
+            Grid.Row="1"
+            Width="24"
+            Height="24"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Style="{StaticResource MaterialDesignIconButton}"
+            ToolTip="Googleカレンダーから取込">
+            <materialDesign:PackIcon
+                Width="16"
+                Height="16"
+                Kind="CalendarExport" />
 
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="Click">
+                    <l:LivetCallMethodAction MethodName="ImportTaskFromCalendar" MethodTarget="{Binding}" />
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+        </Button>
 
         <!--  表示対象日付のタイムライン  -->
-        <ScrollViewer Grid.Row="1" Padding="0,8,0,0">
+        <ScrollViewer Grid.Row="2" Padding="0,8,0,0">
             <Grid>
                 <local:TimelineCanvas />
 
@@ -167,13 +193,12 @@
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
             </Grid>
-
-
         </ScrollViewer>
 
         <!--  タスク  -->
         <Border
             Grid.Row="1"
+            Grid.RowSpan="2"
             Grid.Column="2"
             Padding="8"
             Background="{StaticResource MaterialDesignChipBackground}"

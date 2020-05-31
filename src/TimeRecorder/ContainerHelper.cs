@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.System;
@@ -12,6 +13,7 @@ using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Driver.CsvExporter;
+using TimeRecorder.Repository.GoogleAPI.Calendar;
 using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Products;
 using TimeRecorder.Repository.SQLite.System;
@@ -41,6 +43,7 @@ namespace TimeRecorder
             resolver.Register<IWorkingTimeQueryService, SQLiteWorkingTimeQueryService>(Lifestyle.Singleton);
             resolver.Register<IWorkTaskWithTimesQueryService, SQLiteWorkTaskWithTimesQueryService>(Lifestyle.Singleton);
             resolver.Register<IHealthChecker, SQLiteHealthChecker>(Lifestyle.Singleton);
+            resolver.Register<IScheduledEventRepository, GoogleApiScheduledEventRepository>(Lifestyle.Singleton);
 
             resolver.Register<IReportDriver, CsvReportDriver>(Lifestyle.Singleton);
 

@@ -5,6 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>clock_32.ico</ApplicationIcon>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -31,6 +32,7 @@
   <ItemGroup>
     <ProjectReference Include="..\TimeRecorder.Domain\TimeRecorder.Domain.csproj" />
     <ProjectReference Include="..\TimeRecorder.Driver.CsvExporter\TimeRecorder.Driver.CsvExporter.csproj" />
+    <ProjectReference Include="..\TimeRecorder.Repository.GoogleAPI\TimeRecorder.Repository.GoogleAPI.csproj" />
     <ProjectReference Include="..\TimeRecorder.Repository.SQLite\TimeRecorder.Repository.SQLite.csproj" />
   </ItemGroup>
 

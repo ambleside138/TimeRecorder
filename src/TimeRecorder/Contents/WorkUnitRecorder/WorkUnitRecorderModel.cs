@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive.Joins;
 using System.Text;
+using System.Threading.Tasks;
 using Livet;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
@@ -14,6 +16,7 @@ using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Utility.SystemClocks;
 using TimeRecorder.Helpers;
+using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -37,6 +40,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         private readonly GetWorkTaskWithTimesUseCase _GetWorkTaskWithTimesUseCase;
         private readonly WorkingTimeRangeUseCase _WorkingTimeRangeUseCase;
         private readonly GetWorkingTimeForTimelineUseCase _GetWorkingTimeForTimelineUseCase;
+        private readonly ImportTaskFromCalendarUseCase _ImportTaskFromCalendarUseCase;
         #endregion
 
         public WorkUnitRecorderModel()
@@ -49,6 +53,14 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                                             ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());
             _GetWorkingTimeForTimelineUseCase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.Resolver.Resolve<IWorkingTimeQueryService>());
             _GetWorkTaskWithTimesUseCase = new GetWorkTaskWithTimesUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskWithTimesQueryService>());
+
+            var config = JsonFileIO.Deserialize<TimeRecorderConfiguration>("TimeRecorderConfiguration.json") ?? new TimeRecorderConfiguration();
+
+            _ImportTaskFromCalendarUseCase = new ImportTaskFromCalendarUseCase(
+                ContainerHelper.Resolver.Resolve<IWorkTaskRepository>(),
+                ContainerHelper.Resolver.Resolve<IScheduledEventRepository>(),
+                ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
+                config.WorkTaskBuilderConfig);
 
             ObjectChangedNotificator.Instance.WorkTaskEdited += Load;
 
@@ -91,6 +103,18 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             _WorkingTimeRangeUseCase.StopWorking(DoingTask.Value.WorkingTimeId);
 
             Load();
+        }
+
+        public async Task<WorkTask[]> ImportFromCalendarAsync()
+        {
+            var importedWorkTasks = await _ImportTaskFromCalendarUseCase.ImportToTaskAsync(TargetYmd);
+
+            if(importedWorkTasks.Any())
+            {
+                Load();
+            }
+
+            return importedWorkTasks;
         }
 
         #region IDisposable Support

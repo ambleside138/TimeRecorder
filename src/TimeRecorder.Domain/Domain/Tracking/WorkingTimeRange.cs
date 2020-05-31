@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Utility.Exceptions;
@@ -39,6 +40,17 @@ namespace TimeRecorder.Domain.Domain.Tracking
                 TaskId = taskId,
                 StartDateTime =  _SystemClock.Now,
                 EndDateTime = null,
+            };
+        }
+
+        public static WorkingTimeRange FromScheduledEvent(Identity<WorkTask> taskId, ScheduledEvent scheduledEvent)
+        {
+            return new WorkingTimeRange
+            {
+                Id = Identity<WorkingTimeRange>.Temporary,
+                TaskId = taskId,
+                StartDateTime = scheduledEvent.StartTime,
+                EndDateTime = scheduledEvent.EndTime,
             };
         }
 

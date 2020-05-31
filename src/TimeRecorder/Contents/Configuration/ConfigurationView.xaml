@@ -33,13 +33,7 @@
         <StackPanel Orientation="Vertical">
             <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="セットアップ" />
 
-            <Button HorizontalAlignment="Left" Content="DBファイル作成">
-                <behaviors:Interaction.Triggers>
-                    <behaviors:EventTrigger EventName="Click">
-                        <l:LivetCallMethodAction MethodName="CreateDbFile" MethodTarget="{Binding}" />
-                    </behaviors:EventTrigger>
-                </behaviors:Interaction.Triggers>
-            </Button>
+
 
         </StackPanel>
 
