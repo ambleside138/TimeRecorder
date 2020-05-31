@@ -68,7 +68,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             timer.Subscribe(_ => DoingTask.Value?.UpdateDurationTime());
             timer.Start();
 
-            await ImportTaskFromCalendarCore(true);
+            await ImportTaskFromCalendarCore(needMessage:false);
         }
 
         public async void ExecuteNewTaskDialog()

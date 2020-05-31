@@ -149,8 +149,8 @@
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
             Orientation="Horizontal">
-            <TextBlock Text="始業" />
-            <TextBlock Margin="16,0,0,0" Text="終業" />
+            <!--<TextBlock Text="始業" />
+            <TextBlock Margin="16,0,0,0" Text="終業" />-->
         </StackPanel>
 
         <Button

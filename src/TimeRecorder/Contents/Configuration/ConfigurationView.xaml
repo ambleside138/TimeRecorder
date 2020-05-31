@@ -7,6 +7,7 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:TimeRecorder.Contents.Configuration"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:materialDesignColors="clr-namespace:MaterialDesignColors;assembly=MaterialDesignColors"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
@@ -53,5 +54,27 @@
                 </ItemsControl>
             </ScrollViewer>
         </StackPanel>
+
+        <Button
+            Grid.Row="1"
+            Margin="16"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Style="{StaticResource MaterialDesignRaisedButton}">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon
+                    Width="20"
+                    Height="20"
+                    VerticalAlignment="Center"
+                    Kind="Power" />
+                <TextBlock Margin="2,0,0,0" Text="アプリケーションの終了" />
+            </StackPanel>
+
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="Click">
+                    <l:LivetCallMethodAction MethodName="ShutDown" MethodTarget="{Binding}" />
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+        </Button>
     </StackPanel>
 </UserControl>

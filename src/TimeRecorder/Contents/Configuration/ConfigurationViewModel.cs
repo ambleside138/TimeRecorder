@@ -21,10 +21,9 @@ namespace TimeRecorder.Contents.Configuration
             
         }
 
-        public void CreateDbFile()
+        public void ShutDown()
         {
-            Setup.CreateDatabaseFile();
-
+            App.Current.Shutdown();
         }
     }
 }
