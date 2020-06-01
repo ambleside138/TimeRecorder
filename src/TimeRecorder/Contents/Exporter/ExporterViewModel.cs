@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using TimeRecorder.Host;
 using TimeRecorder.NavigationRail.ViewModels;
@@ -25,11 +26,22 @@ namespace TimeRecorder.Contents.Exporter
 
         public string ExportFilter => "CSVファイル(*.csv)|*.csv|すべてのファイル(*.*)|*.*";
 
+        public ReadOnlyReactivePropertySlim<string> InitialFileName { get; }
+
         private readonly ExporterModel _ExporterModel = new ExporterModel();
+
+        public ExporterViewModel()
+        {
+            InitialFileName = SelectedYear.CombineLatest(SelectedMonth, (year, month) => $"工数管理_{year}年{month:00}月分")
+                                          .ToReadOnlyReactivePropertySlim();
+        }
 
         public void Export(SavingFileSelectionMessage message)
         {
-            var savePath = message.Response.First();
+            var savePath = message.Response?.FirstOrDefault();
+            if (savePath == null)
+                return;
+
             _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath);
 
             SnackbarService.Current.ShowMessage("以下のパスに工数集計結果を出力しました" + Environment.NewLine + savePath);

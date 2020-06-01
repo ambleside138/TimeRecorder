@@ -53,7 +53,7 @@
                         </l:FolderBrowserDialogInteractionMessageAction>-->
                     <l:SaveFileDialogInteractionMessageAction>
                         <l:DirectInteractionMessage CallbackMethodName="Export" CallbackMethodTarget="{Binding}">
-                            <l:SavingFileSelectionMessage Filter="{Binding ExportFilter}" />
+                            <l:SavingFileSelectionMessage FileName="{Binding InitialFileName.Value}" Filter="{Binding ExportFilter}" />
                         </l:DirectInteractionMessage>
                     </l:SaveFileDialogInteractionMessageAction>
                 </behaviors:EventTrigger>

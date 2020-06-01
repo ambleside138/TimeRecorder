@@ -57,18 +57,27 @@ namespace TimeRecorder.Driver.CsvExporter
 
         private string ConvertToProductOrClient(DailyWorkTaskUnit taskUnit)
         {
+            var productName = taskUnit.Product.Name;
+            var clientName = taskUnit.Client.Name;
+
+            // 製品名・案件名ともに指定がなければ作業内容のみ記載
+            if(string.IsNullOrEmpty(productName)
+                && string.IsNullOrEmpty(clientName))
+            {
+                return taskUnit.WorkProcess.Title;
+            }
+
             // 案件名が入っていなければ無条件で製品名を記載
             if (taskUnit.Client.Id.IsEmpty)
             {
-                var productName = taskUnit.Product.Name;
                 switch(taskUnit.TaskCategory)
                 {
                     case TaskCategory.Develop:
-                        return productName + "開発";
+                        return productName + " 開発";
 
                     case TaskCategory.Maintain:
                     case TaskCategory.Introduce:
-                        return productName + "保守";
+                        return productName + " 保守";
 
                     default:
                         return productName + "*******";
@@ -81,7 +90,7 @@ namespace TimeRecorder.Driver.CsvExporter
             {
                 case TaskCategory.Introduce:
                 case TaskCategory.Maintain:
-                    return taskUnit.Client.Name;
+                    return clientName;
 
                 default:
                     return taskUnit.Product.Name + "*******";
