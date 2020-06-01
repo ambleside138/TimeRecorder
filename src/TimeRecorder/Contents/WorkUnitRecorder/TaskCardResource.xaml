@@ -98,18 +98,18 @@
                             Width="24"
                             Height="24"
                             Style="{StaticResource MaterialDesignIconButton}"
-                            ToolTip="タスクの開始">
+                            ToolTip="{Binding PlayTooltip.Value}">
 
                             <behaviors:Interaction.Triggers>
                                 <behaviors:EventTrigger EventName="Click">
-                                    <l:LivetCallMethodAction MethodName="StartWorkTask" MethodTarget="{Binding}" />
+                                    <l:LivetCallMethodAction MethodName="StartOrStopWorkTask" MethodTarget="{Binding}" />
                                 </behaviors:EventTrigger>
                             </behaviors:Interaction.Triggers>
 
                             <materialDesign:PackIcon
                                 Width="16"
                                 Height="16"
-                                Kind="Play" />
+                                Kind="{Binding PlayIconKind.Value}" />
                         </Button>
 
                         <Button

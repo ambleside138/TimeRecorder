@@ -121,6 +121,7 @@
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                        ToolTip="現在の作業を停止"
                         Visibility="{Binding DoingTask.Value.ShowStopButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Button.Background>
                             <SolidColorBrush Color="{StaticResource RedPrimary400}" />

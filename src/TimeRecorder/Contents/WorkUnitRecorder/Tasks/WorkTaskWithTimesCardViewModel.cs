@@ -29,12 +29,27 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
 
         public ReactivePropertySlim<bool> IsCompleted { get; }
-                                                                        
+
+        public ReactivePropertySlim<string> PlayTooltip { get; set; } = new ReactivePropertySlim<string>();
+
+        public ReactivePropertySlim<string> PlayIconKind { get; set; } = new ReactivePropertySlim<string>();
+
 
         public WorkTaskWithTimesCardViewModel(WorkTaskWithTimesDto dto)
         {
             Dto = dto;
             IsIndeterminate.Value = dto.WorkingTimes.Any(t => t.IsDoing);
+
+            if(IsIndeterminate.Value)
+            {
+                PlayTooltip.Value = "現在の作業を停止";
+                PlayIconKind.Value = "Pause";
+            }
+            else
+            {
+                PlayTooltip.Value = "タスクを開始";
+                PlayIconKind.Value = "Play";
+            }
 
             IsCompleted = new ReactivePropertySlim<bool>(false);
 
@@ -49,9 +64,17 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         }
 
-        public void StartWorkTask()
+        public void StartOrStopWorkTask()
         {
-            _Model.StartWorking(Dto.TaskId);
+            var doingTask = Dto.WorkingTimes.LastOrDefault(t => t.IsDoing);
+            if(doingTask != null)
+            {
+                _Model.StopWorking(doingTask.Id);
+            }
+            else
+            {
+                _Model.StartWorking(Dto.TaskId);
+            }
         }
 
 

@@ -46,11 +46,6 @@
             Content="CSV出力">
             <behaviors:Interaction.Triggers>
                 <behaviors:EventTrigger EventName="Click">
-                    <!--<l:FolderBrowserDialogInteractionMessageAction>
-                            <l:DirectInteractionMessage CallbackMethodName="FolderSelected" CallbackMethodTarget="{Binding}">
-                                <l:FolderSelectionMessage Description="フォルダーの選択" DialogPreference="None" />
-                            </l:DirectInteractionMessage>
-                        </l:FolderBrowserDialogInteractionMessageAction>-->
                     <l:SaveFileDialogInteractionMessageAction>
                         <l:DirectInteractionMessage CallbackMethodName="Export" CallbackMethodTarget="{Binding}">
                             <l:SavingFileSelectionMessage FileName="{Binding InitialFileName.Value}" Filter="{Binding ExportFilter}" />

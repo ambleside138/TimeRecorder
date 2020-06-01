@@ -50,6 +50,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
             ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
         }
 
+        public void StopWorking(Identity<WorkingTimeRange> id)
+        {
+            _WorkingTimeRangeUseCase.StopWorking(id);
+            ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
+        }
+
         public void EditWorkingTime(WorkingTimeRange target)
         {
             _WorkingTimeRangeUseCase.EditWorkingTimeRange(target.Id, target.StartDateTime, target.EndDateTime);
