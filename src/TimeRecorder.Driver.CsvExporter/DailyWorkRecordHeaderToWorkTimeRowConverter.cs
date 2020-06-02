@@ -61,8 +61,8 @@ namespace TimeRecorder.Driver.CsvExporter
             var clientName = taskUnit.Client.Name;
 
             // 製品名・案件名ともに指定がなければ作業内容のみ記載
-            if(string.IsNullOrEmpty(productName)
-                && string.IsNullOrEmpty(clientName))
+            if(taskUnit.Product.Id.IsEmpty
+                && taskUnit.Client.Id.IsEmpty)
             {
                 return taskUnit.WorkProcess.Title;
             }
