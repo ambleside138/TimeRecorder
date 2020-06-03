@@ -12,25 +12,27 @@ namespace TimeRecorder.Domain.Domain.Tracking
     /// <summary>
     /// 作業時間の最小単位を表します
     /// </summary>
-    public class WorkingTimeRange
+    public class WorkingTimeRange : NotificationDomainModel
     {
         public Identity<WorkingTimeRange> Id { get; private set; }
 
         public Identity<WorkTask> TaskId { get; set; }
 
-        public DateTime StartDateTime { get; private set; }
+        #region TimePeriod変更通知プロパティ
+        private TimePeriod _TimePeriod;
 
-        public DateTime? EndDateTime { get; private set; }
+        public TimePeriod TimePeriod
+        {
+            get => _TimePeriod;
+            set => RaisePropertyChangedIfSet(ref _TimePeriod, value);
+        }
+        #endregion
 
-        public string TargetYmd => StartDateTime.ToString("yyyyMMdd");
+        public bool IsDoing => TimePeriod.IsDoing;
 
-        public bool IsStopped => EndDateTime.HasValue;
+        public int WorkSpanMinutes => TimePeriod.CalcWorkTimeMinutes();
 
-        public bool IsDoing => EndDateTime.HasValue == false;
-
-        public int WorkSpan => EndDateTime.HasValue ? (int)(EndDateTime.Value - StartDateTime).TotalMinutes : 0;
-
-        private static readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
+        private ISystemClock _SystemClock => SystemClockServiceLocator.Current;
 
         public static WorkingTimeRange ForStart(Identity<WorkTask> taskId)
         {
@@ -38,8 +40,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
             { 
                 Id = Identity<WorkingTimeRange>.Temporary, 
                 TaskId = taskId,
-                StartDateTime =  _SystemClock.Now,
-                EndDateTime = null,
+                TimePeriod = TimePeriod.CreateForStart(),
             };
         }
 
@@ -49,8 +50,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
             {
                 Id = Identity<WorkingTimeRange>.Temporary,
                 TaskId = taskId,
-                StartDateTime = scheduledEvent.StartTime,
-                EndDateTime = scheduledEvent.EndTime,
+                TimePeriod = new TimePeriod(scheduledEvent.StartTime,  scheduledEvent.EndTime),
             };
         }
 
@@ -60,18 +60,13 @@ namespace TimeRecorder.Domain.Domain.Tracking
         {
             Id = identity;
             TaskId = taskId;
-            StartDateTime = startDateTime;
-            EndDateTime = endDateTime;
+            TimePeriod = new TimePeriod(startDateTime, endDateTime);
         }
 
-        public void Start()
-        {
-            StartDateTime = _SystemClock.Now;
-        }
 
         public void Stop()
         {
-            EndDateTime = _SystemClock.Now;
+            TimePeriod = new TimePeriod(TimePeriod.StartDateTime, _SystemClock.Now);
         }
 
         public void EditTimes(DateTime start, DateTime? end)
@@ -82,8 +77,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
                 throw new SpecificationCheckException("終了時刻は開始時刻以降である必要があります");
             }
 
-            StartDateTime = start;
-            EndDateTime = end;
+            TimePeriod = new TimePeriod(start, end);
         }
     }
 }

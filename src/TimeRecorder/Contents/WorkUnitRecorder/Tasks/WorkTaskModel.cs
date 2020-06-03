@@ -58,7 +58,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
 
         public void EditWorkingTime(WorkingTimeRange target)
         {
-            _WorkingTimeRangeUseCase.EditWorkingTimeRange(target.Id, target.StartDateTime, target.EndDateTime);
+            _WorkingTimeRangeUseCase.EditWorkingTimeRange(target.Id, target.TimePeriod.StartDateTime, target.TimePeriod.EndDateTime);
             ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
         }
 

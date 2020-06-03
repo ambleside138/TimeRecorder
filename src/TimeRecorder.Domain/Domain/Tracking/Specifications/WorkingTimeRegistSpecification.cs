@@ -27,13 +27,13 @@ namespace TimeRecorder.Domain.Domain.Tracking.Specifications
 
             // 時間の重複チェック
             // 自身以外の作業時間と重複していないか
-            var timeRangesAtSameday = _WorkingTimeRangeRepository.SelectByYmd(workingTimeRange.TargetYmd);
+            var timeRangesAtSameday = _WorkingTimeRangeRepository.SelectByYmd(workingTimeRange.TimePeriod.TargetYmd);
 
             // 新規登録の場合のみ
             if(workingTimeRange.Id.IsTemporary)
             {
                 // 終了時間未設定のタスクがあればNG
-                if (timeRangesAtSameday.Any(t => t.IsStopped == false))
+                if (timeRangesAtSameday.Any(t => t.TimePeriod.IsStopped == false))
                     return new ValidationResult("未完了のタスクが残っています");
             }
 

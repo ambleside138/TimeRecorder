@@ -33,8 +33,9 @@ namespace TimeRecorder.Domain.Domain.Tasks.Specifications
         {
             var times = _WorkingTimeRangeRepository.SelectByTaskId(workTask.Id);
 
-            var start = times.Min(t => t.StartDateTime);
-            var end = times.Max(t => t.EndDateTime.Value);
+            var start = times.Min(t => t.TimePeriod.StartDateTime);
+            var end = times.Where(t => t.TimePeriod.IsStopped)
+                           .Max(t => t.TimePeriod.EndDateTime.Value);
 
             workTask.Complete(start, end);
         }

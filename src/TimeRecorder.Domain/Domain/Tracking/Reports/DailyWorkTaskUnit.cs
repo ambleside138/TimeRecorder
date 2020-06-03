@@ -29,7 +29,7 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
         /// <summary>
         /// 総工数[分]
         /// </summary>
-        public int TotalWorkMinutes => WorkingTimeRanges.Sum(w => w.WorkSpan);
+        public int TotalWorkMinutes => WorkingTimeRanges.Sum(w => w.WorkSpanMinutes);
 
 
         public DailyWorkTaskUnit(WorkingTimeRecordForReport workingTime)

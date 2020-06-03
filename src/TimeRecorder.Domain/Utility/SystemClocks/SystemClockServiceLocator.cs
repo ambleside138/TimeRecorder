@@ -8,7 +8,7 @@ namespace TimeRecorder.Domain.Utility.SystemClocks
     {
         public static ISystemClock Current { get; private set; } = new DefaultSystemClock();
 
-        public void SetSystemClock(ISystemClock clock)
+        public static void SetSystemClock(ISystemClock clock)
         {
             Current = clock;
         }

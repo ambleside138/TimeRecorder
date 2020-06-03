@@ -37,9 +37,9 @@ namespace TimeRecorder.Repository.SQLite.Tracking.Dao
             {
                 Id = workingTimeRange.Id.Value,
                 TaskId = workingTimeRange.TaskId.Value,
-                Ymd = workingTimeRange.TargetYmd,
-                StartTime = workingTimeRange.StartDateTime.ToString("HHmmss"),
-                EndTime = workingTimeRange.EndDateTime?.ToString("HHmmss") ?? "",
+                Ymd = workingTimeRange.TimePeriod.TargetYmd,
+                StartTime = workingTimeRange.TimePeriod.StartDateTime.ToString("HHmmss"),
+                EndTime = workingTimeRange.TimePeriod.EndDateTime?.ToString("HHmmss") ?? "",
             };
         }
 

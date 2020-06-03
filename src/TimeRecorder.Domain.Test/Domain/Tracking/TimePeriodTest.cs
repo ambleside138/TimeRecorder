@@ -1,0 +1,85 @@
+﻿using NUnit.Framework;
+using System;
+using System.Collections.Generic;
+using System.Text;
+using TimeRecorder.Domain.Domain.Tracking;
+using TimeRecorder.Domain.Utility.SystemClocks;
+
+namespace TimeRecorder.Domain.Test.Domain.Tracking
+{
+    [TestFixture]
+    public class TimePeriodTest
+    {
+        [Test]
+        public void 作業時間_終了時刻確定_終了時刻前()
+        {
+            var start = new DateTime(2020, 6, 1, 9, 0, 0);
+            var end = new DateTime(2020, 6, 1, 10, 30, 0);
+            var timePeriod = new TimePeriod(start, end);
+
+            var fixedClock = new FixedSystemClock(new DateTime(2020, 6, 1, 9, 50, 0));
+            SystemClockServiceLocator.SetSystemClock(fixedClock);
+
+            var min = timePeriod.CalcWorkTimeMinutes();
+            Assert.AreEqual(min, 50);
+        }
+
+        [Test]
+        public void 作業時間_終了時刻確定_終了時刻後()
+        {
+            var start = new DateTime(2020, 6, 1, 9, 0, 0);
+            var end = new DateTime(2020, 6, 1, 10, 30, 0);
+            var timePeriod = new TimePeriod(start, end);
+
+            var fixedClock = new FixedSystemClock(new DateTime(2020, 6, 1, 10, 35, 0));
+            SystemClockServiceLocator.SetSystemClock(fixedClock);
+
+            var min = timePeriod.CalcWorkTimeMinutes();
+            Assert.AreEqual(min, 90);
+        }
+
+        [Test]
+        public void 作業時間_終了時刻未確定_開始時間前()
+        {
+            var start = new DateTime(2020, 6, 1, 9, 0, 0);
+            DateTime? end = null;
+            var timePeriod = new TimePeriod(start, end);
+
+            var fixedClock = new FixedSystemClock(new DateTime(2020, 6, 1, 8, 35, 0));
+            SystemClockServiceLocator.SetSystemClock(fixedClock);
+
+            var min = timePeriod.CalcWorkTimeMinutes();
+            Assert.AreEqual(min, 0);
+        }
+
+        [Test]
+        public void 作業時間_終了時刻未確定_開始時間後()
+        {
+            var start = new DateTime(2020, 6, 1, 9, 0, 0);
+            DateTime? end = null;
+            var timePeriod = new TimePeriod(start, end);
+
+            var fixedClock = new FixedSystemClock(new DateTime(2020, 6, 1, 10, 35, 0));
+            SystemClockServiceLocator.SetSystemClock(fixedClock);
+
+            var min = timePeriod.CalcWorkTimeMinutes();
+            Assert.AreEqual(min, 95);
+        }
+
+        [TestCase(8,59,false)] // 開始時刻前：作業中でない
+        [TestCase(9,1,true)] // 開始時刻後：作業中
+        public void 作業中_終了時刻未定(int hour, int min, bool result)
+        {
+            var start = new DateTime(2020, 6, 1, 9, 0, 0);
+            DateTime? end = null;
+            var timePeriod = new TimePeriod(start, end);
+
+            var fixedClock = new FixedSystemClock(new DateTime(2020, 6, 1, hour, min, 0));
+            SystemClockServiceLocator.SetSystemClock(fixedClock);
+
+            Assert.AreEqual(timePeriod.IsDoing, result);
+        }
+
+
+    }
+}

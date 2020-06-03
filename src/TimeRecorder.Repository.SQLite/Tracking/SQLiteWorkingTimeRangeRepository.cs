@@ -56,7 +56,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking
 
                 results = dao.SelectYmd(ymd)
                              .Select(r => r.ToDomainObject())
-                             .OrderBy(r => r.StartDateTime)
+                             .OrderBy(r => r.TimePeriod.StartDateTime)
                              .ToArray();
             });
 

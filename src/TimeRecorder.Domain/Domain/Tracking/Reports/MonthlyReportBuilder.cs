@@ -21,7 +21,9 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
         public DailyWorkRecordHeader[] Build(WorkingTimeRecordForReport[] records)
         {
             var list = new List<DailyWorkRecordHeader>();
-                
+            if (records.Length == 0)
+                return new DailyWorkRecordHeader[0];
+
             var date = _YearMonth.StartDate;
             while(date.Month == _YearMonth.StartDate.Month)
             {
