@@ -27,14 +27,14 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tracking
         {
             DomainModel = workingTimeRange;
 
-            TargetDate = new ReactivePropertySlim<DateTime>(DomainModel.StartDateTime);
+            TargetDate = new ReactivePropertySlim<DateTime>(DomainModel.TimePeriod.StartDateTime);
 
-            StartTimeText = new ReactiveProperty<string>(DomainModel.StartDateTime.ToString("HHmm"))
+            StartTimeText = new ReactiveProperty<string>(DomainModel.TimePeriod.StartDateTime.ToString("HHmm"))
                             .SetValidateNotifyError(x => string.IsNullOrEmpty(x) ? "入力必須です" : null)
                             .SetValidateNotifyError(x => DateTimeParser.ConvertFromHHmm(x).HasValue == false ? "HHmm形式で入力してください" : null)
                             .AddTo(CompositeDisposable);
 
-            EndTimeText = new ReactiveProperty<string>(DomainModel.EndDateTime?.ToString("HHmm") ?? "")
+            EndTimeText = new ReactiveProperty<string>(DomainModel.TimePeriod.EndDateTime?.ToString("HHmm") ?? "")
                             .SetValidateNotifyError(x => string.IsNullOrEmpty(x) == false && DateTimeParser.ConvertFromHHmm(x).HasValue == false ? "HHmm形式で入力してください" : null)
                             .AddTo(CompositeDisposable);
         }

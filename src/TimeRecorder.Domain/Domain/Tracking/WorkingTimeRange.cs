@@ -28,7 +28,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
         }
         #endregion
 
-        public bool IsDoing => TimePeriod.IsDoing;
+        public bool IsDoing => TimePeriod.WithinRangeAtCurrentTime;
 
         public int WorkSpanMinutes => TimePeriod.CalcWorkTimeMinutes();
 

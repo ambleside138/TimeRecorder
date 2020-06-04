@@ -77,7 +77,7 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking
             var fixedClock = new FixedSystemClock(new DateTime(2020, 6, 1, hour, min, 0));
             SystemClockServiceLocator.SetSystemClock(fixedClock);
 
-            Assert.AreEqual(timePeriod.IsDoing, result);
+            Assert.AreEqual(timePeriod.WithinRangeAtCurrentTime, result);
         }
 
 

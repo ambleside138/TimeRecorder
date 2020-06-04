@@ -8,6 +8,9 @@ using System.Text.Unicode;
 
 namespace TimeRecorder.Helpers
 {
+    /// <summary>
+    /// JSONファイルを入出力するメソッドを提供します
+    /// </summary>
     static class JsonFileIO
     {
         private static readonly JsonSerializerOptions _Options = new JsonSerializerOptions
@@ -16,6 +19,12 @@ namespace TimeRecorder.Helpers
             WriteIndented = true
         };
 
+        /// <summary>
+        /// 指定パスのファイルに格納されているJSONドキュメントを逆シリアル化します
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
         public static T Deserialize<T>(string filePath)
         {
             if(File.Exists(filePath) == false)
@@ -28,6 +37,12 @@ namespace TimeRecorder.Helpers
             }
         }
 
+        /// <summary>
+        /// 指定した source をシリアル化し、生成された XML ドキュメントをファイルに書き込みます。
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="filePath"></param>
         public static void Serialize<T>(T source, string filePath)
         {
             using (var stream = new FileStream(filePath, FileMode.Create, FileAccess.Write))

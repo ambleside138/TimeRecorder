@@ -32,9 +32,9 @@ namespace TimeRecorder.Domain.Domain.Tracking
         public bool IsStopped => EndDateTime.HasValue;
 
         /// <summary>
-        /// 現在作業中であるかどうかを表します
+        /// 現在時刻が開始～終了時刻の範囲内かどうかを表します
         /// </summary>
-        public bool IsDoing => StartDateTime < _SystemClock.Now
+        public bool WithinRangeAtCurrentTime => StartDateTime < _SystemClock.Now
                                 && (EndDateTime.HasValue == false || EndDateTime.Value > _SystemClock.Now);
 
         public static TimePeriod CreateForStart()
@@ -42,6 +42,8 @@ namespace TimeRecorder.Domain.Domain.Tracking
             return new TimePeriod(_SystemClock.Now, null);
         }
 
+        public TimePeriod(string startHHmm, string endHHmm)
+            : this(DateTimeParser.ConvertFromHHmmss(startHHmm).Value, DateTimeParser.ConvertFromHHmmss(endHHmm)) { }
 
         public TimePeriod(DateTime start, DateTime? end)
         {

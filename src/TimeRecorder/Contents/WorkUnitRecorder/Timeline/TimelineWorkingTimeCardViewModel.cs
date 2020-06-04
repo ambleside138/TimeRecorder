@@ -43,20 +43,17 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             TaskCategory = workingTimeRange.TaskCategory;
             WorkProcessName = workingTimeRange.WorkProcessName;
 
-            StartHHmm = workingTimeRange.StartDateTime.ToString("HHmm");
-            EndHHmm = workingTimeRange.EndDateTime?.ToString("HHmm") ?? "";
+            StartHHmm = workingTimeRange.TimePeriod.StartDateTime.ToString("HHmm");
+            EndHHmm = workingTimeRange.TimePeriod.EndDateTime?.ToString("HHmm") ?? "";
 
             CanvasTop = CalcTop();
             ActualHeight.Value = CalcActualHeight();
-                
-            if(workingTimeRange.EndDateTime == null)
-            {
-                // 1minスパンで更新する
-                var timer = new ReactiveTimer(TimeSpan.FromMinutes(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
-                timer.Subscribe(_ => ActualHeight.Value = CalcActualHeight());
-                timer.AddTo(CompositeDisposable);
-                timer.Start();
-            }
+
+            // 1minスパンで更新する
+            var timer = new ReactiveTimer(TimeSpan.FromMinutes(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
+            timer.Subscribe(_ => ActualHeight.Value = CalcActualHeight());
+            timer.AddTo(CompositeDisposable);
+            timer.Start();
         }
 
         public void UpdateDurationTime()
@@ -75,13 +72,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
             _NoValueCount = 0;
 
-            if(_SystemClock.Now < DomainModel.StartDateTime)
-            {
-                DurationTimeText.Value = "--:--:--";
-                return;
-            }
-
-            var diff = _SystemClock.Now - DomainModel.StartDateTime;
+            var diff = _SystemClock.Now - DomainModel.TimePeriod.StartDateTime;
             DurationTimeText.Value = $"{diff.Hours:00}:{diff.Minutes:00}:{diff.Seconds:00}";
         }
 
@@ -94,8 +85,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
             var hourHeight = TimelineProperties.Current.HourHeight;
 
-            var result = hourHeight * DomainModel.StartDateTime.Hour;
-            result += (hourHeight / 60) * DomainModel.StartDateTime.Minute;
+            var result = hourHeight * DomainModel.TimePeriod.StartDateTime.Hour;
+            result += (hourHeight / 60) * DomainModel.TimePeriod.StartDateTime.Minute;
 
             return result;
         }
@@ -105,9 +96,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             if (DomainModel == null)
                 return 0;
 
-            var endDateTime = DomainModel.EndDateTime ?? _SystemClock.Now;
+            var endDateTime = DomainModel.TimePeriod.EndDateTime ?? _SystemClock.Now;
 
-            var d = endDateTime - DomainModel.StartDateTime;
+            var d = endDateTime - DomainModel.TimePeriod.StartDateTime;
             var hourHeight = TimelineProperties.Current.HourHeight;
             return (hourHeight / 60) * (int)d.TotalMinutes;
         }

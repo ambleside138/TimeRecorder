@@ -44,7 +44,7 @@ WHERE
                 list.AddRange(listRow.Select(r => r.ConvertToDto()));
             });
 
-            return list.OrderBy(i => i.StartDateTime).ToArray();
+            return list.OrderBy(i => i.TimePeriod.StartDateTime).ToArray();
         }
 
         private class WorkingTimeForTimelineTableRow
@@ -72,8 +72,7 @@ WHERE
                 {
                     WorkingTimeId = new Domain.Utility.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
                     WorkTaskId = new Domain.Utility.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
-                    StartDateTime = DateTimeParser.ConvertFromHHmmss(StartTime).Value,
-                    EndDateTime = DateTimeParser.ConvertFromHHmmss(EndTime),
+                    TimePeriod = new Domain.Domain.Tracking.TimePeriod(StartTime, EndTime),
                     TaskTitle = Title,
                     TaskCategory = TaskCategory,
                     TaskRemarks = Remarks,
