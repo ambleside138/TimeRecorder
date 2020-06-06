@@ -49,9 +49,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             CanvasTop = CalcTop();
             ActualHeight.Value = CalcActualHeight();
 
-            // 1minスパンで更新する
-            var timer = new ReactiveTimer(TimeSpan.FromMinutes(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
-            timer.Subscribe(_ => ActualHeight.Value = CalcActualHeight());
+            // 1sスパンで更新する
+            var timer = new ReactiveTimer(TimeSpan.FromSeconds(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
+            timer.Subscribe(_ => UpdateDurationTime());
             timer.AddTo(CompositeDisposable);
             timer.Start();
         }
@@ -74,6 +74,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
             var diff = _SystemClock.Now - DomainModel.TimePeriod.StartDateTime;
             DurationTimeText.Value = $"{diff.Hours:00}:{diff.Minutes:00}:{diff.Seconds:00}";
+
+            ActualHeight.Value = CalcActualHeight();
         }
 
         private int CalcTop()

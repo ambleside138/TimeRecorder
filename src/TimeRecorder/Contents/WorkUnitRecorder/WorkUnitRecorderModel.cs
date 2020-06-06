@@ -31,9 +31,10 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public ObservableCollection<WorkingTimeForTimelineDto> WorkingTimes { get; } = new ObservableCollection<WorkingTimeForTimelineDto>();
 
 
-        public ReactiveProperty<WorkingTimeForTimelineDto> DoingTask { get; } = new ReactiveProperty<WorkingTimeForTimelineDto>();
+        public ReactiveProperty<WorkingTimeForTimelineDto> DoingTask { get; } = new ReactiveProperty<WorkingTimeForTimelineDto>(null, ReactivePropertyMode.Default, new WorkingTimeForTimelineDtoEqualityComparer());
 
         private LivetCompositeDisposable _Disposables = new LivetCompositeDisposable();
+
 
         #region UseCases
         private readonly WorkTaskUseCase _WorkTaskUseCase;
@@ -78,14 +79,82 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             LoadWorkingTime();
         }
 
-        public void LoadWorkingTime()
+        private void LoadWorkingTime()
         {
             var list = _GetWorkingTimeForTimelineUseCase.SelectByYmd(TargetYmd.Value);
 
             WorkingTimes.Clear();
             WorkingTimes.AddRange(list);
 
-            DoingTask.Value = WorkingTimes.FirstOrDefault(w => w.EndDateTime.HasValue == false);
+           SetDoingTask();
+        }
+
+        public void UpdateDoingTask()
+        {
+            if (DoingTask == null)
+            {
+                // 登録済みの予定が存在する可能性がある
+                SetDoingTask();
+            }
+            else
+            {
+                // 実行中の作業がある場合
+                //  A.そのまま続行
+                //  B.次のスケジュールが埋まっている or 予定終了時間を超えた場合は自動終了する
+                // いずれかの処理が必要
+                if (AutoStopCurrentTaskIfNeeded(out string message))
+                {
+                    NotificationService.Current.Info("作業タスク 更新のお知らせ", message);
+                }
+            }
+        }
+
+
+        public void SetDoingTask()
+        {
+            var target = WorkingTimes.Where(w => w.TimePeriod.WithinRangeAtCurrentTime)
+                                     .FirstOrDefault();
+
+            DoingTask.Value = target;
+        }
+
+        public bool AutoStopCurrentTaskIfNeeded(out string message)
+        {
+            message = "";
+
+            if (DoingTask.Value == null)
+                return false;
+
+            // 終了予定時刻ありの場合
+            if (DoingTask.Value.TimePeriod.EndDateTime.HasValue)
+            {
+                // 現在のタスクが終了時刻を迎えたら終了
+                if (DoingTask.Value.TimePeriod.WithinRangeAtCurrentTime == false)
+                {
+                    SetDoingTask();
+                    message = "終了予定時刻となったため 現在の作業を終了しました";
+                    return true;
+                }
+            }
+            // 終了予定時刻なしの場合
+            else
+            {
+                // 予定タスクがあれば自動移行
+                var otherPlanedTask = WorkingTimes.Where(t => t.WorkingTimeId != DoingTask.Value.WorkingTimeId)
+                                                       .Where(w => w.TimePeriod.WithinRangeAtCurrentTime)
+                                                       .FirstOrDefault();
+                if (otherPlanedTask != null)
+                {
+                    // 現在タスクの終了
+                    // ＃終了処理のなかで再読み込みも行われる
+                    StopCurrentTask();
+                    message = $"タスク [ {otherPlanedTask.TaskTitle} ] の開始予定時刻となったため現在の作業を終了しました";
+                    return true;
+                }
+            }
+
+            return false;
+
         }
 
         public void AddWorkTask(WorkTask workTask)

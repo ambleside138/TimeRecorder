@@ -34,7 +34,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
         /// <summary>
         /// 現在時刻が開始～終了時刻の範囲内かどうかを表します
         /// </summary>
-        public bool WithinRangeAtCurrentTime => StartDateTime < _SystemClock.Now
+        public bool WithinRangeAtCurrentTime => StartDateTime <= _SystemClock.Now
                                 && (EndDateTime.HasValue == false || EndDateTime.Value > _SystemClock.Now);
 
         public static TimePeriod CreateForStart()

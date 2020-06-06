@@ -55,21 +55,31 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
             CompositeDisposable.Add(_Model);
 
-            Initialize();          
+            Initialize();
+
+            // 1sスパンで更新する
+            var timer = new ReactiveTimer(TimeSpan.FromSeconds(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
+            timer.Subscribe(_ => {
+                    _Model.UpdateDoingTask();
+                    foreach(var obj in PlanedTaskCards)
+                    {
+                        obj.UpdateStatus();
+                    }
+                }
+            );
+            timer.AddTo(CompositeDisposable);
+            timer.Start();
         }
 
         public async void Initialize()
         {
             // 初回の変更通知でよばれるようになったので不要
             //  _Model.Load();
-
-            var timer = new ReactiveTimer(TimeSpan.FromSeconds(1), new SynchronizationContextScheduler(SynchronizationContext.Current)) // 1秒スパン
-                            .AddTo(CompositeDisposable);
-            timer.Subscribe(_ => DoingTask.Value?.UpdateDurationTime());
-            timer.Start();
-
             await ImportTaskFromCalendarCore(needMessage:false);
+
         }
+
+
 
         public async void ExecuteNewTaskDialog()
         {

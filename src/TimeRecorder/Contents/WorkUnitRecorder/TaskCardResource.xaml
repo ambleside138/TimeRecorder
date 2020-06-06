@@ -167,9 +167,9 @@
                             x:Name="rootPanel"
                             Background="Transparent"
                             Orientation="Horizontal">
-                            <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding StartDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}}" />
+                            <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding TimePeriod.StartDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}}" />
                             <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="～" />
-                            <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding EndDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}, ConverterParameter=HH:mm}" />
+                            <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding TimePeriod.EndDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}, ConverterParameter=HH:mm}" />
 
                             <Button
                                 Width="24"

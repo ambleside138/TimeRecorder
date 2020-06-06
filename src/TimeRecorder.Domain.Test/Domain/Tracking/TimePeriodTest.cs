@@ -67,6 +67,7 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking
         }
 
         [TestCase(8,59,false)] // 開始時刻前：作業中でない
+        [TestCase(9,0,true)] // 開始時刻ちょうど：作業中
         [TestCase(9,1,true)] // 開始時刻後：作業中
         public void 作業中_終了時刻未定(int hour, int min, bool result)
         {

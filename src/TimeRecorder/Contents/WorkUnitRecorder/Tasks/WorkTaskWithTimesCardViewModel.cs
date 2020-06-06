@@ -38,18 +38,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public WorkTaskWithTimesCardViewModel(WorkTaskWithTimesDto dto)
         {
             Dto = dto;
-            IsIndeterminate.Value = dto.WorkingTimes.Any(t => t.IsDoing);
-
-            if(IsIndeterminate.Value)
-            {
-                PlayTooltip.Value = "現在の作業を停止";
-                PlayIconKind.Value = "Pause";
-            }
-            else
-            {
-                PlayTooltip.Value = "タスクを開始";
-                PlayIconKind.Value = "Play";
-            }
+            UpdateStatus();
 
             IsCompleted = new ReactivePropertySlim<bool>(false);
 
@@ -62,6 +51,22 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                             })
                         .AddTo(CompositeDisposable);
 
+        }
+
+        public void UpdateStatus()
+        {
+            IsIndeterminate.Value = Dto.WorkingTimes.Any(t => t.IsDoing);
+
+            if (IsIndeterminate.Value)
+            {
+                PlayTooltip.Value = "現在の作業を停止";
+                PlayIconKind.Value = "Pause";
+            }
+            else
+            {
+                PlayTooltip.Value = "タスクを開始";
+                PlayIconKind.Value = "Play";
+            }
         }
 
         public void StartOrStopWorkTask()
