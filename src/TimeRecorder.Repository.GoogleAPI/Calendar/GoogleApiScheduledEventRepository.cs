@@ -76,6 +76,9 @@ namespace TimeRecorder.Repository.GoogleAPI.Calendar
     {
         public static string GetScheduleKind(this Event @event)
         {
+            if (@event.ExtendedProperties == null)
+                return "";
+
             @event.ExtendedProperties.Shared.TryGetValue("eventType", out string result);
             return result;
         }
