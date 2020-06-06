@@ -18,7 +18,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
     {
         public WorkTaskViewModel TaskCardViewModel { get; }
 
-        public ReactivePropertySlim<bool> IsEditMode = new ReactivePropertySlim<bool>(false);
+        public ReactivePropertySlim<bool> IsEditMode { get; } = new ReactivePropertySlim<bool>(false);
 
         private readonly WorkTaskEditDialogModel _WorkTaskEditDialogModel = new WorkTaskEditDialogModel();
 
@@ -28,12 +28,14 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 
         public Product[] Products { get; }
 
+        public bool NeedDelete { get; set; } = false;
+
         public WorkTaskEditDialogViewModel()
             : this(WorkTask.ForNew()) { }
 
         public WorkTaskEditDialogViewModel(WorkTask model)
         {
-            IsEditMode.Value = true;
+            IsEditMode.Value = model.Id.IsTemporary == false;
 
             Processes = _WorkTaskEditDialogModel.GetProcesses();
             Clients = _WorkTaskEditDialogModel.GetClients();
@@ -48,6 +50,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
             {
                 Messenger.Raise(new Livet.Messaging.InteractionMessage("RegistKey"));
             }
+        }
+
+        public void Delete()
+        {
+            NeedDelete = true;
+            Messenger.Raise(new Livet.Messaging.InteractionMessage("RegistKey"));
         }
 
     }

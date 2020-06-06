@@ -100,8 +100,16 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
             if (result.HasValue && result.Value)
             {
-                var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
-                _Model.EditWorkTask(inputValue);
+                if(editDialogVm.NeedDelete)
+                {
+                    _Model.DeleteWorkTask(Dto.TaskId);
+                }
+                else
+                {
+                    var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
+                    _Model.EditWorkTask(inputValue);
+                }
+
             }
         }
 

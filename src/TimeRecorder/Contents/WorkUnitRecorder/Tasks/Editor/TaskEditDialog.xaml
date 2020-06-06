@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:c="clr-namespace:TimeRecorder.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder.Editor"
@@ -44,7 +45,7 @@
             Text="作業内容" />
 
         <!--  Contents  -->
-        <StackPanel Grid.Row="1" Margin="0,8">
+        <StackPanel Grid.Row="1" Margin="0,8,0,16">
             <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="タイトル*" />
             <TextBox materialDesign:TextFieldAssist.HasClearButton="True" Text="{Binding TaskCardViewModel.Title.Value}" />
 
@@ -110,6 +111,21 @@
             <TextBox materialDesign:TextFieldAssist.HasClearButton="True" Text="{Binding TaskCardViewModel.Remarks.Value}" />-->
 
         </StackPanel>
+
+        <c:CallMethodButton
+            Grid.Row="2"
+            HorizontalAlignment="Left"
+            Content="削除"
+            MethodName="Delete"
+            Style="{StaticResource MaterialDesignOutlinedButton}"
+            Visibility="{Binding IsEditMode.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <c:CallMethodButton.BorderBrush>
+                <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+            </c:CallMethodButton.BorderBrush>
+            <c:CallMethodButton.Foreground>
+                <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+            </c:CallMethodButton.Foreground>
+        </c:CallMethodButton>
 
         <StackPanel
             Grid.Row="2"
