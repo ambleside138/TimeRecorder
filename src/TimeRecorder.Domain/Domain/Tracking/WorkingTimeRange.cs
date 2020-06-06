@@ -44,6 +44,16 @@ namespace TimeRecorder.Domain.Domain.Tracking
             };
         }
 
+        public static WorkingTimeRange ForEdit(Identity<WorkTask> taskId)
+        {
+            return new WorkingTimeRange
+            {
+                Id = Identity<WorkingTimeRange>.Temporary,
+                TaskId = taskId,
+                TimePeriod = new TimePeriod(SystemClockServiceLocator.Current.Now, SystemClockServiceLocator.Current.Now),
+            };
+        }
+
         public static WorkingTimeRange FromScheduledEvent(Identity<WorkTask> taskId, ScheduledEvent scheduledEvent)
         {
             return new WorkingTimeRange

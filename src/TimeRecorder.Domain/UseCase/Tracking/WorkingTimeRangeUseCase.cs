@@ -60,6 +60,16 @@ namespace TimeRecorder.Domain.UseCase.Tracking
             return _WorkingTimeRangeRepository.Add(newWorkingTime);
         }
 
+        /// <summary>
+        /// 作業時間を追加します（入力し忘れ対応）
+        /// </summary>
+        /// <param name="workingTimeRange"></param>
+        /// <returns></returns>
+        public WorkingTimeRange AddWorkingTimeRange(WorkingTimeRange workingTimeRange)
+        {
+            return _WorkingTimeRangeRepository.Add(workingTimeRange);
+        }
+
         public void StopWorking(Identity<WorkingTimeRange> id)
         {
             var target = _WorkingTimeRangeRepository.SelectById(id);

@@ -2,6 +2,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:c="clr-namespace:TimeRecorder.Controls"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
@@ -94,63 +95,41 @@
                             </Style>
                         </StackPanel.Style>
 
-                        <Button
+                        <c:CallMethodButton
                             Width="24"
                             Height="24"
+                            MethodName="StartOrStopWorkTask"
                             Style="{StaticResource MaterialDesignIconButton}"
                             ToolTip="{Binding PlayTooltip.Value}">
-
-                            <behaviors:Interaction.Triggers>
-                                <behaviors:EventTrigger EventName="Click">
-                                    <l:LivetCallMethodAction MethodName="StartOrStopWorkTask" MethodTarget="{Binding}" />
-                                </behaviors:EventTrigger>
-                            </behaviors:Interaction.Triggers>
-
                             <materialDesign:PackIcon
                                 Width="16"
                                 Height="16"
                                 Kind="{Binding PlayIconKind.Value}" />
-                        </Button>
+                        </c:CallMethodButton>
 
-                        <Button
+                        <c:CallMethodButton
                             Width="24"
                             Height="24"
+                            MethodName="EditWorkTask"
                             Style="{StaticResource MaterialDesignIconButton}"
                             ToolTip="タスクの編集">
-
-                            <behaviors:Interaction.Triggers>
-                                <behaviors:EventTrigger EventName="Click">
-                                    <l:LivetCallMethodAction MethodName="EditWorkTask" MethodTarget="{Binding}" />
-                                </behaviors:EventTrigger>
-                            </behaviors:Interaction.Triggers>
-
                             <materialDesign:PackIcon
                                 Width="16"
                                 Height="16"
                                 Kind="Pencil" />
-                        </Button>
+                        </c:CallMethodButton>
 
-                        <Button
+                        <c:CallMethodButton
                             Width="24"
                             Height="24"
+                            MethodName="AddWorkingTime"
                             Style="{StaticResource MaterialDesignIconButton}"
-                            ToolTip="タスクの削除">
-
-                            <behaviors:Interaction.Triggers>
-                                <behaviors:EventTrigger EventName="Click">
-                                    <l:LivetCallMethodAction MethodName="DeleteWorkTask" MethodTarget="{Binding}" />
-                                </behaviors:EventTrigger>
-                            </behaviors:Interaction.Triggers>
-
+                            ToolTip="作業時間の追加">
                             <materialDesign:PackIcon
                                 Width="16"
                                 Height="16"
-                                Kind="CloseCircle">
-                                <materialDesign:PackIcon.Foreground>
-                                    <SolidColorBrush Color="{StaticResource RedPrimary600}" />
-                                </materialDesign:PackIcon.Foreground>
-                            </materialDesign:PackIcon>
-                        </Button>
+                                Kind="TimelinePlus" />
+                        </c:CallMethodButton>
                     </StackPanel>
                 </Grid>
 

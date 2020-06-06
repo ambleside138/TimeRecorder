@@ -62,6 +62,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
             ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
         }
 
+        public void AddWorkingTime(WorkingTimeRange target)
+        {
+            _WorkingTimeRangeUseCase.AddWorkingTimeRange(target);
+            ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
+        }
+
         public void DeleteWorkingTime(WorkingTimeRange target)
         {
             _WorkingTimeRangeUseCase.DeleteWorkingTimeRange(target.Id);

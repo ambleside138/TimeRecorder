@@ -105,6 +105,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             }
         }
 
+
+
         public async void CompleteWorkTask()
         {
             try
@@ -124,6 +126,27 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public void DeleteWorkTask()
         {
             _Model.DeleteWorkTask(Dto.TaskId);
+        }
+
+        public async void AddWorkingTime()
+        {
+            var workingTimeRange = WorkingTimeRange.ForEdit(Dto.TaskId);
+
+            var editDialogVm = new WorkingTimeRangeEditDialogViewModel(workingTimeRange);
+
+            var view = new WorkingTimeRangeEditDialog
+            {
+                DataContext = editDialogVm
+            };
+
+            //show the dialog
+            var result = (bool?)await DialogHost.Show(view);
+
+            if (result.HasValue && result.Value)
+            {
+                var editObj = editDialogVm.WorkingTimeViewModel.DomainModel;
+                _Model.AddWorkingTime(editObj);
+            }
         }
 
         public async void EditWorkingTime(WorkingTimeRange workingTimeRange)
