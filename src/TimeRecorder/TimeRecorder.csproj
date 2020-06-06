@@ -25,6 +25,7 @@
     <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.0" />
     <PackageReference Include="MicroResolver" Version="2.3.5" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
+    <PackageReference Include="NLog" Version="4.7.2" />
     <PackageReference Include="ReactiveProperty" Version="7.0.0" />
     <PackageReference Include="System.Management" Version="4.7.0" />
   </ItemGroup>

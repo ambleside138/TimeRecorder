@@ -1,4 +1,7 @@
 ﻿using MaterialDesignThemes.Wpf;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -18,10 +21,16 @@ namespace TimeRecorder
     /// </summary>
     public partial class App : Application
     {
+        private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private Mutex _Mutex = new Mutex(false, "TimeRecorder");
 
         protected override void OnStartup(StartupEventArgs e)
         {
+            InitializeLogger();
+
+            _Logger.Info("アプリケーションの開始");
+
             if (_Mutex.WaitOne(0, false) == false)
             {
                 // 起動済みのウィンドウをアクティブにする
@@ -31,6 +40,8 @@ namespace TimeRecorder
                 _Mutex.Close();
                 _Mutex = null;
                 Shutdown();
+
+                _Logger.Info("二重起動のため終了します");
                 return;
             }
 
@@ -39,6 +50,34 @@ namespace TimeRecorder
             base.OnStartup(e);
 
             ContainerHelper.Setup();
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            _Logger.Info("アプリケーションの終了");
+            NLog.LogManager.Shutdown(); // Flush and close down internal threads and timers
+            base.OnExit(e);
+        }
+        private void InitializeLogger()
+        {
+            var conf = new LoggingConfiguration();
+            // ファイル出力定義
+            var file = new FileTarget("logfile")
+            {
+                Encoding = System.Text.Encoding.UTF8,
+                Layout = "${longdate} [${threadid:padding=2}] [${uppercase:${level:padding=-5}}] ${callsite}() - ${message}${exception:format=ToString}",
+                FileName = "${basedir}/logs/TimeRecorder_${date:format=yyyyMMdd}.log",
+                ArchiveNumbering = ArchiveNumberingMode.Date,
+                ArchiveFileName = "${basedir}/logs/TimeRecorder.log.{#}",
+                ArchiveEvery = FileArchivePeriod.None,
+                MaxArchiveFiles = 10
+            };
+            conf.AddTarget(file);
+
+            conf.LoggingRules.Add(new LoggingRule("*", LogLevel.Debug, file));
+
+            // 設定を反映する
+            LogManager.Configuration = conf;
         }
 
         private void App_DispatcherUnhandledException(
@@ -59,7 +98,7 @@ namespace TimeRecorder
             //            if (result == MessageBoxResult.Yes)
             //                e.Handled = true;
 
-            
+            _Logger.Error(e.Exception, "不明なエラーが発生しました");
 
             SnackbarService.Current.ShowMessage(GetExceptionMessage(e.Exception));
 

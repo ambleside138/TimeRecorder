@@ -25,9 +25,12 @@
                         Text="{Binding TaskTitle}" />
 
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding DomainModel.StartDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}}" />
-                        <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="～" Margin="8 0" />
-                        <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding DomainModel.EndDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}, ConverterParameter=HH:mm}" />
+                        <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding DomainModel.TimePeriod.StartDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}}" />
+                        <TextBlock
+                            Margin="8,0"
+                            Style="{StaticResource MaterialDesignBody1TextBlock}"
+                            Text="～" />
+                        <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="{Binding DomainModel.TimePeriod.EndDateTime, Converter={StaticResource DateTimeToFormattedStringConverter}, ConverterParameter=HH:mm}" />
                     </StackPanel>
                 </StackPanel>
             </Grid.ToolTip>
