@@ -83,5 +83,27 @@ namespace TimeRecorder.Domain.Domain.Tracking
             yield return StartDateTime;
             yield return EndDateTime;
         }
+
+
+        public bool IsOverlapped(TimePeriod other)
+        {
+            // 比較対象のほうが開始時刻が早い場合
+            if (StartDateTime > other.StartDateTime)
+            {
+                // 比較対象の終了時刻で確定
+                return other.EndDateTime == null
+                           || other.EndDateTime.Value > StartDateTime;
+            }
+
+            // 比較対象のほうが開始時刻が遅い場合
+            if (EndDateTime.HasValue)
+            {
+                return other.StartDateTime < EndDateTime.Value;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

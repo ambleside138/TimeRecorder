@@ -49,6 +49,8 @@ namespace TimeRecorder.Repository.SQLite.Tasks
 
                     dto.WorkingTimes = times.Where(t => t.TaskId == task.Id)
                                             .Select(t => t.ToDomainObject())
+                                            .OrderBy(t => t.TimePeriod.StartDateTime)
+                                            .ThenBy(t => t.Id)
                                             .ToArray();
 
                     list.Add(dto);

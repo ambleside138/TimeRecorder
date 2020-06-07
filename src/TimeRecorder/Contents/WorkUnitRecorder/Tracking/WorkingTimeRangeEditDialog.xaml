@@ -40,6 +40,7 @@
                 Width="40"
                 Margin="16,0,0,0"
                 HorizontalContentAlignment="Center"
+                materialDesign:HintAssist.Hint="HHmm"
                 InputMethod.IsInputMethodEnabled="False"
                 MaxLength="4"
                 Text="{Binding WorkingTimeViewModel.StartTimeText.Value, UpdateSourceTrigger=PropertyChanged}" />
@@ -48,9 +49,11 @@
                 VerticalAlignment="Center"
                 Text="～" />
             <TextBox
-                Width="40"
+                Width="56"
                 Margin="8,0,0,0"
                 HorizontalContentAlignment="Center"
+                materialDesign:HintAssist.Hint="HHmm"
+                materialDesign:TextFieldAssist.HasClearButton="True"
                 InputMethod.IsInputMethodEnabled="False"
                 MaxLength="4"
                 Text="{Binding WorkingTimeViewModel.EndTimeText.Value, UpdateSourceTrigger=PropertyChanged}" />

@@ -57,7 +57,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tracking
 
 
         public DateTime GetStartDateTime() => DateTimeParser.ConvertFromYmdHHmmss(TargetDate.Value.ToYmd(), StartTimeText.Value + "00").Value;
-        public DateTime? GetEndDateTime() => DateTimeParser.ConvertFromYmdHHmmss(TargetDate.Value.ToYmd(), EndTimeText.Value + "00").Value;
+        public DateTime? GetEndDateTime() => DateTimeParser.ConvertFromYmdHHmmss(TargetDate.Value.ToYmd(), EndTimeText.Value + "00");
 
     }
 }
