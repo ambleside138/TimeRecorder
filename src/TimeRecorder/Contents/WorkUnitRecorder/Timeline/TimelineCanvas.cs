@@ -58,6 +58,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public TimelineCanvas()
         {
+            StartHour = TimelineProperties.Current.StartHour;
+
             InitializeHourText();
         }
 

@@ -89,6 +89,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
             var result = hourHeight * DomainModel.TimePeriod.StartDateTime.Hour;
             result += (hourHeight / 60) * DomainModel.TimePeriod.StartDateTime.Minute;
+            result -= hourHeight * TimelineProperties.Current.StartHour;
 
             return result;
         }

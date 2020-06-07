@@ -13,5 +13,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
         /// </summary>
         public int HourHeight { get; set; } = 60;
 
+        public int StartHour { get; set; } = 7;
+
     }
 }
