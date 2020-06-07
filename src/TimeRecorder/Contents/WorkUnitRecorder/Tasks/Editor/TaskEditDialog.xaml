@@ -11,16 +11,16 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    Width="400"
+    Width="420"
     d:DesignHeight="450"
     d:DesignWidth="800"
     AllowsTransparency="True"
     Background="Transparent"
+    FocusManager.FocusedElement="{Binding ElementName=TitleTextBox}"
     ShowInTaskbar="False"
-    SizeToContent="WidthAndHeight"
+    SizeToContent="Height"
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
-    FocusManager.FocusedElement="{Binding ElementName=TitleTextBox}"
     mc:Ignorable="d">
 
     <behaviors:Interaction.Triggers>
@@ -62,7 +62,10 @@
             <!--  Contents  -->
             <StackPanel Grid.Row="1" Margin="0,8,0,16">
                 <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="タイトル*" />
-                <TextBox x:Name="TitleTextBox" materialDesign:TextFieldAssist.HasClearButton="True" Text="{Binding TaskCardViewModel.Title.Value}" />
+                <TextBox
+                    x:Name="TitleTextBox"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
+                    Text="{Binding TaskCardViewModel.Title.Value}" />
 
                 <TextBlock
                     Margin="0,16,0,4"
@@ -146,14 +149,25 @@
                 Grid.Row="2"
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
-                <Button Content="登録">
+
+                <Button
+                    Margin="4,0"
+                    Content="登録"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="Click">
                             <l:LivetCallMethodAction MethodName="Regist" MethodTarget="{Binding}" />
                         </behaviors:EventTrigger>
                     </behaviors:Interaction.Triggers>
-
                 </Button>
+
+                <c:CallMethodButton
+                    Margin="4,0"
+                    Content="{materialDesign:PackIcon Play}"
+                    MethodName="RegistAndStart"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    ToolTip="追加して開始"
+                    Visibility="{Binding IsEditMode.Value, Converter={StaticResource InverseBoolToVisConverter}}" />
                 <Button Content="キャンセル" Style="{StaticResource MaterialDesignFlatButton}">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="Click">

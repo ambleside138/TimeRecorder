@@ -157,10 +157,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         }
 
-        public void AddWorkTask(WorkTask workTask)
+        public void AddWorkTask(WorkTask workTask, bool needStart)
         {
-            _WorkTaskUseCase.Add(workTask);
-
+            var task = _WorkTaskUseCase.Add(workTask);
+            if(needStart)
+            {
+                _WorkingTimeRangeUseCase.StartWorking(task.Id);
+            }
             Load();
         }
 

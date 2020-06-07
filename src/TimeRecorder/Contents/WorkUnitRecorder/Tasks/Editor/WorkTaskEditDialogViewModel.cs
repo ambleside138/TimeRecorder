@@ -33,6 +33,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 
         public bool NeedDelete { get; set; } = false;
 
+        public bool NeedStart { get; set; } = false;
+
         public WorkTaskEditDialogViewModel()
             : this(WorkTask.ForNew()) { }
 
@@ -51,6 +53,15 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
         {
             if(TaskCardViewModel.TryValidate())
             {
+                Messenger.Raise(new ModalWindowActionMessage("RegistKey") { DialogResult = true });
+            }
+        }
+
+        public void RegistAndStart()
+        {
+            if (TaskCardViewModel.TryValidate())
+            {
+                NeedStart = true;
                 Messenger.Raise(new ModalWindowActionMessage("RegistKey") { DialogResult = true });
             }
         }

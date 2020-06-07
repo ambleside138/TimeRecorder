@@ -91,7 +91,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             if (result == ModalTransitionResponse.Yes)
             {
                 var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
-                _Model.AddWorkTask(inputValue);
+                _Model.AddWorkTask(inputValue, editDialogVm.NeedStart);
+
+
             }
         }
 
