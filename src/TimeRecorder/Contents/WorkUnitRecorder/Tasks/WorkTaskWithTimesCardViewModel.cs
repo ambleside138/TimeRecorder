@@ -1,4 +1,5 @@
 ﻿using Livet;
+using Livet.Messaging;
 using MaterialDesignThemes.Wpf;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
@@ -14,6 +15,7 @@ using TimeRecorder.Contents.WorkUnitRecorder.Tasks;
 using TimeRecorder.Contents.WorkUnitRecorder.Tracking;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
+using TimeRecorder.Helpers;
 using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
@@ -83,22 +85,15 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         }
 
 
-        public async void EditWorkTask()
+        public void EditWorkTask()
         {
             var targetData = _Model.SelectWorkTask(Dto.TaskId);
 
             var editDialogVm = new WorkTaskEditDialogViewModel(targetData);
 
-            //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new TaskEditDialog
-            {
-                DataContext = editDialogVm
-            };
+            var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
 
-            //show the dialog
-            var result = (bool?)await DialogHost.Show(view);
-
-            if (result.HasValue && result.Value)
+            if (result == ModalTransitionResponse.Yes)
             {
                 if(editDialogVm.NeedDelete)
                 {

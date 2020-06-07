@@ -10,6 +10,7 @@ using TimeRecorder.NavigationRail.ViewModels;
 using TimeRecorder.Contents.WorkUnitRecorder;
 using MaterialDesignThemes.Wpf;
 using Reactive.Bindings;
+using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Host
 {
@@ -27,7 +28,7 @@ namespace TimeRecorder.Host
 
         private MainWindowViewModel()
         {
-
+            TransitionHelper.Current.SetMessanger(Messenger);
         }
 
         public void Initialize()

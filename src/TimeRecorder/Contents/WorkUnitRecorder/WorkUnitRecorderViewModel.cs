@@ -17,6 +17,7 @@ using System.Threading;
 using System.Linq;
 using TimeRecorder.Host;
 using System.Threading.Tasks;
+using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -81,20 +82,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
 
 
-        public async void ExecuteNewTaskDialog()
+        public void ExecuteNewTaskDialog()
         {
             var editDialogVm = new WorkTaskEditDialogViewModel();
 
-            //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new TaskEditDialog
-            {
-                DataContext = editDialogVm
-            };
+            var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
 
-            //show the dialog
-            var result = (bool?)await DialogHost.Show(view);
-
-            if (result.HasValue && result.Value)
+            if (result == ModalTransitionResponse.Yes)
             {
                 var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
                 _Model.AddWorkTask(inputValue);

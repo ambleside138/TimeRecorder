@@ -2,6 +2,7 @@
     x:Class="TimeRecorder.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="clr-namespace:TimeRecorder.Behaviors.Messaging"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:configuration="clr-namespace:TimeRecorder.Contents.Configuration"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -64,6 +65,10 @@
             <l:DataContextDisposeAction />
         </behaviors:EventTrigger>
 
+        <l:InteractionMessageTrigger MessageKey="ModalTransitionKey" Messenger="{Binding Messenger}">
+            <b:MaterialTransitionInteractionMessageAction HostBorder="{Binding ElementName=PART_TransitionBorder}" IsOwned="True" />
+        </l:InteractionMessageTrigger>
+
         <!--  If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior.  -->
 
     </behaviors:Interaction.Triggers>
@@ -101,9 +106,13 @@
 
             <materialDesign:Snackbar x:Name="Snackbar" MessageQueue="{Binding SnackMessageQueue}" />
 
+            <Border x:Name="PART_TransitionBorder" Visibility="Collapsed">
+                <Border.Background>
+                    <SolidColorBrush Opacity="0.8" Color="{StaticResource GreyPrimary800}" />
+                </Border.Background>
+            </Border>
         </Grid>
 
     </materialDesign:DialogHost>
-
 
 </metro:MetroWindow>

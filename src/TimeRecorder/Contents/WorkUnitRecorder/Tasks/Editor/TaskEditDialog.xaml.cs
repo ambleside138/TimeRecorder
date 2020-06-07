@@ -16,7 +16,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
     /// <summary>
     /// TaskEditDialog.xaml の相互作用ロジック
     /// </summary>
-    public partial class TaskEditDialog : UserControl
+    public partial class TaskEditDialog : Window
     {
         public TaskEditDialog()
         {

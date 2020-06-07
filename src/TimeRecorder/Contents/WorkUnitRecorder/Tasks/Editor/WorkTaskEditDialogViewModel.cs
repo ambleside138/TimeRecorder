@@ -11,6 +11,9 @@ using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Host;
 using MaterialDesignThemes.Wpf;
+using Livet.Behaviors.Messaging.Windows;
+using Livet.Messaging.Windows;
+using TimeRecorder.Messaging.Windows;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 {
@@ -48,14 +51,14 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
         {
             if(TaskCardViewModel.TryValidate())
             {
-                Messenger.Raise(new Livet.Messaging.InteractionMessage("RegistKey"));
+                Messenger.Raise(new ModalWindowActionMessage("RegistKey") { DialogResult = true });
             }
         }
 
         public void Delete()
         {
             NeedDelete = true;
-            Messenger.Raise(new Livet.Messaging.InteractionMessage("RegistKey"));
+            Messenger.Raise(new ModalWindowActionMessage("RegistKey") { DialogResult = true });
         }
 
     }
