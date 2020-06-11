@@ -16,7 +16,9 @@ namespace TimeRecorder.Driver.CsvExporter
         
         public void ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath)
         {
-            var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h)).ToArray();
+            var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h))
+                                             .Where(r => r.ManHour != "0")
+                                             .ToArray();
 
             // .Net CoreでSJISを扱うために呼ぶ必要がある
             // パッケージも必要: System.Text.Encoding.CodePages
