@@ -131,7 +131,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
             var now = SystemClockServiceLocator.Current.Now;
             if(_LatestBackupTime == null
-                || (now - _LatestBackupTime.Value).TotalMinutes > 2)
+                || (now - _LatestBackupTime.Value).TotalMinutes > 60)
             {
                 new BackupWorker().Backup(backupDirectory);
                 _Logger.Info("バックアップに成功しました");
