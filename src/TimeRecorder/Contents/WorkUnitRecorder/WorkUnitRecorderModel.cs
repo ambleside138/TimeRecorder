@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reactive.Joins;
 using System.Text;
@@ -8,6 +9,8 @@ using System.Threading.Tasks;
 using Livet;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using TimeRecorder.Configurations;
+using TimeRecorder.Configurations.Items;
 using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
@@ -17,11 +20,14 @@ using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Utility.SystemClocks;
 using TimeRecorder.Helpers;
 using TimeRecorder.Host;
+using TimeRecorder.Repository.SQLite.System;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
     public class WorkUnitRecorderModel : NotificationObject, IDisposable
     {
+        private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public ReactivePropertySlim<DateTime> TargetDate { get; }
 
         public YmdString TargetYmd => new YmdString(TargetDate.Value.ToString("yyyyMMdd"));
@@ -35,6 +41,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         private LivetCompositeDisposable _Disposables = new LivetCompositeDisposable();
 
+        private DateTime? _LatestBackupTime = null;
 
         #region UseCases
         private readonly WorkTaskUseCase _WorkTaskUseCase;
@@ -106,6 +113,29 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                 {
                     NotificationService.Current.Info("作業タスク 更新のお知らせ", message);
                 }
+            }
+        }
+
+        public void BackupIfNeeded()
+        {
+            var backupDirectory = UserConfigurationManager.Instance.GetConfiguration<BackupPathConfig>(ConfigKey.BackupPath)?.DirectoryPath;
+            
+            if (string.IsNullOrEmpty(backupDirectory))
+                return;
+
+            if (Directory.Exists(backupDirectory) == false)
+            {
+                _Logger.Warn("バックアップ先のフォルダが見つかりませんでした path="  + backupDirectory);
+                return;
+            }
+
+            var now = SystemClockServiceLocator.Current.Now;
+            if(_LatestBackupTime == null
+                || (now - _LatestBackupTime.Value).TotalMinutes > 2)
+            {
+                new BackupWorker().Backup(backupDirectory);
+                _Logger.Info("バックアップに成功しました");
+                _LatestBackupTime = now;
             }
         }
 

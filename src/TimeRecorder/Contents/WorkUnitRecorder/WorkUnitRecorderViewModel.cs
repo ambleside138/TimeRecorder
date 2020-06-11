@@ -61,6 +61,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             // 1sスパンで更新する
             var timer = new ReactiveTimer(TimeSpan.FromSeconds(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
             timer.Subscribe(_ => {
+                    _Model.BackupIfNeeded();
                     _Model.UpdateDoingTask();
                     foreach(var obj in PlanedTaskCards)
                     {

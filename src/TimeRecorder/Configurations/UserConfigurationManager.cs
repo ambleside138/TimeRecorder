@@ -10,6 +10,7 @@ namespace TimeRecorder.Configurations
     enum ConfigKey
     {
         Theme,
+        BackupPath,
     };
 
     class UserConfigurationManager

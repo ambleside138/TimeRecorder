@@ -6,6 +6,7 @@ using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
 using System.Linq;
 using System.Text;
 using TimeRecorder.Configurations;
@@ -25,15 +26,34 @@ namespace TimeRecorder.Contents.Configuration
 
         public ReactivePropertySlim<Swatch> SelectedSwatch { get; }
 
+        public ReactivePropertySlim<string> BackupPath { get; }
+
         public ConfigurationViewModel()
         {
             // ComboBoxの初期値を設定するにはItemsSourceで利用しているインスタンスの中から指定する必要がある
             SelectedSwatch = new ReactivePropertySlim<Swatch>(Swatches.FirstOrDefault(s => s.Name == ThemeService.CurrentTheme.Name));
-            SelectedSwatch.Subscribe(s =>
+            SelectedSwatch.Subscribe(s =>ChangeTheme(s)).AddTo(CompositeDisposable);
+
+            var backupPath = UserConfigurationManager.Instance.GetConfiguration<BackupPathConfig>(ConfigKey.BackupPath);
+            BackupPath = new ReactivePropertySlim<string>(backupPath?.DirectoryPath);
+        }
+
+        private void ChangeTheme(Swatch swatch)
+        {
+            ThemeService.ApplyPrimary(swatch);
+            UserConfigurationManager.Instance.SetConfiguration(ConfigKey.Theme, new ThemeConfig(swatch));
+        }
+
+        public void RegistBackupPath()
+        {
+            if(Directory.Exists(BackupPath.Value) == false)
             {
-                ThemeService.ApplyPrimary(s);
-                UserConfigurationManager.Instance.SetConfiguration(ConfigKey.Theme, new ThemeConfig(s));
-            }).AddTo(CompositeDisposable);
+                SnackbarService.Current.ShowMessage("指定されたフォルダがみつかりません");
+                return;
+            }
+
+            UserConfigurationManager.Instance.SetConfiguration(ConfigKey.BackupPath, new BackupPathConfig { DirectoryPath = BackupPath.Value });
+            SnackbarService.Current.ShowMessage("バックアップ先を変更しました");
         }
 
         public void ShutDown()

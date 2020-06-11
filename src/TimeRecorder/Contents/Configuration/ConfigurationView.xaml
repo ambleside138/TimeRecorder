@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:c="clr-namespace:TimeRecorder.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
@@ -30,7 +31,7 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid Margin="16">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition />
@@ -38,17 +39,18 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="64" />
+            <RowDefinition Height="64" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <!--  theme  -->
+        <!--  1. theme  -->
         <TextBlock
             Grid.Row="0"
             Grid.Column="0"
             Margin="0,4,16,4"
             HorizontalAlignment="Right"
             VerticalAlignment="Center"
-            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
             Text="テーマ" />
 
         <ComboBox
@@ -69,19 +71,61 @@
             </ComboBox.ItemContainerStyle>
         </ComboBox>
 
-        <Button
+        <!--  2. backup  -->
+        <TextBlock
             Grid.Row="1"
+            Grid.Column="0"
+            Margin="0,4,16,4"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+            Text="バックアップ" />
+
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <TextBox
+                Margin="0,0,16,0"
+                VerticalAlignment="Center"
+                Text="{Binding BackupPath.Value}" />
+
+            <c:CallMethodButton
+                Grid.Column="1"
+                VerticalAlignment="Center"
+                Content="保存"
+                MethodName="RegistBackupPath"
+                Style="{StaticResource MaterialDesignRaisedButton}" />
+
+            <TextBlock
+                Grid.Row="1"
+                Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                Text="１時間おきに指定フォルダへローカルDBをバックアップします" />
+        </Grid>
+
+
+
+
+
+        <Button
+            Grid.Row="2"
             Grid.Column="1"
-            Margin="16"
             HorizontalAlignment="Right"
             VerticalAlignment="Bottom"
             Style="{StaticResource MaterialDesignRaisedButton}">
 
             <Button.Background>
-                <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+                <SolidColorBrush Color="{StaticResource RedPrimary400}" />
             </Button.Background>
             <Button.BorderBrush>
-                <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+                <SolidColorBrush Color="{StaticResource RedPrimary400}" />
             </Button.BorderBrush>
             <Button.Foreground>
                 <SolidColorBrush Color="{StaticResource GreyPrimary50}" />
@@ -93,7 +137,7 @@
                     Height="20"
                     VerticalAlignment="Center"
                     Kind="Power" />
-                <TextBlock Margin="2,0,0,0" Text="アプリケーションの終了" />
+                <TextBlock Margin="3,1,0,0" Text="アプリケーションの終了" />
             </StackPanel>
 
             <behaviors:Interaction.Triggers>
