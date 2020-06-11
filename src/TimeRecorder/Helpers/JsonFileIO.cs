@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
+using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Helpers
 {
@@ -13,11 +14,7 @@ namespace TimeRecorder.Helpers
     /// </summary>
     static class JsonFileIO
     {
-        private static readonly JsonSerializerOptions _Options = new JsonSerializerOptions
-        {
-            Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // デフォルトでは日本語がエンコードされない
-            WriteIndented = true
-        };
+        private static readonly JsonSerializerOptions _Options = JsonSerializerHelper.DefaultOptions;
 
         /// <summary>
         /// 指定パスのファイルに格納されているJSONドキュメントを逆シリアル化します

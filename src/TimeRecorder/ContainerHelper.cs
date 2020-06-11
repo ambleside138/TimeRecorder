@@ -44,6 +44,7 @@ namespace TimeRecorder
             resolver.Register<IWorkTaskWithTimesQueryService, SQLiteWorkTaskWithTimesQueryService>(Lifestyle.Singleton);
             resolver.Register<IHealthChecker, SQLiteHealthChecker>(Lifestyle.Singleton);
             resolver.Register<IScheduledEventRepository, GoogleApiScheduledEventRepository>(Lifestyle.Singleton);
+            resolver.Register<IConfigurationRepository, SQLiteConfigurationRepository>(Lifestyle.Singleton);
 
             resolver.Register<IReportDriver, CsvReportDriver>(Lifestyle.Singleton);
 
