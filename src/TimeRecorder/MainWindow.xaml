@@ -19,6 +19,7 @@
     Height="480"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{materialDesign:MaterialDesignFont}"
+    WindowTitleBrush="{DynamicResource PrimaryHueMidBrush}"
     TextElement.FontSize="11"
     TextElement.FontWeight="Medium"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"

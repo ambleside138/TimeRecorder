@@ -16,51 +16,77 @@
 
     <UserControl.Resources>
         <DataTemplate DataType="{x:Type materialDesignColors:Swatch}">
-            <Border
-                Width="120"
-                Margin="2,2,6,6"
-                Padding="8,4">
+            <Border Padding="16,8" HorizontalAlignment="Stretch">
                 <Border.Background>
                     <SolidColorBrush Color="{Binding ExemplarHue.Color, Mode=OneTime}" />
                 </Border.Background>
-                <StackPanel>
-                    <TextBlock Foreground="{Binding ExemplarHue.Foreground}" Text="{Binding Name}" />
-                </StackPanel>
+                <TextBlock FontSize="14" Text="{Binding Name}">
+                    <TextBlock.Foreground>
+                        <SolidColorBrush Color="{Binding ExemplarHue.Foreground}" />
+                    </TextBlock.Foreground>
+                </TextBlock>
+
             </Border>
         </DataTemplate>
     </UserControl.Resources>
 
-    <StackPanel>
-        <StackPanel Orientation="Vertical">
-            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="セットアップ" />
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="64" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
 
+        <!--  theme  -->
+        <TextBlock
+            Grid.Row="0"
+            Grid.Column="0"
+            Margin="0,4,16,4"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+            Text="テーマ" />
 
-        </StackPanel>
-
-        <StackPanel>
-            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="テーマ" />
-
-            <ScrollViewer
-                Margin="0,12,0,0"
-                HorizontalScrollBarVisibility="Disabled"
-                VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Swatches, Mode=OneTime}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <WrapPanel />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                </ItemsControl>
-            </ScrollViewer>
-        </StackPanel>
+        <ComboBox
+            Grid.Row="0"
+            Grid.Column="1"
+            Width="240"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            HorizontalContentAlignment="Stretch"
+            Focusable="False"
+            ItemsSource="{Binding Swatches, Mode=OneTime}"
+            SelectedItem="{Binding SelectedSwatch.Value, Mode=TwoWay}">
+            <ComboBox.ItemContainerStyle>
+                <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </ComboBox.ItemContainerStyle>
+        </ComboBox>
 
         <Button
             Grid.Row="1"
+            Grid.Column="1"
             Margin="16"
             HorizontalAlignment="Right"
-            VerticalAlignment="Center"
+            VerticalAlignment="Bottom"
             Style="{StaticResource MaterialDesignRaisedButton}">
+
+            <Button.Background>
+                <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+            </Button.Background>
+            <Button.BorderBrush>
+                <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+            </Button.BorderBrush>
+            <Button.Foreground>
+                <SolidColorBrush Color="{StaticResource GreyPrimary50}" />
+            </Button.Foreground>
+
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon
                     Width="20"
@@ -76,5 +102,5 @@
                 </behaviors:EventTrigger>
             </behaviors:Interaction.Triggers>
         </Button>
-    </StackPanel>
+    </Grid>
 </UserControl>

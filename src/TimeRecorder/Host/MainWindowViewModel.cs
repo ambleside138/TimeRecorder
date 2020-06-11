@@ -11,6 +11,8 @@ using TimeRecorder.Contents.WorkUnitRecorder;
 using MaterialDesignThemes.Wpf;
 using Reactive.Bindings;
 using TimeRecorder.Helpers;
+using TimeRecorder.Configurations;
+using TimeRecorder.Configurations.Items;
 
 namespace TimeRecorder.Host
 {
@@ -29,6 +31,17 @@ namespace TimeRecorder.Host
         private MainWindowViewModel()
         {
             TransitionHelper.Current.SetMessanger(Messenger);
+
+            SetupTheme();
+        }
+
+        private void SetupTheme()
+        {
+            var theme = UserConfigurationManager.Instance.GetConfiguration<ThemeConfig>(ConfigKey.Theme);
+            if(theme != null)
+            {
+                ThemeService.ApplyFromName(theme.ThemeName);
+            }
         }
 
         public void Initialize()

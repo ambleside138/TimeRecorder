@@ -12,15 +12,15 @@ namespace TimeRecorder.Configurations
         Theme,
     };
 
-    class ConfigurationManager
+    class UserConfigurationManager
     {
-        public static ConfigurationManager Instance { get; } = new ConfigurationManager();
+        public static UserConfigurationManager Instance { get; } = new UserConfigurationManager();
 
         private readonly ConfigurationUseCase _ConfigurationUseCase;
 
         private ConfigurationItem[] _ConfigurationItems;
 
-        private ConfigurationManager()
+        private UserConfigurationManager()
         {
             _ConfigurationUseCase = new ConfigurationUseCase(ContainerHelper.Resolver.Resolve<IConfigurationRepository>());
 
