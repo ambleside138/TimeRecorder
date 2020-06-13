@@ -24,7 +24,6 @@ namespace TimeRecorder.Behaviors.Messaging.Windows
     {
         protected override void InvokeAction(Livet.Messaging.InteractionMessage m)
         {
-            // ReSharper disable once InvertIf
             if (m is ModalWindowActionMessage windowMessage && AssociatedObject != null)
             {
                 var window = Window.GetWindow(AssociatedObject);

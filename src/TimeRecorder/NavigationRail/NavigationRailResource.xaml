@@ -29,42 +29,12 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="72" />
-                            <RowDefinition />
-                        </Grid.RowDefinitions>
-
-                        <Button
-                            Width="40"
-                            Height="40"
-                            Padding="1"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Style="{DynamicResource MaterialDesignFloatingActionButton}">
-                            <Button.Foreground>
-                                <SolidColorBrush Color="{StaticResource GreyPrimary50}" />
-                            </Button.Foreground>
-                            <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
-                                Kind="Plus" />
-
-                            <behaviors:Interaction.Triggers>
-                                <behaviors:EventTrigger EventName="Click">
-                                    <l:LivetCallMethodAction MethodName="CreateNewTask" MethodTarget="{Binding}" />
-                                </behaviors:EventTrigger>
-                            </behaviors:Interaction.Triggers>
-                        </Button>
-
                         <StackPanel
                             x:Name="HeaderPanel"
-                            Grid.Row="1"
                             Background="{DynamicResource BackgroundBrushKey}"
                             IsItemsHost="True" />
                         <Border
                             x:Name="ContentSize"
-                            Grid.RowSpan="2"
-                            Grid.Column="1"
                             Padding="{TemplateBinding Padding}"
                             BorderBrush="{StaticResource SemiTransparentGreyBrush}"
                             BorderThickness="1,0,0,0">

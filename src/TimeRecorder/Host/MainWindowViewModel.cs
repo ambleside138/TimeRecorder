@@ -59,12 +59,5 @@ namespace TimeRecorder.Host
                 NavigationIconButtons.Add(c.NavigationIcon);
             }
         }
-
-        public void CreateNewTask()
-        {
-            var content = Contents.OfType<WorkUnitRecorderViewModel>().First();
-
-            content.ExecuteNewTaskDialog();
-        }
     }
 }
