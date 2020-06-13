@@ -26,10 +26,17 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
 
         private const int _AlertCount = 60 * 5;
 
+
         public TimelineWorkingTimeCardViewModel(WorkingTimeForTimelineDto workingTimeRange)
         {
             DomainModel = workingTimeRange;
 
+            // 1sスパンで更新する
+            var timer = new ReactiveTimer(TimeSpan.FromSeconds(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
+            timer.Subscribe(_ => UpdateDurationTime());
+            timer.AddTo(CompositeDisposable);
+            timer.Start();
+     
             if (DomainModel == null)
             {
                 TaskTitle = "お休み中";
@@ -49,11 +56,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
             CanvasTop = CalcTop();
             ActualHeight.Value = CalcActualHeight();
 
-            // 1sスパンで更新する
-            var timer = new ReactiveTimer(TimeSpan.FromSeconds(1), new SynchronizationContextScheduler(SynchronizationContext.Current));
-            timer.Subscribe(_ => UpdateDurationTime());
-            timer.AddTo(CompositeDisposable);
-            timer.Start();
         }
 
         public void UpdateDurationTime()

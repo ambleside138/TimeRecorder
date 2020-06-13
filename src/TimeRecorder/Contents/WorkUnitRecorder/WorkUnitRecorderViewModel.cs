@@ -18,6 +18,9 @@ using System.Linq;
 using TimeRecorder.Host;
 using System.Threading.Tasks;
 using TimeRecorder.Helpers;
+using TimeRecorder.Contents.WorkUnitRecorder.Tasks.Buttons;
+using TimeRecorder.Configurations;
+using TimeRecorder.Configurations.Items;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
@@ -35,6 +38,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactiveProperty<DateTime> TargetDateTime { get; }
 
+        public ReactiveCollection<AddingTaskButtonViewModel> AddingTaskButtons { get; }
+
         public WorkUnitRecorderViewModel()
         {
             PlanedTaskCards = _Model.PlanedTaskModels
@@ -50,9 +55,15 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                               .ToReactiveProperty()
                               .AddTo(CompositeDisposable);
 
+            // 変更前のタイマー解除
+            DoingTask.Pairwise().Subscribe(pair => pair.OldItem?.Dispose());
+
             TargetDateTime = _Model.TargetDate
                                    .ToReactivePropertyAsSynchronized(d => d.Value)
                                    .AddTo(CompositeDisposable);
+
+            AddingTaskButtons = new ReactiveCollection<AddingTaskButtonViewModel>();
+            InitializeAddingTaskButtons();
 
             CompositeDisposable.Add(_Model);
 
@@ -81,6 +92,25 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         }
 
+        private void InitializeAddingTaskButtons()
+        {
+            var favorites = UserConfigurationManager.Instance.GetConfiguration<FavoriteWorkTasksConfig>(ConfigKey.FavoriteWorkTask);
+            if(favorites?.FavoriteWorkTasks?.Any() == true)
+            {
+                var buttons = favorites.FavoriteWorkTasks.Select(t => new AddingTaskButtonViewModel(new ShortcutAddingTaskCommand(t))
+                                                                        {
+                                                                            ButtonTitle = string.IsNullOrEmpty(t.ButtonTitle) ? t.Title.Substring(0,1) : t.ButtonTitle,
+                                                                            ToolTipDescription = t.Title,
+                                                                        });
+                AddingTaskButtons.AddRange(buttons);
+            }
+            AddingTaskButtons.Add(new AddingTaskButtonViewModel(new ManualAddingTaskCommand()) 
+                                    { 
+                                        ButtonTitle = "New", 
+                                        ToolTipDescription = "編集画面から追加します",
+                                        UseAccentColor = true,
+                                    });
+        }
 
 
         public void ExecuteNewTaskDialog()
@@ -93,8 +123,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             {
                 var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
                 _Model.AddWorkTask(inputValue, editDialogVm.NeedStart);
-
-
             }
         }
 

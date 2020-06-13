@@ -77,6 +77,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
         #endregion
 
+        public bool IsTemporary { get; set; } = false;
         public TaskProgress TaskProgress { get; private set; } = new TaskProgress();
 
         public WorkTaskImportSource ImportSource { get; private set; } = new WorkTaskImportSource("", "");
@@ -108,7 +109,17 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
 
         // VSの場合、「クイックアクションとリファクタリング」からコンストラクタコードの生成が可能
-        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Identity<Product> productid, Identity<Client> ClientId, Identity<WorkProcess> processId, string remarks, TaskProgress taskProgress, WorkTaskImportSource workTaskImportSource)
+        public WorkTask(
+            Identity<WorkTask> id, 
+            string title, 
+            TaskCategory taskCategory, 
+            Identity<Product> productid, 
+            Identity<Client> ClientId, 
+            Identity<WorkProcess> processId, 
+            string remarks, 
+            TaskProgress taskProgress, 
+            WorkTaskImportSource workTaskImportSource,
+            bool isTemporary)
         {
             Id = id;
             _Title = title;
@@ -119,6 +130,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
             _Remarks = remarks;
             TaskProgress = taskProgress;
             ImportSource = workTaskImportSource;
+            IsTemporary = isTemporary;
         }
 
         public void Complete(DateTime start, DateTime end)

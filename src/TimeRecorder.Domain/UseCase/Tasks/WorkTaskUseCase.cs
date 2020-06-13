@@ -11,6 +11,8 @@ using TimeRecorder.Domain.Utility.Exceptions;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.Tasks.Specifications;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
+using TimeRecorder.Domain.Domain.Tasks.Commands;
 
 namespace TimeRecorder.Domain.UseCase.Tasks
 {
@@ -19,10 +21,13 @@ namespace TimeRecorder.Domain.UseCase.Tasks
         private readonly IWorkTaskRepository _TaskRepository;
         private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
 
+        private readonly WorkTaskCompletionCommand _WorkTaskCompletionCommand;
+
         public WorkTaskUseCase(IWorkTaskRepository taskRepository, IWorkingTimeRangeRepository workingTimeRangeRepository)
         {
             _TaskRepository = taskRepository;
             _WorkingTimeRangeRepository = workingTimeRangeRepository;
+            _WorkTaskCompletionCommand = new WorkTaskCompletionCommand(taskRepository, workingTimeRangeRepository);
         }
 
         public WorkTask Add(WorkTask workTask)
@@ -42,24 +47,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
 
         public void Complete(Identity<WorkTask> id)
         {
-            var target = _TaskRepository.SelectById(id);
-
-            if (target == null)
-            {
-                throw new NotFoundException("完了対象がみつかりませんでした");
-            }
-
-            var spec = new WorkTaskCompletionSpecification(_WorkingTimeRangeRepository);
-
-            var result = spec.IsSatisfiedBy(target);
-            if(result != ValidationResult.Success)
-            {
-                throw new SpecificationCheckException(result);
-            }
-
-            spec.EditActualTimes(target);
-
-            _TaskRepository.Edit(target);
+            _WorkTaskCompletionCommand.CompleteWorkTask(id);
         }
 
         public WorkTask SelectById(Identity<WorkTask> workTaskId)
@@ -73,24 +61,5 @@ namespace TimeRecorder.Domain.UseCase.Tasks
 
             return target;
         }
-
-        //public WorkTask[] GetPlanedTasks()
-        //{
-        //    try
-        //    {
-        //        var list = _TaskRepository.SelectToDo();
-
-        //        //var listClient = _ClientRepository.SelectAll();
-        //        //var listProcess = _ProcessRepository.SelectAll();
-
-
-        //        return list;
-        //    }
-        //    catch (Exception)
-        //    {
-        //        return new WorkTask[0];
-        //    }
-
-        //}
     }
 }

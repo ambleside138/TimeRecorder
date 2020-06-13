@@ -133,7 +133,11 @@
                         <materialDesign:PackIcon
                             Width="16"
                             Height="16"
-                            Kind="CheckboxBlankOutline" />
+                            Kind="Stop">
+                            <materialDesign:PackIcon.Foreground>
+                                <SolidColorBrush Color="{StaticResource GreyPrimary50}" />
+                            </materialDesign:PackIcon.Foreground>
+                        </materialDesign:PackIcon>
 
                         <behaviors:Interaction.Triggers>
                             <behaviors:EventTrigger EventName="Click">
@@ -243,6 +247,67 @@
                     </ItemsControl>
                 </ScrollViewer>
 
+
+                <materialDesign:PopupBox
+                    Grid.Row="1"
+                    Width="48"
+                    Height="48"
+                    Margin="0,0,16,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Focusable="False"
+                    PlacementMode="TopAndAlignCentres"
+                    PopupMode="Click"
+                    Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                    ToolTip="タスクを追加します"
+                    ToolTipService.Placement="Right">
+
+                    <ItemsControl ItemsSource="{Binding AddingTaskButtons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding ButtonTitle, Mode=OneTime}" ToolTip="{Binding ToolTipDescription, Mode=OneTime}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignFloatingActionMiniLightButton}" TargetType="Button">
+                                            <Setter Property="ToolTipService.Placement" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type materialDesign:PopupBox}}, Path=(ToolTipService.Placement)}" />
+                                            <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+                                            <Setter Property="Margin" Value="4" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UseAccentColor, Mode=OneTime}" Value="True">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource Accent400}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="BorderBrush">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource Accent400}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Foreground">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource Accent400Foreground}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <behaviors:Interaction.Triggers>
+                                        <behaviors:EventTrigger EventName="Click">
+                                            <l:LivetCallMethodAction MethodName="Invoke" MethodTarget="{Binding}" />
+                                        </behaviors:EventTrigger>
+                                    </behaviors:Interaction.Triggers>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </materialDesign:PopupBox>
             </Grid>
 
         </Border>

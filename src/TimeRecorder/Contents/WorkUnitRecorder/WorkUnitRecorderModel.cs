@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using Livet;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
+using Reactive.Bindings.Notifiers;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
+using TimeRecorder.Contents.WorkUnitRecorder.Tasks;
 using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
@@ -71,6 +73,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                 config.WorkTaskBuilderConfig);
 
             ObjectChangedNotificator.Instance.WorkTaskEdited += Load;
+            MessageBroker.Default.Subscribe<WorkTaskRegistedEventArg>(_ => Load());
 
             TargetDate = new ReactivePropertySlim<DateTime>(DateTime.Today);
             TargetDate.Subscribe(_ => Load()).AddTo(_Disposables);
@@ -98,10 +101,15 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public void UpdateDoingTask()
         {
-            if (DoingTask == null)
+            if (DoingTask.Value == null)
             {
                 // 登録済みの予定が存在する可能性がある
                 SetDoingTask();
+
+                if(DoingTask.Value != null)
+                {
+                    NotificationService.Current.Info("作業タスク 更新のお知らせ", "予定されているタスクの開始時間になりました");
+                }
             }
             else
             {

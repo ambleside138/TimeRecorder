@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace TimeRecorder.Configurations.Items
 {
@@ -10,7 +11,6 @@ namespace TimeRecorder.Configurations.Items
     class BackupPathConfig : ConfigItemBase
     {
         public string DirectoryPath { get; set; }
-
-        public override ConfigKey Key => ConfigKey.BackupPath;
+        internal override ConfigKey Key => ConfigKey.BackupPath;
     }
 }

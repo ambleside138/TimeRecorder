@@ -35,6 +35,7 @@
                             IsItemsHost="True" />
                         <Border
                             x:Name="ContentSize"
+                            Grid.Column="1"
                             Padding="{TemplateBinding Padding}"
                             BorderBrush="{StaticResource SemiTransparentGreyBrush}"
                             BorderThickness="1,0,0,0">

@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
+using TimeRecorder.Domain.Domain.Tasks.Commands;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.Tracking.Specifications;
 using TimeRecorder.Domain.Utility;
@@ -21,18 +22,15 @@ namespace TimeRecorder.Domain.UseCase.Tracking
         private readonly IWorkTaskRepository _WorkTaskRepository;
 
         private readonly WorkingTimeRegistSpecification _WorkingTimeRegistSpecification;
-         
+        private readonly WorkTaskCompletionCommand _WorkTaskCompletionCommand;
 
         public WorkingTimeRangeUseCase(IWorkingTimeRangeRepository workingTimeRangeRepository, IWorkTaskRepository workTaskRepository)
         {
             _WorkingTimeRangeRepository = workingTimeRangeRepository;
             _WorkingTimeRegistSpecification = new WorkingTimeRegistSpecification(workingTimeRangeRepository);
             _WorkTaskRepository = workTaskRepository;
-        }
 
-        public WorkingTimeRange[] GetByTaskId(Identity<WorkTask> id)
-        {
-            return _WorkingTimeRangeRepository.SelectByTaskId(id);
+            _WorkTaskCompletionCommand = new WorkTaskCompletionCommand(workTaskRepository, workingTimeRangeRepository);
         }
 
         public WorkingTimeRange StartWorking(Identity<WorkTask> id)
@@ -84,11 +82,19 @@ namespace TimeRecorder.Domain.UseCase.Tracking
 
         private void StopWorkingCore(WorkingTimeRange target)
         {
-            target.Stop();
+            var targetTask = _WorkTaskRepository.SelectById(target.TaskId);
+            if (targetTask == null)
+                throw new NotFoundException("開始対象のタスクがみつかりませんでした");
 
+            target.Stop();
             _WorkingTimeRangeRepository.Edit(target);
+
+            if(targetTask.IsTemporary)
+            {
+                _WorkTaskCompletionCommand.CompleteWorkTask(target.TaskId);
+            }
         }
-        
+
         public void EditWorkingTimeRange(Identity<WorkingTimeRange> id, DateTime startTime, DateTime? endTime)
         {
             var target = _WorkingTimeRangeRepository.SelectById(id);

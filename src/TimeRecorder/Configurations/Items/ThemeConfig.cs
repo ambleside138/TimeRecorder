@@ -13,7 +13,7 @@ namespace TimeRecorder.Configurations.Items
     {
         public string ThemeName { get; set; }
 
-        public override ConfigKey Key => ConfigKey.Theme;
+        internal override ConfigKey Key => ConfigKey.Theme;
 
         public ThemeConfig(Swatch swatch)
         {

@@ -15,6 +15,6 @@ namespace TimeRecorder.Configurations.Items
     abstract class ConfigItemBase
     {
         [JsonIgnore]
-        public abstract ConfigKey Key { get; }
+        internal abstract ConfigKey Key { get; }
     }
 }

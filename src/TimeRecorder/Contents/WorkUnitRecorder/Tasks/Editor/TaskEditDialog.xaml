@@ -167,7 +167,7 @@
                     MethodName="RegistAndStart"
                     Style="{StaticResource MaterialDesignRaisedButton}"
                     ToolTip="追加して開始"
-                    Visibility="{Binding IsEditMode.Value, Converter={StaticResource InverseBoolToVisConverter}}" />
+                    Visibility="{Binding ShowQuickStartButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 <Button Content="キャンセル" Style="{StaticResource MaterialDesignFlatButton}">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="Click">

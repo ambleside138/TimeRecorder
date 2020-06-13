@@ -35,6 +35,8 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
 
         public string ImportKey { get; set; }
 
+        public string IsTemporary { get; set; }
+
         public WorkTask ConvertToDomainObject()
         {
             var taskProgress = new TaskProgress
@@ -52,7 +54,8 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 , new Identity<Domain.Domain.WorkProcesses.WorkProcess>(ProcessId)
                 , Remarks
                 , taskProgress
-                , new WorkTaskImportSource(ImportKey, Source));
+                , new WorkTaskImportSource(ImportKey, Source)
+                , IsTemporary == "1");
         }
 
         public static WorkTaskTableRow FromDomainObject(WorkTask workTask)
@@ -72,6 +75,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks.Dao
                 ActualEndDateTime = workTask.TaskProgress.ActualPeriod.End,
                 Source = workTask.ImportSource.Kind,
                 ImportKey = workTask.ImportSource.Key,
+                IsTemporary = workTask.IsTemporary ? "1" : "0"
             };
         }
     }

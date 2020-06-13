@@ -32,6 +32,7 @@ insert into worktasks
   , actualEndDateTime 
   , source
   , importkey
+  , istemporary
 )
 values
 (
@@ -47,6 +48,7 @@ values
   , @actualEndDateTime 
   , @source
   , @importkey
+  , @istemporary
 )
 ";
             #endregion
@@ -135,6 +137,7 @@ SELECT
   , actualEndDateTime 
   , source
   , importkey
+  , istemporary
 FROM
   worktasks
 WHERE
