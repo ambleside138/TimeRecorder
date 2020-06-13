@@ -41,7 +41,7 @@ namespace TimeRecorder.Contents.Configuration
         private void ChangeTheme(Swatch swatch)
         {
             ThemeService.ApplyPrimary(swatch);
-            UserConfigurationManager.Instance.SetConfiguration(ConfigKey.Theme, new ThemeConfig(swatch));
+            UserConfigurationManager.Instance.SetConfiguration(new ThemeConfig(swatch));
         }
 
         public void RegistBackupPath()
@@ -52,7 +52,7 @@ namespace TimeRecorder.Contents.Configuration
                 return;
             }
 
-            UserConfigurationManager.Instance.SetConfiguration(ConfigKey.BackupPath, new BackupPathConfig { DirectoryPath = BackupPath.Value });
+            UserConfigurationManager.Instance.SetConfiguration(new BackupPathConfig { DirectoryPath = BackupPath.Value });
             SnackbarService.Current.ShowMessage("バックアップ先を変更しました");
         }
 

@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Configurations.Items;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.UseCase.System;
 
 namespace TimeRecorder.Configurations
 {
-    enum ConfigKey
-    {
-        Theme,
-        BackupPath,
-    };
+
 
     class UserConfigurationManager
     {
@@ -40,9 +37,9 @@ namespace TimeRecorder.Configurations
             return target?.GetConfigValue<T>();
         }
 
-        public void SetConfiguration<T>(ConfigKey key, T value)
+        public void SetConfiguration<T>(T value) where T : ConfigItemBase
         {
-            var item = new ConfigurationItem(key.ToString());
+            var item = new ConfigurationItem(value.Key.ToString());
             item.SetConfigValue(value);
 
             _ConfigurationUseCase.SetConfiguration(item);
