@@ -120,7 +120,7 @@ namespace TimeRecorder.Contents.Configuration
 
         public void ShutDown()
         {
-            App.Current.Shutdown();
+            ApplicationService.Instance.Shutdown();
         }
     }
 }

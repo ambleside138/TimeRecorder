@@ -1,8 +1,10 @@
-﻿using MahApps.Metro.Controls;
+﻿
+using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -10,10 +12,13 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TimeRecorder.Contents;
+using TimeRecorder.Controls.WindowLocation;
 using TimeRecorder.Host;
 
 namespace TimeRecorder
@@ -25,6 +30,19 @@ namespace TimeRecorder
     {
         private NotifyIconProxy _NotifyIcon;
 
+        #region WindowSettings 依存関係プロパティ
+        // ウィンドウ位置保存のロジックは下記記事参照
+        // http://grabacr.net/archives/1585
+        public IWindowSettings WindowSettings
+        {
+            get { return (IWindowSettings)this.GetValue(WindowSettingsProperty); }
+            set { this.SetValue(WindowSettingsProperty, value); }
+        }
+        public static readonly DependencyProperty WindowSettingsProperty =
+            DependencyProperty.Register("WindowSettings", typeof(IWindowSettings), typeof(MainWindow), new UIPropertyMetadata(new JsonFileWindowSettings()));
+
+        #endregion
+
         public MainWindow()
         {
             InitializeComponent();
@@ -35,12 +53,47 @@ namespace TimeRecorder
             _NotifyIcon.DoubleClick += (_, __) => ShowWindow();
         }
 
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            base.OnSourceInitialized(e);
+
+            if (WindowSettings == null)
+                return;
+
+            WindowSettings.Reload();
+
+            if (WindowSettings.Placement.HasValue)
+            {
+                var hwnd = new WindowInteropHelper(this).Handle;
+                var placement = this.WindowSettings.Placement.Value;
+                placement.length = Marshal.SizeOf(typeof(WINDOWPLACEMENT));
+                placement.flags = 0;
+                placement.showCmd = (placement.showCmd == SW.SHOWMINIMIZED) ? SW.SHOWNORMAL : placement.showCmd;
+
+                NativeMethods.SetWindowPlacement(hwnd, ref placement);
+            }
+        }
+
         protected override void OnClosing(CancelEventArgs e)
         {
-            // クローズ処理をキャンセルして、タスクバーの表示も消す
-            e.Cancel = true;
-            this.WindowState = System.Windows.WindowState.Minimized;
-            this.ShowInTaskbar = false;
+            if(ApplicationService.Instance.IsShutDownProcessing)
+            {
+                if (WindowSettings != null)
+                {
+                    WINDOWPLACEMENT placement;
+                    var hwnd = new WindowInteropHelper(this).Handle;
+                    NativeMethods.GetWindowPlacement(hwnd, out placement);
+                    WindowSettings.Placement = placement;
+                    WindowSettings.Save();
+                }
+            }
+            else
+            {
+                // クローズ処理をキャンセルして、タスクバーの表示も消す
+                e.Cancel = true;
+                this.WindowState = System.Windows.WindowState.Minimized;
+                this.ShowInTaskbar = false;
+            }
         }
 
         protected override void OnClosed(EventArgs e)

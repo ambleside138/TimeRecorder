@@ -17,6 +17,8 @@
     Title="工数管理"
     Width="720"
     Height="480"
+    MinWidth="560"
+    MinHeight="480"
     Background="{DynamicResource MaterialDesignPaper}"
     FontFamily="{materialDesign:MaterialDesignFont}"
     TextElement.FontSize="11"
