@@ -34,7 +34,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         // Using a DependencyProperty as the backing store for EndHour.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty EndHourProperty =
-            DependencyProperty.Register("EndHour", typeof(int), typeof(TimelineCanvas), new PropertyMetadata(23));
+            DependencyProperty.Register("EndHour", typeof(int), typeof(TimelineCanvas), new PropertyMetadata(23, EndHourChanged));
+
+        private static void EndHourChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ((TimelineCanvas)d).InitializeHourText();
+        }
 
         #endregion
 
