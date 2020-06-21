@@ -11,6 +11,12 @@ namespace TimeRecorder.Domain.Domain
 
         public int Month { get; }
 
+        public static YearMonth FromYmdString(YmdString ymdString)
+        {
+            var dateTime = ymdString.ToDateTime().Value;
+            return new YearMonth(dateTime.Year, dateTime.Month);
+        }
+
         public YearMonth(int year, int month)
         {
             if (month < 1 || month > 12)

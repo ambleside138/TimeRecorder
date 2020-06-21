@@ -44,6 +44,7 @@
                 <!--  overrides textblockstyle  -->
                 <ResourceDictionary Source="Styles/MaterialTextBlockStyle.xaml" />
                 <ResourceDictionary Source="Styles/MacLikeScrollBarStyle.xaml" />
+                <ResourceDictionary Source="Styles/ChipBorderStyle.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 

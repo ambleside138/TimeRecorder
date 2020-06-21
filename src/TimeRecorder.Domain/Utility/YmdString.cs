@@ -16,6 +16,11 @@ namespace TimeRecorder.Domain.Utility
 
         public string Value { get; }
 
+        public YmdString(DateTime dateTime)
+        {
+            Value = dateTime.ToString("yyyyMMdd");
+        }
+
         public YmdString(string ymd)
         {
             Value = ymd;

@@ -13,6 +13,7 @@ using Reactive.Bindings;
 using TimeRecorder.Helpers;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
+using TimeRecorder.Contents.Archive;
 
 namespace TimeRecorder.Host
 {
@@ -51,6 +52,7 @@ namespace TimeRecorder.Host
                 SnackbarService.Current.ShowMessage(message);
 
             Contents.Add(new WorkUnitRecorderViewModel());
+            Contents.Add(new ArchiveManagerViewModel());
             Contents.Add(new ExporterViewModel());
             Contents.Add(new ConfigurationViewModel());
 

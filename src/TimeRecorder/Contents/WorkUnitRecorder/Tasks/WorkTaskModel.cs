@@ -12,6 +12,8 @@ using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
 {
+    // 複数Viewからの参照があるので注意すること
+
     public class WorkTaskModel
     {
         private readonly WorkTaskUseCase _WorkTaskUseCase;

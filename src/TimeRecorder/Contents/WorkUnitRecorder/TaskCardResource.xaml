@@ -7,13 +7,6 @@
     xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
-    <Style x:Key="ChipBorderStyleKey" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource MaterialDesignChipBackground}" />
-        <Setter Property="CornerRadius" Value="12" />
-        <Setter Property="Margin" Value="0,4,8,4" />
-        <Setter Property="Padding" Value="12,0,12,0" />
-    </Style>
-
     <DataTemplate x:Key="TaskCardKey" DataType="{x:Type local:WorkTaskWithTimesCardViewModel}">
         <Expander x:Name="CardExpander">
             <Expander.Header>
@@ -47,22 +40,32 @@
 
                         <!--  chips  -->
                         <StackPanel Orientation="Horizontal">
-                            <Border
-                                Width="20"
-                                Height="20"
-                                Margin="0,4,8,4"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Center"
-                                Background="{Binding Dto.TaskCategory, Converter={StaticResource TaskCategoryToSolidBrushConverter}}"
-                                CornerRadius="20"
-                                Opacity="0.5">
-                                <materialDesign:PackIcon
-                                    Width="12"
-                                    Height="12"
-                                    HorizontalAlignment="Center"
+                            <Grid>
+                                <Border Style="{StaticResource ChipBorderStyleKey}">
+                                    <TextBlock
+                                        Padding="14,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                                        Text="{Binding Dto.TaskCategory, Converter={StaticResource EnumToDisplayTextConverter}}" />
+                                </Border>
+                                <Border
+                                    Width="20"
+                                    Height="20"
+                                    Margin="0,4,8,4"
+                                    HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Kind="{Binding Dto.TaskCategory, Converter={StaticResource EnumToIconKeyConverter}}" />
-                            </Border>
+                                    Background="{Binding Dto.TaskCategory, Converter={StaticResource TaskCategoryToSolidBrushConverter}}"
+                                    CornerRadius="20"
+                                    Opacity="0.5">
+                                    <materialDesign:PackIcon
+                                        Width="12"
+                                        Height="12"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="{Binding Dto.TaskCategory, Converter={StaticResource EnumToIconKeyConverter}}" />
+                                </Border>
+                            </Grid>
+
 
                             <!--  Product  -->
                             <Border Style="{StaticResource ChipBorderStyleKey}" Visibility="{Binding Dto.ProductName, Converter={StaticResource StringToVisibilityConverter}}">

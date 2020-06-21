@@ -7,6 +7,7 @@
     xmlns:configuration="clr-namespace:TimeRecorder.Contents.Configuration"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:exporter="clr-namespace:TimeRecorder.Contents.Exporter"
+    xmlns:archive="clr-namespace:TimeRecorder.Contents.Archive"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:TimeRecorder"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -25,6 +26,7 @@
     TextElement.FontWeight="Medium"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     WindowTitleBrush="{DynamicResource PrimaryHueMidBrush}"
+    BorderBrush="{DynamicResource PrimaryHueMidBrush}"
     mc:Ignorable="d">
 
     <metro:MetroWindow.Resources>
@@ -44,6 +46,10 @@
 
             <DataTemplate DataType="{x:Type workUnitRecorder:WorkUnitRecorderViewModel}">
                 <workUnitRecorder:WorkUnitRecorderView />
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type archive:ArchiveManagerViewModel}">
+                <archive:ArchiveManagerView />
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type exporter:ExporterViewModel}">
