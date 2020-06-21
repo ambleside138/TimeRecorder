@@ -13,7 +13,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
     /// </summary>
     public interface IWorkTaskWithTimesQueryService : IQueryService
     {
-        WorkTaskWithTimesDto[] SelectByYmd(YmdString ymd);
+        WorkTaskWithTimesDto[] SelectByYmd(YmdString ymd, bool containsCompleted);
     }
 
     public class WorkTaskWithTimesDto : NotificationDomainModel
@@ -31,6 +31,8 @@ namespace TimeRecorder.Domain.UseCase.Tasks
         public string ProcessName { get; set; }
 
         public string Remarks { get; set; }
+
+        public bool IsCompleted { get; set; }
 
         #region WorkingTimes変更通知プロパティ
         private WorkingTimeRange[] _WorkingTimes;

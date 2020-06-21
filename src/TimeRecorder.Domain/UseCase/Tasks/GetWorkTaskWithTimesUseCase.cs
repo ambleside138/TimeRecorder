@@ -14,9 +14,9 @@ namespace TimeRecorder.Domain.UseCase.Tasks
             _WorkTaskWithTimesQueryService = workTaskWithTimesQueryService;
         }
 
-        public WorkTaskWithTimesDto[] GetByYmd(YmdString ymdString)
+        public WorkTaskWithTimesDto[] GetByYmd(YmdString ymdString, bool containsCompleted)
         {
-            return _WorkTaskWithTimesQueryService.SelectByYmd(ymdString);
+            return _WorkTaskWithTimesQueryService.SelectByYmd(ymdString, containsCompleted);
         }
     }
 }

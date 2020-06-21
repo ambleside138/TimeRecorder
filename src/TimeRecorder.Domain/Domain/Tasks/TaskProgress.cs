@@ -19,6 +19,8 @@ namespace TimeRecorder.Domain.Domain.Tasks
         /// </summary>
         public DateTimePeriod ActualPeriod { get; internal set; }
 
+        public bool IsCompleted => ActualPeriod.End.HasValue;
+
         public TaskProgress()
         {
 
@@ -28,6 +30,11 @@ namespace TimeRecorder.Domain.Domain.Tasks
         {
             PlanedPeriod = planedPeriod;
             ActualPeriod = actualPeriod;
+        }
+
+        public void ClearActualPeriod()
+        {
+            ActualPeriod = new DateTimePeriod();
         }
     }
 }

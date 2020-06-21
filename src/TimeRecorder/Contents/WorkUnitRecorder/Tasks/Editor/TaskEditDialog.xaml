@@ -136,7 +136,7 @@
                 Content="削除"
                 MethodName="Delete"
                 Style="{StaticResource MaterialDesignOutlinedButton}"
-                Visibility="{Binding IsEditMode.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                Visibility="{Binding ShowDeleteButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <c:CallMethodButton.BorderBrush>
                     <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
                 </c:CallMethodButton.BorderBrush>

@@ -22,6 +22,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         materialDesign:CheckBoxAssist.CheckBoxSize="24"
+                        IsEnabled="{Binding CheckboxIsEnabled.Value}"
                         IsChecked="{Binding IsCompleted.Value}" />
 
                     <StackPanel Grid.Column="1">

@@ -219,11 +219,16 @@
                     Style="{StaticResource MaterialDesignHeadline4TextBlock}"
                     Text="ToDo" />
 
+                <CheckBox
+                    HorizontalAlignment="Right"
+                    Content="完了済みを表示する"
+                    IsChecked="{Binding ContainsCompleted.Value}" />
+
                 <ScrollViewer Grid.Row="1" Margin="0,8,4,8">
                     <ItemsControl ItemsSource="{Binding PlanedTaskCards}">
                         <ItemsControl.ItemContainerStyle>
                             <Style>
-                                <Setter Property="FrameworkElement.Margin" Value="8" />
+                                <Setter Property="FrameworkElement.Margin" Value="6" />
                             </Style>
                         </ItemsControl.ItemContainerStyle>
 

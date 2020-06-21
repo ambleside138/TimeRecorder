@@ -101,11 +101,15 @@ where
         /// </summary>
         /// <param name="ymd">日付</param>
         /// <returns></returns>
-        public WorkTaskTableRow[] SelectPlaned(YmdString ymd)
+        public WorkTaskTableRow[] SelectPlaned(YmdString ymd, bool containsCompleted)
         {
-            var where = @"
-actualenddatetime IS NULL
-";
+            var where = "";
+
+            if (containsCompleted)
+                where = "( id IN ( select taskid from workingtimes where ymd = @ymd ) OR actualenddatetime IS NULL )";
+            else
+                where = "actualenddatetime IS NULL";
+
             return SelectCore(where, new { ymd = ymd.Value }).ToArray();
         }
 

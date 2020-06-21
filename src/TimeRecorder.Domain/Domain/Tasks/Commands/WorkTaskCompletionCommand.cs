@@ -44,5 +44,19 @@ namespace TimeRecorder.Domain.Domain.Tasks.Commands
 
             _WorkTaskRepository.Edit(target);
         }
+
+        public void ReStartTask(Identity<WorkTask> id)
+        {
+            var target = _WorkTaskRepository.SelectById(id);
+
+            if (target == null)
+            {
+                throw new NotFoundException("再開対象がみつかりませんでした");
+            }
+
+            target.TaskProgress.ClearActualPeriod();
+
+            _WorkTaskRepository.Edit(target);
+        }
     }
 }

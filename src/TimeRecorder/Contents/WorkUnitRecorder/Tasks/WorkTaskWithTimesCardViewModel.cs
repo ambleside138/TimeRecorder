@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,6 +33,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactivePropertySlim<bool> IsCompleted { get; }
 
+        public ReactivePropertySlim<bool> CheckboxIsEnabled { get; }
+
         public ReactivePropertySlim<string> PlayTooltip { get; set; } = new ReactivePropertySlim<string>();
 
         public ReactivePropertySlim<string> PlayIconKind { get; set; } = new ReactivePropertySlim<string>();
@@ -42,7 +45,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             Dto = dto;
             UpdateStatus();
 
-            IsCompleted = new ReactivePropertySlim<bool>(false);
+            IsCompleted = new ReactivePropertySlim<bool>(dto.IsCompleted, ReactivePropertyMode.DistinctUntilChanged);
+            CheckboxIsEnabled = new ReactivePropertySlim<bool>(dto.IsCompleted == false);
 
             IsCompleted.Subscribe(b =>
                             {

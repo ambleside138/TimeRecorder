@@ -37,6 +37,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 
         public ReactivePropertySlim<bool> ShowQuickStartButton { get; }
 
+        public ReactivePropertySlim<bool> ShowDeleteButton { get; }
+
         public WorkTaskEditDialogViewModel()
             : this(WorkTask.ForNew()) { }
 
@@ -51,6 +53,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
             TaskCardViewModel = new WorkTaskViewModel(model, Processes, Clients, Products);
 
             ShowQuickStartButton = new ReactivePropertySlim<bool>(IsEditMode.Value == false);
+            ShowDeleteButton = new ReactivePropertySlim<bool>(IsEditMode.Value);
         }
 
         public void Regist()

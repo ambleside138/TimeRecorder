@@ -37,6 +37,8 @@ namespace TimeRecorder.Domain.Domain.Tracking
         public bool WithinRangeAtCurrentTime => StartDateTime <= _SystemClock.Now
                                 && (EndDateTime.HasValue == false || EndDateTime.Value > _SystemClock.Now);
 
+        public bool IsFuture => StartDateTime > _SystemClock.Now;
+
         public static TimePeriod CreateForStart()
         {
             return new TimePeriod(_SystemClock.Now, null);

@@ -47,6 +47,11 @@ namespace TimeRecorder.Domain.UseCase.Tracking
                 StopWorkingCore(working);
             }
 
+            if(targetTask.TaskProgress.IsCompleted)
+            {
+                _WorkTaskCompletionCommand.ReStartTask(id);
+            }
+
             var newWorkingTime = WorkingTimeRange.ForStart(id);
 
             var validationResult = _WorkingTimeRegistSpecification.IsSatisfiedBy(newWorkingTime);
@@ -89,6 +94,7 @@ namespace TimeRecorder.Domain.UseCase.Tracking
             target.Stop();
             _WorkingTimeRangeRepository.Edit(target);
 
+            // 割り込みタスクであればそのまま完了させる
             if(targetTask.IsTemporary)
             {
                 _WorkTaskCompletionCommand.CompleteWorkTask(target.TaskId);

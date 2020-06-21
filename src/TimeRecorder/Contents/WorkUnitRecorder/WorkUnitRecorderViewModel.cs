@@ -40,6 +40,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactiveCollection<AddingTaskButtonViewModel> AddingTaskButtons { get; }
 
+        public ReactiveProperty<bool> ContainsCompleted { get; }
+
         public WorkUnitRecorderViewModel()
         {
             PlanedTaskCards = _Model.PlanedTaskModels
@@ -54,6 +56,10 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                               .Select(t => new TimelineWorkingTimeCardViewModel(t))
                               .ToReactiveProperty()
                               .AddTo(CompositeDisposable);
+
+            ContainsCompleted = _Model.ContainsCompleted
+                                      .ToReactivePropertyAsSynchronized(d => d.Value)
+                                      .AddTo(CompositeDisposable);
 
             // 変更前のタイマー解除
             DoingTask.Pairwise().Subscribe(pair => pair.OldItem?.Dispose());

@@ -49,6 +49,7 @@ namespace TimeRecorder.Contents.Archive
             var targetData = _WorkTaskModel.SelectWorkTask(record.WorkTaskId);
 
             var editDialogVm = new WorkTaskEditDialogViewModel(targetData);
+            editDialogVm.ShowDeleteButton.Value = false;
 
             var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
 

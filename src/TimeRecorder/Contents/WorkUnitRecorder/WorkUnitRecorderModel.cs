@@ -41,6 +41,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactiveProperty<WorkingTimeForTimelineDto> DoingTask { get; } = new ReactiveProperty<WorkingTimeForTimelineDto>(null, ReactivePropertyMode.Default, new WorkingTimeForTimelineDtoEqualityComparer());
 
+        public ReactivePropertySlim<bool> ContainsCompleted { get; } = new ReactivePropertySlim<bool>(false, ReactivePropertyMode.DistinctUntilChanged);
+
         private LivetCompositeDisposable _Disposables = new LivetCompositeDisposable();
 
         private DateTime? _LatestBackupTime = null;
@@ -77,11 +79,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
             TargetDate = new ReactivePropertySlim<DateTime>(DateTime.Today);
             TargetDate.Subscribe(_ => Load()).AddTo(_Disposables);
+
+            ContainsCompleted.Subscribe(_ => Load()).AddTo(_Disposables);
         }
 
         public void Load()
         {
-            var list = _GetWorkTaskWithTimesUseCase.GetByYmd(TargetYmd);
+            var list = _GetWorkTaskWithTimesUseCase.GetByYmd(TargetYmd, ContainsCompleted.Value);
 
             PlanedTaskModels.Clear();
             PlanedTaskModels.AddRange(list);
