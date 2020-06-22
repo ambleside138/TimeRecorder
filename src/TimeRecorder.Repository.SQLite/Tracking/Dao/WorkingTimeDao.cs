@@ -75,6 +75,20 @@ WHERE
             Connection.Execute(sql, new { id = wokingTimeId }, Transaction);
         }
 
+        public void DeleteByTaskId(int taskId)
+        {
+            #region SQL
+            const string sql = @"
+DELETE FROM
+  workingtimes
+WHERE
+  taskid = @taskid
+";
+            #endregion
+
+            Connection.Execute(sql, new { taskid = taskId }, Transaction);
+        }
+
         public WorkingTimeTableRow[] SelectYmd(string ymd)
         {
             #region SQL

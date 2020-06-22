@@ -46,6 +46,14 @@ namespace TimeRecorder.Repository.SQLite.Tracking
             });
         }
 
+        public void RemoveByTaskId(Identity<WorkTask> taskId)
+        {
+            RepositoryAction.Transaction((c, t) =>
+            {
+                new WorkingTimeDao(c, t).DeleteByTaskId(taskId.Value);
+            });
+        }
+
         public WorkingTimeRange[] SelectByYmd(string ymd)
         {
             WorkingTimeRange[] results = null;

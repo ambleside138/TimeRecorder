@@ -89,7 +89,7 @@ namespace TimeRecorder.Domain.UseCase.Tracking
         {
             var targetTask = _WorkTaskRepository.SelectById(target.TaskId);
             if (targetTask == null)
-                throw new NotFoundException("開始対象のタスクがみつかりませんでした");
+                throw new NotFoundException("終了対象のタスクがみつかりませんでした");
 
             target.Stop();
             _WorkingTimeRangeRepository.Edit(target);

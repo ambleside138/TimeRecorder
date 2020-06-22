@@ -14,6 +14,8 @@ namespace TimeRecorder.Domain.Domain.Tracking
 
         void Remove(Identity<WorkingTimeRange> identity);
 
+        void RemoveByTaskId(Identity<WorkTask> taskId);
+
         WorkingTimeRange[] SelectByYmd(string ymd);
 
         WorkingTimeRange SelectById(Identity<WorkingTimeRange> identity);

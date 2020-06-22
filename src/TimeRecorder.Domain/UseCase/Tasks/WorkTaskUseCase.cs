@@ -43,6 +43,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
         public void Delete(Identity<WorkTask> workTaskId)
         {
             _TaskRepository.Delete(workTaskId);
+            _WorkingTimeRangeRepository.RemoveByTaskId(workTaskId);
         }
 
         public void Complete(Identity<WorkTask> id)
