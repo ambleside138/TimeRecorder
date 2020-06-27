@@ -40,6 +40,13 @@
             Style="{StaticResource MaterialDesignBody1TextBlock}"
             Text="月分" />
 
+        <CheckBox
+            Margin="2,4,16,0"
+            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
+            Content="工数を自動補完する"
+            IsChecked="{Binding AutoAdjust.Value}" />
+
         <Button
             Margin="16,0"
             HorizontalAlignment="Left"

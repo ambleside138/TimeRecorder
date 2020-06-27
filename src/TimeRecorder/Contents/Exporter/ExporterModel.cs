@@ -16,9 +16,9 @@ namespace TimeRecorder.Contents.Exporter
                 ContainerHelper.Resolver.Resolve<IReportDriver>());
         }
 
-        public void Export(int year, int month, string path)
+        public void Export(int year, int month, string path, bool autoAdjust)
         {
-            _ExportMonthlyReportUseCase.Export(new Domain.Domain.YearMonth(year, month), path);
+            _ExportMonthlyReportUseCase.Export(new Domain.Domain.YearMonth(year, month), path, autoAdjust);
         }
 
     }

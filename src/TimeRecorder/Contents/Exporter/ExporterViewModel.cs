@@ -24,6 +24,8 @@ namespace TimeRecorder.Contents.Exporter
 
         public ReactivePropertySlim<int> SelectedMonth { get; } = new ReactivePropertySlim<int>(DateTime.Today.Month - 1);
 
+        public ReactivePropertySlim<bool> AutoAdjust { get; } = new ReactivePropertySlim<bool>(true);
+
         public string ExportFilter => "CSVファイル(*.csv)|*.csv|すべてのファイル(*.*)|*.*";
 
         public ReadOnlyReactivePropertySlim<string> InitialFileName { get; }
@@ -42,7 +44,7 @@ namespace TimeRecorder.Contents.Exporter
             if (savePath == null)
                 return;
 
-            _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath);
+            _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value);
 
             SnackbarService.Current.ShowMessage("以下のパスに工数集計結果を出力しました" + Environment.NewLine + savePath);
         }

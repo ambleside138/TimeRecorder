@@ -15,14 +15,16 @@ namespace TimeRecorder.Driver.CsvExporter
     {
         private DailyWorkRecordHeaderToWorkTimeRowConverter _Converter = new DailyWorkRecordHeaderToWorkTimeRowConverter();
         
-        public void ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath)
+        public void ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust)
         {
             var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h))
                                              .Where(r => r.ManHour != "0")
                                              .ToArray();
 
-            AdjustTimes(dailyWorkRecordHeaders, rows);
-
+            if(autoAdjust)
+            {
+                AdjustTimes(dailyWorkRecordHeaders, rows);
+            }
 
             // .Net CoreでSJISを扱うために呼ぶ必要がある
             // パッケージも必要: System.Text.Encoding.CodePages
