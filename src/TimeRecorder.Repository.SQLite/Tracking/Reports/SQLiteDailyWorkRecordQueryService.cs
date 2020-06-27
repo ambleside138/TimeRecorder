@@ -36,6 +36,7 @@ SELECT
   , task.clientid as clientid
   , task.processid as workprocessid
   , task.productid as productid
+  , task.istemporary as istemporary
 FROM
   workingtimes time
 INNER JOIN
@@ -96,13 +97,14 @@ WHERE
                         Title = task.Title,
                         WorkingTimeId = new Identity<WorkingTimeRange>(task.WorkingTimeId),
                         WorkTaskId = new Identity<WorkTask>(task.WorkTaskId),
+                        IsTemporary = task.IsTemporary == "1",
                     };
 
                     list.Add(dto);
                 }
             });
 
-            return list.ToArray();
+            return list.OrderBy(t => t.StartDateTime).ToArray();
         }
 
         class TableRow
@@ -128,6 +130,8 @@ WHERE
             public int ClientId { get; set; }
 
             public int ProductId { get; set; }
+
+            public string IsTemporary { get; set; }
         }
     }
 }

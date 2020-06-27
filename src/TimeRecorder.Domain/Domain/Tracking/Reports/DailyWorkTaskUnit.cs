@@ -22,6 +22,8 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
         public WorkProcess WorkProcess { get; }
         public string Title { get; }
 
+        public bool IsTemporary { get; set; }
+
         private readonly List<WorkingTimeRange> _WorkingTimeRanges = new List<WorkingTimeRange>();
 
         public IReadOnlyList<WorkingTimeRange> WorkingTimeRanges => _WorkingTimeRanges;
@@ -40,11 +42,38 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
             Client = workingTime.Client;
             WorkProcess = workingTime.WorkProcess;
             Title = workingTime.Title;
+            IsTemporary = workingTime.IsTemporary;
         }
 
         public void AddWorkingTime(WorkingTimeRange timeRange)
         {
             _WorkingTimeRanges.Add(timeRange);
+        }
+
+        public bool NeedToSummarize(WorkingTimeRecordForReport dailyWorkTaskUnit)
+        {
+            if (dailyWorkTaskUnit.WorkTaskId == TaskId)
+                return true;
+                    
+            if(IsTemporary && dailyWorkTaskUnit.IsTemporary)
+            {
+                if(TaskCategory == dailyWorkTaskUnit.TaskCategory
+                    && Product.Id == dailyWorkTaskUnit.Product.Id
+                    && Client.Id == dailyWorkTaskUnit.Client.Id
+                    && WorkProcess.Id == dailyWorkTaskUnit.WorkProcess.Id
+                    && Title == dailyWorkTaskUnit.Title  )
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

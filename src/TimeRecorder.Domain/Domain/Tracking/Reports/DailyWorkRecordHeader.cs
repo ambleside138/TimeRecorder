@@ -26,7 +26,7 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
 
         public void AddWorkTask(WorkingTimeRecordForReport workingTime)
         {
-            var targetTask = _DailyWorkTaskUnits.FirstOrDefault(t => t.TaskId == workingTime.WorkTaskId);
+            var targetTask = _DailyWorkTaskUnits.FirstOrDefault(t => t.NeedToSummarize(workingTime));
             if(targetTask == null)
             {
                 targetTask = new DailyWorkTaskUnit(workingTime);
