@@ -53,6 +53,12 @@ namespace TimeRecorder.Repository.GoogleAPI.Calendar
                         && targetKinds.Contains(kind) == false)
                     continue;
 
+                // 開始時間=終了時間のイベントは無視する
+                if (eventItem.Start.DateTime.HasValue
+                    && eventItem.End.DateTime.HasValue
+                    && eventItem.Start.DateTime == eventItem.End.DateTime)
+                    continue;
+
                 var e = new ScheduledEvent
                 {
                     Id = eventItem.Id,
