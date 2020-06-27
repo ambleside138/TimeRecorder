@@ -36,6 +36,8 @@ namespace TimeRecorder.Domain.UseCase.Tracking.Reports
 
         public bool IsTemporary { get; set; }
 
+        public bool IsScheduled { get; set; }
+
         public WorkingTimeRange ConvertToWorkingTimeRange()
         {
             return new WorkingTimeRange(WorkingTimeId, WorkTaskId, StartDateTime, EndDateTime);

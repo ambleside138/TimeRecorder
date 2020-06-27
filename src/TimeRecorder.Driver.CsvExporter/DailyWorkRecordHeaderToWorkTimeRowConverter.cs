@@ -20,12 +20,14 @@ namespace TimeRecorder.Driver.CsvExporter
             {
                 var row = new WorkTimeRow
                 {
+                    Ymd = dailyWorkRecordHeader.WorkYmd,
                     DateText = dateText,
                     TaskCategory = ConvertCsvCategoryText(task.TaskCategory),
                     ProductOrClient = ConvertToProductOrClient(task),
                     TaskProcess = task.WorkProcess.Title,
                     Remarks = task.Title,
-                    ManHour = CalcMonHour(task.TotalWorkMinutes),
+                    TotalMinutes = task.TotalWorkMinutes,
+                    IsFixed = task.IsScheduled,
                 };
 
                 listRow.Add(row);
@@ -97,28 +99,6 @@ namespace TimeRecorder.Driver.CsvExporter
             }
         }
 
-        private string CalcMonHour(int totalMinutes)
-        {
-            var hour = totalMinutes / 60;
-            var min = totalMinutes % 60;
-
-            if(min == 0)
-            {
-                return hour.ToString();
-            }
-
-            if (min >= 45)
-            {
-                return (hour + 1).ToString();
-            }
-            else if(min > 15 && min < 45)
-            {
-                return $"{hour}.5";
-            }
-            else
-            {
-                return hour.ToString();
-            }
-        }
+ 
     }
 }

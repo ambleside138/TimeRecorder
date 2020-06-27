@@ -37,6 +37,7 @@ SELECT
   , task.processid as workprocessid
   , task.productid as productid
   , task.istemporary as istemporary
+  , task.importkey as importkey
 FROM
   workingtimes time
 INNER JOIN
@@ -98,6 +99,7 @@ WHERE
                         WorkingTimeId = new Identity<WorkingTimeRange>(task.WorkingTimeId),
                         WorkTaskId = new Identity<WorkTask>(task.WorkTaskId),
                         IsTemporary = task.IsTemporary == "1",
+                        IsScheduled = string.IsNullOrEmpty(task.ImportKey) == false,
                     };
 
                     list.Add(dto);
@@ -132,6 +134,8 @@ WHERE
             public int ProductId { get; set; }
 
             public string IsTemporary { get; set; }
+
+            public string ImportKey { get; set; }
         }
     }
 }

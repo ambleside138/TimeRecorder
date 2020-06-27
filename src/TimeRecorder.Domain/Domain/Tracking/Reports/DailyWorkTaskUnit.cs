@@ -22,7 +22,9 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
         public WorkProcess WorkProcess { get; }
         public string Title { get; }
 
-        public bool IsTemporary { get; set; }
+        public bool IsTemporary { get; }
+
+        public bool IsScheduled { get; }
 
         private readonly List<WorkingTimeRange> _WorkingTimeRanges = new List<WorkingTimeRange>();
 
@@ -43,6 +45,7 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
             WorkProcess = workingTime.WorkProcess;
             Title = workingTime.Title;
             IsTemporary = workingTime.IsTemporary;
+            IsScheduled = workingTime.IsScheduled;
         }
 
         public void AddWorkingTime(WorkingTimeRange timeRange)
