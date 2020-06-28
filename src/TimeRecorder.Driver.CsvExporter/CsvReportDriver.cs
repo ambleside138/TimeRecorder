@@ -44,7 +44,7 @@ namespace TimeRecorder.Driver.CsvExporter
         private static void AdjustTimes(DailyWorkRecordHeader[] dailyWorkRecordHeaders, WorkTimeRow[] rows)
         {
             // 補正
-            foreach (var day in dailyWorkRecordHeaders.Where(h => h.DailyWorkTaskUnits.Any()).Where(r => r.WorkYmd == "20200615"))
+            foreach (var day in dailyWorkRecordHeaders.Where(h => h.DailyWorkTaskUnits.Any()))
             {
                 var adjustTargets = rows.Where(r => r.Ymd == day.WorkYmd).ToArray();
                 
