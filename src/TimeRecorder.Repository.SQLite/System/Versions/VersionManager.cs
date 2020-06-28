@@ -15,6 +15,7 @@ namespace TimeRecorder.Repository.SQLite.System.Versions
             new Version_000_001_000_000(),
             new Version_000_002_000_000(),
             new Version_000_003_000_000(),
+            new Version_000_008_000_000(),
         };
     }
 }

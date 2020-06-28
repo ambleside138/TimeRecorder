@@ -23,7 +23,8 @@ namespace TimeRecorder.Domain.UseCase.Tracking.Reports
 
             var headers = _DailyWorkRecordQueryService.SelectByYearMonth(yearMonth);
 
-            return headers.Where(h => h.Ymd.Equals(ymdString))
+            return headers.WorkingTimeRecordForReports
+                          .Where(h => h.Ymd.Equals(ymdString))
                           .OrderBy(h => h.StartDateTime)
                           .ToArray();
         }

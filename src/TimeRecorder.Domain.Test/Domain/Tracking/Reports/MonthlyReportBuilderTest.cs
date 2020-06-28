@@ -46,7 +46,7 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
         [Test]
         public void データなし()
         {
-            var list = _MonthlyReportBuilder.Build(new WorkingTimeRecordForReport[0]);
+            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = new WorkingTimeRecordForReport[0] });
             Assert.IsTrue(list.Length == 0);
         }
 
@@ -83,7 +83,7 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
                 },
             };
 
-            var list = _MonthlyReportBuilder.Build(records);
+            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records });
 
             Assert.IsTrue(list.Length == 31);
             Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);
@@ -146,7 +146,7 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
                 },
            };
 
-            var list = _MonthlyReportBuilder.Build(records);
+            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records });
 
             Assert.IsTrue(list.Length == 31);
             Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);

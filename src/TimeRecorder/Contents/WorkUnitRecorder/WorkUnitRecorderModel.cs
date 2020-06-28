@@ -154,10 +154,18 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public void SetDoingTask()
         {
-            var target = WorkingTimes.Where(w => w.TimePeriod.WithinRangeAtCurrentTime)
-                                     .FirstOrDefault();
+            if(SystemClockServiceLocator.Current.Now.Date != TargetDate.Value.Date)
+            {
+                DoingTask.Value = null;
+            }
+            else
+            {
+                var target = WorkingTimes.Where(w => w.TimePeriod.WithinRangeAtCurrentTime)
+                         .FirstOrDefault();
 
-            DoingTask.Value = target;
+                DoingTask.Value = target;
+            }
+
         }
 
         public bool AutoStopCurrentTaskIfNeeded(out string message)

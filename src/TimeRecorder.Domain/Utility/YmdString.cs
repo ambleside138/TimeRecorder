@@ -8,9 +8,9 @@ namespace TimeRecorder.Domain.Utility
     /// <summary>
     /// 日付を表します
     /// </summary>
-    public struct YmdString : IEquatable<YmdString>
+    public struct YmdString : IEquatable<YmdString>, IComparable<YmdString>
     {
-        public static YmdString Empty => new YmdString();
+        public static YmdString Empty => new YmdString("");
 
         public static YmdString NoPlan => new YmdString("99991231");
 
@@ -35,6 +35,11 @@ namespace TimeRecorder.Domain.Utility
         public bool Equals(YmdString other)
         {
             return Value == other.Value;
+        }
+
+        public int CompareTo([AllowNull] YmdString other)
+        {
+            return Value.CompareTo(other.Value);
         }
     }
 }

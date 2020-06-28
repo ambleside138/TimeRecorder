@@ -47,9 +47,10 @@ WHERE
 ";
         #endregion
 
-        public WorkingTimeRecordForReport[] SelectByYearMonth(YearMonth yearMonth)
+        public DailyWorkResults SelectByYearMonth(YearMonth yearMonth)
         {
             var list = new List<WorkingTimeRecordForReport>();
+            var listWorkingHour = new List<WorkingHour>();
 
             RepositoryAction.Query(c =>
             {
@@ -104,9 +105,16 @@ WHERE
 
                     list.Add(dto);
                 }
+
+                var workingHourDao = new WorkingHourDao(c, null);
+                listWorkingHour.AddRange(workingHourDao.SelectByYmdRange(param.start, param.end).Select(r => r.ConvertToDomainObjects()));
             });
 
-            return list.OrderBy(t => t.StartDateTime).ToArray();
+            return new DailyWorkResults
+            {
+                WorkingTimeRecordForReports = list.OrderBy(t => t.StartDateTime).ToArray(),
+                WorkingHours = listWorkingHour.OrderBy(h => h.Ymd).ToArray(),
+            };
         }
 
         class TableRow
