@@ -55,11 +55,11 @@ namespace TimeRecorder.Driver.CsvExporter
                     // 実際の勤務時間とタスク時間の合計の差分が30分以上にならないようにする
                     var diff = day.CalcExpectedTotalWorkTimeSpan().TotalMinutes - sum;
 
-                    if (diff > 30)
+                    if (diff >= 30)
                     {
                         return true;
                     }
-                    else if (diff < -30)
+                    else if (diff <= -30)
                     {
                         return false;
                     }
