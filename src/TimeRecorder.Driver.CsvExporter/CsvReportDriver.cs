@@ -15,7 +15,7 @@ namespace TimeRecorder.Driver.CsvExporter
     {
         private DailyWorkRecordHeaderToWorkTimeRowConverter _Converter = new DailyWorkRecordHeaderToWorkTimeRowConverter();
         
-        public void ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust)
+        public ExportResult ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust)
         {
             var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h))
                                              .Where(r => r.ManHour != "0")
@@ -23,8 +23,9 @@ namespace TimeRecorder.Driver.CsvExporter
 
             if(autoAdjust)
             {
-                AdjustTimes(dailyWorkRecordHeaders, rows);
+                WorkingHourAdjustor.AdjustTimes(dailyWorkRecordHeaders, rows);
             }
+
 
             // .Net CoreでSJISを扱うために呼ぶ必要がある
             // パッケージも必要: System.Text.Encoding.CodePages
@@ -39,77 +40,24 @@ namespace TimeRecorder.Driver.CsvExporter
                 // データを読み出し
                 csv.WriteRecords(rows);
             }
-        }
 
-        private static void AdjustTimes(DailyWorkRecordHeader[] dailyWorkRecordHeaders, WorkTimeRow[] rows)
-        {
-            // 補正
-            foreach (var day in dailyWorkRecordHeaders.Where(h => h.DailyWorkTaskUnits.Any()))
+
+            var listMessage = rows.Select(r => r.GetWaringMessage())
+                                    .Where(r => string.IsNullOrEmpty(r) == false)
+                                    .Distinct()
+                                    .ToArray();
+
+            var message = new StringBuilder()
+                            .AppendLine("※ 下記の日付に入力不備があります。修正してください。")
+                            .AppendLine("----")
+                            .AppendLine(string.Join(Environment.NewLine, listMessage));
+
+            return new ExportResult
             {
-                var adjustTargets = rows.Where(r => r.Ymd == day.WorkYmd).ToArray();
-                
-                bool? needAdjust()
-                {
-                    var sum = adjustTargets.Sum(r => r.GetManHourMinutes());
-
-                    // 実際の勤務時間とタスク時間の合計の差分が30分以上にならないようにする
-                    var diff = day.CalcExpectedTotalWorkTimeSpan().TotalMinutes - sum;
-
-                    if (diff >= 30)
-                    {
-                        return true;
-                    }
-                    else if (diff <= -30)
-                    {
-                        return false;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                };
-
-                var isAdjusted = false;
-
-                for (int i = 0; i < 10; i++)
-                {
-                    if (isAdjusted)
-                        break;
-
-                    // 実際の勤務時間とタスク時間の合計の差分が30分以上にならないようにする
-                    var result = needAdjust();
-                    if (result.HasValue)
-                    {
-                        // 超えた場合は時間が長い順に30分ずつ調整
-                        foreach (var record in adjustTargets.Where(t => t.IsFixed == false).OrderByDescending(t => t.TotalMinutes))
-                        {
-                            if (result == true)
-                            {
-                                // たりない
-                                record.TotalMinutes += 30;
-                            }
-                            else if (result == false)
-                            {
-                                // ながすぎ
-                                record.TotalMinutes -= 30;
-                            }
-
-                            if (needAdjust().HasValue == false)
-                            {
-                                // 調整OK
-                                isAdjusted = true;
-                                break;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-
-            }
+                IsSuccessed = listMessage.Length == 0,
+                Message = listMessage.Length > 0 ? message.ToString() : "",
+            };
         }
+
     }
 }

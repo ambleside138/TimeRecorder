@@ -33,6 +33,10 @@ namespace TimeRecorder.Host
         {
             TransitionHelper.Current.SetMessanger(Messenger);
 
+            var message = _MainModel.CheckHealth();
+            if (string.IsNullOrEmpty(message) == false)
+                SnackbarService.Current.ShowMessage(message);
+
             SetupTheme();
         }
 
@@ -47,9 +51,7 @@ namespace TimeRecorder.Host
 
         public void Initialize()
         {
-            var message = _MainModel.CheckHealth();
-            if (string.IsNullOrEmpty(message) == false)
-                SnackbarService.Current.ShowMessage(message);
+
 
             Contents.Add(new WorkUnitRecorderViewModel());
             Contents.Add(new ArchiveManagerViewModel());

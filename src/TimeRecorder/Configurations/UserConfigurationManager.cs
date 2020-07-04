@@ -12,7 +12,19 @@ namespace TimeRecorder.Configurations
 
     class UserConfigurationManager
     {
-        public static UserConfigurationManager Instance { get; } = new UserConfigurationManager();
+        private static UserConfigurationManager _Instance;
+
+        public static UserConfigurationManager Instance
+        {
+            get
+            {
+                if (_Instance == null)
+                    _Instance = new UserConfigurationManager();
+
+                return _Instance;
+            }
+
+        }
 
         private readonly ConfigurationUseCase _ConfigurationUseCase;
 

@@ -19,13 +19,13 @@ namespace TimeRecorder.Domain.UseCase.Tracking.Reports
             _ReportDriver = reportDriver;
         }
 
-        public void Export(YearMonth yearMonth, string path, bool autoAdjust)
+        public ExportResult Export(YearMonth yearMonth, string path, bool autoAdjust)
         {
             var builder = new MonthlyReportBuilder(yearMonth);
             var workRecords = _DailyWorkRecordQueryService.SelectByYearMonth(yearMonth);
             var summary = builder.Build(workRecords);
 
-            _ReportDriver.ExportMonthlyReport(summary, path, autoAdjust);
+            return _ReportDriver.ExportMonthlyReport(summary, path, autoAdjust);
         }
     }
 }

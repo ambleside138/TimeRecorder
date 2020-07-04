@@ -7,6 +7,8 @@ namespace TimeRecorder.Driver.CsvExporter
 {
     class WorkTimeRow
     {
+        public static string AlertMessage = " [ *** 要確認 *** ]";
+
         [Ignore]
         public string Ymd { get; set; }
 
@@ -67,6 +69,16 @@ namespace TimeRecorder.Driver.CsvExporter
             {
                 return hour.ToString();
             }
+        }
+
+        public string GetWaringMessage()
+        {
+            if(ProductOrClient.Contains(AlertMessage))
+            {
+                return $"{Ymd} {Remarks}";
+            }
+
+            return "";
         }
 
     }

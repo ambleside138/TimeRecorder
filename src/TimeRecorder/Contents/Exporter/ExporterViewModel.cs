@@ -46,7 +46,6 @@ namespace TimeRecorder.Contents.Exporter
 
             _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value);
 
-            SnackbarService.Current.ShowMessage("以下のパスに工数集計結果を出力しました" + Environment.NewLine + savePath);
         }
     }
 }

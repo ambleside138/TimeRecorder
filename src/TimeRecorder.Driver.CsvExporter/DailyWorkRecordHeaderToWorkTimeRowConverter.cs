@@ -66,7 +66,8 @@ namespace TimeRecorder.Driver.CsvExporter
             if(taskUnit.Product.Id.IsEmpty
                 && taskUnit.Client.Id.IsEmpty)
             {
-                return taskUnit.WorkProcess.Title;
+                return "その他";
+                //return taskUnit.WorkProcess.Title;
             }
 
             // 案件名が入っていなければ無条件で製品名を記載
@@ -82,7 +83,7 @@ namespace TimeRecorder.Driver.CsvExporter
                         return productName + " 保守";
 
                     default:
-                        return productName + "*******";
+                        return productName + WorkTimeRow.AlertMessage;
                 }
             }
 
@@ -95,7 +96,7 @@ namespace TimeRecorder.Driver.CsvExporter
                     return clientName;
 
                 default:
-                    return taskUnit.Product.Name + "*******";
+                    return taskUnit.Product.Name + WorkTimeRow.AlertMessage;
             }
         }
 
