@@ -58,7 +58,8 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
             if (dailyWorkTaskUnit.WorkTaskId == TaskId)
                 return true;
                     
-            if(IsTemporary && dailyWorkTaskUnit.IsTemporary)
+            if((IsTemporary && dailyWorkTaskUnit.IsTemporary)
+                || (IsScheduled && dailyWorkTaskUnit.IsScheduled))
             {
                 if(TaskCategory == dailyWorkTaskUnit.TaskCategory
                     && Product.Id == dailyWorkTaskUnit.Product.Id
