@@ -51,6 +51,11 @@ namespace TimeRecorder.Domain.UseCase.Tasks
             _WorkTaskCompletionCommand.CompleteWorkTask(id);
         }
 
+        public void UnComplete(Identity<WorkTask> id)
+        {
+            _WorkTaskCompletionCommand.ReStartTask(id);
+        }
+
         public WorkTask SelectById(Identity<WorkTask> workTaskId)
         {
             var target = _TaskRepository.SelectById(workTaskId);

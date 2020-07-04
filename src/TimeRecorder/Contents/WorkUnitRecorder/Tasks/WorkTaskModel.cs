@@ -40,6 +40,12 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
             ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
         }
 
+        public void UnCompleteWorkTask(Identity<WorkTask> id)
+        {
+            _WorkTaskUseCase.UnComplete(id);
+            ObjectChangedNotificator.Instance.NotifyWorkTaskEdited();
+        }
+
         public void DeleteWorkTask(Identity<WorkTask> id)
         {
             _WorkTaskUseCase.Delete(id);

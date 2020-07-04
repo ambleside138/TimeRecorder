@@ -130,6 +130,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             } 
         }
 
+        public void UnCompleteTask()
+        {
+            _Model.UnCompleteWorkTask(Dto.TaskId);
+        }
+
         public void DeleteWorkTask()
         {
             _Model.DeleteWorkTask(Dto.TaskId);

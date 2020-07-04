@@ -150,6 +150,20 @@
                                 Height="16"
                                 Kind="TimelinePlus" />
                         </c:CallMethodButton>
+
+                        <c:CallMethodButton
+                            Width="24"
+                            Height="24"
+                            Margin="8,0,0,0"
+                            MethodName="UnCompleteTask"
+                            Style="{StaticResource MaterialDesignIconButton}"
+                            ToolTip="タスクを未完了に戻す"
+                            Visibility="{Binding IsCompleted.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <materialDesign:PackIcon
+                                Width="16"
+                                Height="16"
+                                Kind="ArchiveArrowUpOutline" />
+                        </c:CallMethodButton>
                     </StackPanel>
                 </Grid>
 
