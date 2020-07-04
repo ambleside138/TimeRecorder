@@ -11,9 +11,12 @@ namespace TimeRecorder.Domain.Domain.Calendar
     {
         private readonly WorkTaskBuilderConfig _Config;
 
-        public WorkTaskBuilder(WorkTaskBuilderConfig config)
+        private readonly ScheduleTitleMap[] _ScheduleTitleMaps;
+
+        public WorkTaskBuilder(WorkTaskBuilderConfig config, ScheduleTitleMap[] maps)
         {
             _Config = config;
+            _ScheduleTitleMaps = maps ?? new ScheduleTitleMap[0];
         }
 
         public WorkTask Build(ScheduledEvent scheduledEvent)
@@ -26,15 +29,33 @@ namespace TimeRecorder.Domain.Domain.Calendar
                 oTask.ProcessId = new Identity<WorkProcesses.WorkProcess>(eventConfig.WorkProcessId);
             }
 
-            var targetConfig = _Config.TitleMappers.FirstOrDefault(t => t.ScheduleTitle == oTask.Title);
-            if(targetConfig != null)
+            if(_ScheduleTitleMaps.Any())
             {
-                oTask.TaskCategory = targetConfig.TaskCategory;
-                oTask.ProductId = new Identity<Products.Product>(targetConfig.ProductId);
-                oTask.ProcessId = new Identity<WorkProcesses.WorkProcess>(targetConfig.WorkProcessId);
+                var mapConfig = _ScheduleTitleMaps.FirstOrDefault(t => t.ScheduleTitle == oTask.Title);
+                if(mapConfig != null)
+                {
+                    oTask.Title = mapConfig.MapTitle;
+                    oTask.TaskCategory = mapConfig.TaskCategory;
+                    oTask.ProductId = new Identity<Products.Product>(mapConfig.ProductId);
+                    oTask.ProcessId = new Identity<WorkProcesses.WorkProcess>(mapConfig.WorkProcessId);
+                    oTask.ClientId = new Identity<Clients.Client>(mapConfig.ClientId);
+                }
             }
+            else
+            {
+                var targetConfig = _Config.TitleMappers.FirstOrDefault(t => t.ScheduleTitle == oTask.Title);
+                if (targetConfig != null)
+                {
+                    oTask.TaskCategory = targetConfig.TaskCategory;
+                    oTask.ProductId = new Identity<Products.Product>(targetConfig.ProductId);
+                    oTask.ProcessId = new Identity<WorkProcesses.WorkProcess>(targetConfig.WorkProcessId);
+                }
+            }
+
 
             return oTask;
         }
+
+        
     }
 }

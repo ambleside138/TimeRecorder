@@ -52,7 +52,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         private readonly GetWorkTaskWithTimesUseCase _GetWorkTaskWithTimesUseCase;
         private readonly WorkingTimeRangeUseCase _WorkingTimeRangeUseCase;
         private readonly GetWorkingTimeForTimelineUseCase _GetWorkingTimeForTimelineUseCase;
-        private readonly ImportTaskFromCalendarUseCase _ImportTaskFromCalendarUseCase;
         #endregion
 
         public WorkUnitRecorderModel()
@@ -66,14 +65,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             _GetWorkingTimeForTimelineUseCase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.Resolver.Resolve<IWorkingTimeQueryService>());
             _GetWorkTaskWithTimesUseCase = new GetWorkTaskWithTimesUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskWithTimesQueryService>());
 
-            var config = JsonFileIO.Deserialize<TimeRecorderConfiguration>("TimeRecorderConfiguration.json") ?? new TimeRecorderConfiguration();
-
-            _ImportTaskFromCalendarUseCase = new ImportTaskFromCalendarUseCase(
-                ContainerHelper.Resolver.Resolve<IWorkTaskRepository>(),
-                ContainerHelper.Resolver.Resolve<IScheduledEventRepository>(),
-                ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
-                config.WorkTaskBuilderConfig);
-
             ObjectChangedNotificator.Instance.WorkTaskEdited += Load;
             MessageBroker.Default.Subscribe<WorkTaskRegistedEventArg>(_ => Load());
 
@@ -81,6 +72,22 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             TargetDate.Subscribe(_ => Load()).AddTo(_Disposables);
 
             ContainsCompleted.Subscribe(_ => Load()).AddTo(_Disposables);
+        }
+
+        public ImportTaskFromCalendarUseCase BuildImportTaskFromCalendarUseCase()
+        {
+            // 設定を再起動なしで反映させるために都度生成する
+
+            var config = JsonFileIO.Deserialize<TimeRecorderConfiguration>("TimeRecorderConfiguration.json") ?? new TimeRecorderConfiguration();
+
+            var maps = UserConfigurationManager.Instance.GetConfiguration<ScheduleTitleMapConfig>(ConfigKey.ScheduleTitleMap);
+
+            return new ImportTaskFromCalendarUseCase(
+                ContainerHelper.Resolver.Resolve<IWorkTaskRepository>(),
+                ContainerHelper.Resolver.Resolve<IScheduledEventRepository>(),
+                ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
+                config.WorkTaskBuilderConfig,
+                maps?.ScheduleTitleMaps);
         }
 
         public void Load()
@@ -229,7 +236,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public async Task<WorkTask[]> ImportFromCalendarAsync()
         {
-            var importedWorkTasks = await _ImportTaskFromCalendarUseCase.ImportToTaskAsync(TargetYmd);
+            var useCase = BuildImportTaskFromCalendarUseCase();
+            var importedWorkTasks = await useCase.ImportToTaskAsync(TargetYmd);
 
             if(importedWorkTasks.Any())
             {

@@ -1,0 +1,187 @@
+﻿<Window
+    x:Class="TimeRecorder.Contents.Configuration.TaskConfigEditor.TaskConfigEditDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:b="clr-namespace:TimeRecorder.Behaviors.Messaging.Windows"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:c="clr-namespace:TimeRecorder.Controls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
+    xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder.Editor"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=System.Runtime"
+    Width="420"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    AllowsTransparency="True"
+    Background="Transparent"
+    FocusManager.FocusedElement="{Binding ElementName=TitleTextBox}"
+    ShowInTaskbar="False"
+    SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="None"
+    mc:Ignorable="d">
+
+    <behaviors:Interaction.Triggers>
+
+        <!--  入力内容検証後に閉じるために必要  -->
+        <l:InteractionMessageTrigger MessageKey="RegistKey" Messenger="{Binding Messenger}">
+
+            <b:ModalWindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False" />
+
+        </l:InteractionMessageTrigger>
+        <!--  If you make user choose 'OK or Cancel' closing Window, then please use Window Close cancel Behavior.  -->
+        <l:InteractionMessageTrigger MessageKey="CloseDirect" Messenger="{Binding Messenger}">
+            <l:WindowInteractionMessageAction InvokeActionOnlyWhenWindowIsActive="False">
+                <l:DirectInteractionMessage>
+                    <l:WindowActionMessage Action="Close" />
+                </l:DirectInteractionMessage>
+            </l:WindowInteractionMessageAction>
+        </l:InteractionMessageTrigger>
+    </behaviors:Interaction.Triggers>
+
+
+    <Border
+        Background="{StaticResource MaterialDesignBackground}"
+        BorderThickness="0"
+        CornerRadius="4">
+        <Grid Margin="24,0,24,8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40" />
+                <RowDefinition />
+                <RowDefinition Height="52" />
+            </Grid.RowDefinitions>
+
+            <!--  Header  -->
+            <TextBlock
+                VerticalAlignment="Bottom"
+                Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                Text="{Binding WindowTitle.Value}" />
+
+            <!--  Contents  -->
+            <StackPanel Grid.Row="1" Margin="0,8,0,16">
+                <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="{Binding ConfigTitleLabel.Value}" />
+                <TextBox
+                    x:Name="ConfigTitleTextBox"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
+                    Text="{Binding ConfigTitle.Value}" />
+
+                <TextBlock
+                    Margin="0,16,0,0"
+                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                    Text="タイトル*" />
+                <TextBox
+                    x:Name="TitleTextBox"
+                    materialDesign:TextFieldAssist.HasClearButton="True"
+                    Text="{Binding TaskCardViewModel.Title.Value}" />
+
+                <TextBlock
+                    Margin="0,16,0,4"
+                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                    Text="作業分類" />
+                <StackPanel Orientation="Horizontal">
+                    <RadioButton
+                        VerticalContentAlignment="Top"
+                        Content="開発"
+                        GroupName="TaskCategory"
+                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Develop, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                        Style="{StaticResource HorizontalMarginStyleKey}" />
+                    <RadioButton
+                        Content="契約後の導入"
+                        GroupName="TaskCategory"
+                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Introduce, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                        Style="{StaticResource HorizontalMarginStyleKey}" />
+                    <RadioButton
+                        Content="保守"
+                        GroupName="TaskCategory"
+                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Maintain, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                        Style="{StaticResource HorizontalMarginStyleKey}" />
+                    <RadioButton
+                        Content="その他"
+                        GroupName="TaskCategory"
+                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Other, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                        Style="{StaticResource HorizontalMarginStyleKey}" />
+                </StackPanel>
+
+                <TextBlock
+                    Margin="0,16,0,4"
+                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                    Text="製品" />
+                <ComboBox
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Products}"
+                    SelectedItem="{Binding TaskCardViewModel.Product.Value}" />
+
+                <TextBlock
+                    Margin="0,16,0,0"
+                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                    Text="作業工程" />
+                <ComboBox
+                    DisplayMemberPath="Title"
+                    ItemsSource="{Binding Processes}"
+                    SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" />
+
+                <TextBlock
+                    Margin="0,16,0,0"
+                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                    Text="ユーザ" />
+                <ComboBox
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Clients}"
+                    SelectedItem="{Binding TaskCardViewModel.Client.Value}" />
+            </StackPanel>
+
+            <c:CallMethodButton
+                Grid.Row="2"
+                HorizontalAlignment="Left"
+                Content="削除"
+                MethodName="Delete"
+                Style="{StaticResource MaterialDesignOutlinedButton}"
+                Visibility="{Binding ShowDeleteButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <c:CallMethodButton.BorderBrush>
+                    <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+                </c:CallMethodButton.BorderBrush>
+                <c:CallMethodButton.Foreground>
+                    <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+                </c:CallMethodButton.Foreground>
+            </c:CallMethodButton>
+
+            <StackPanel
+                Grid.Row="2"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+
+                <Button
+                    Margin="4,0"
+                    Content="登録"
+                    Style="{StaticResource MaterialDesignRaisedDarkButton}">
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="Click">
+                            <l:LivetCallMethodAction MethodName="Regist" MethodTarget="{Binding}" />
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+                </Button>
+
+                <c:CallMethodButton
+                    Margin="4,0"
+                    Content="{materialDesign:PackIcon Play}"
+                    MethodName="RegistAndStart"
+                    Style="{StaticResource MaterialDesignRaisedButton}"
+                    ToolTip="追加して開始"
+                    Visibility="{Binding ShowQuickStartButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <Button Content="キャンセル" Style="{StaticResource MaterialDesignFlatButton}">
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="Click">
+                            <l:WindowInteractionMessageAction>
+                                <l:DirectInteractionMessage>
+                                    <l:WindowActionMessage Action="Close" />
+                                </l:DirectInteractionMessage>
+                            </l:WindowInteractionMessageAction>
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>

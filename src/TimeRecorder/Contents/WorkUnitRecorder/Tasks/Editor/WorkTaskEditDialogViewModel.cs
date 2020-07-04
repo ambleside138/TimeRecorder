@@ -17,6 +17,8 @@ using TimeRecorder.Messaging.Windows;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 {
+    // 設定画面で継承して利用している
+
     class WorkTaskEditDialogViewModel : ViewModel
     {
         public WorkTaskViewModel TaskCardViewModel { get; }

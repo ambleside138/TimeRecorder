@@ -9,7 +9,8 @@ namespace TimeRecorder.Configurations.Items
     {
         Theme,
         BackupPath,
-        FavoriteWorkTask
+        FavoriteWorkTask,
+        ScheduleTitleMap,
     };
 
     abstract class ConfigItemBase

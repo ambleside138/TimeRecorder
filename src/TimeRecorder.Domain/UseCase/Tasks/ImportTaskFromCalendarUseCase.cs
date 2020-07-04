@@ -20,17 +20,20 @@ namespace TimeRecorder.Domain.UseCase.Tasks
         private readonly IScheduledEventRepository _ScheduledEventRepository;
         private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
         private readonly WorkTaskBuilderConfig _WorkTaskBuilderConfig;
+        private readonly ScheduleTitleMap[] _ScheduleTitleMaps;
 
         public ImportTaskFromCalendarUseCase(
             IWorkTaskRepository workTaskRepository, 
             IScheduledEventRepository scheduledEventRepository,
             IWorkingTimeRangeRepository workingTimeRangeRepository,
-            WorkTaskBuilderConfig workTaskBuilderConfig)
+            WorkTaskBuilderConfig workTaskBuilderConfig,
+            ScheduleTitleMap[] scheduleTitleMaps)
         {
             _WorkTaskRepository = workTaskRepository;
             _ScheduledEventRepository = scheduledEventRepository;
             _WorkingTimeRangeRepository = workingTimeRangeRepository;
             _WorkTaskBuilderConfig = workTaskBuilderConfig;
+            _ScheduleTitleMaps = scheduleTitleMaps;
         }
 
         public async Task<WorkTask[]> ImportToTaskAsync(YmdString ymdString)
@@ -47,7 +50,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
             var registedWorkTasks = _WorkTaskRepository.SelectByImportKeys(events.Select(e => e.Id).ToArray());
 
             var list = new List<WorkTask>();
-            var builder = new WorkTaskBuilder(_WorkTaskBuilderConfig);
+            var builder = new WorkTaskBuilder(_WorkTaskBuilderConfig, _ScheduleTitleMaps);
             foreach(var @event in events)
             {
                 // 登録済みは無視する
