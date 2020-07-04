@@ -39,6 +39,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactivePropertySlim<string> PlayIconKind { get; set; } = new ReactivePropertySlim<string>();
 
+        public ReactivePropertySlim<bool> ShowWarning { get; } = new ReactivePropertySlim<bool>();
 
         public WorkTaskWithTimesCardViewModel(WorkTaskWithTimesDto dto)
         {
@@ -57,6 +58,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                             })
                         .AddTo(CompositeDisposable);
 
+            ShowWarning.Value = dto.TaskCategory != Domain.Domain.Tasks.Definitions.TaskCategory.Other
+                                && string.IsNullOrEmpty(dto.ProductName)
+                                && string.IsNullOrEmpty(dto.ClientName);
         }
 
         public void UpdateStatus()

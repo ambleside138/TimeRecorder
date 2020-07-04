@@ -17,6 +17,19 @@
                         <ColumnDefinition />
                     </Grid.ColumnDefinitions>
 
+                    <materialDesign:PackIcon
+                        Width="22"
+                        Height="22"
+                        Margin="-6,0,0,0"
+                        VerticalAlignment="Top"
+                        Kind="Alert"
+                        ToolTip="未入力項目があります"
+                        Visibility="{Binding ShowWarning.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <materialDesign:PackIcon.Foreground>
+                            <SolidColorBrush Color="{StaticResource OrangeAccent400}" />
+                        </materialDesign:PackIcon.Foreground>
+                    </materialDesign:PackIcon>
+
                     <CheckBox
                         Margin="-8,0,0,0"
                         HorizontalAlignment="Left"
