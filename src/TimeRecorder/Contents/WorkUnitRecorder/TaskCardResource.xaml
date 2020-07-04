@@ -22,20 +22,31 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         materialDesign:CheckBoxAssist.CheckBoxSize="24"
-                        IsEnabled="{Binding CheckboxIsEnabled.Value}"
-                        IsChecked="{Binding IsCompleted.Value}" />
+                        IsChecked="{Binding IsCompleted.Value}"
+                        IsEnabled="{Binding CheckboxIsEnabled.Value}" />
 
                     <StackPanel Grid.Column="1">
                         <!--  Process  -->
-                        <TextBlock
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Opacity="0.7"
-                            Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
-                            Text="{Binding Dto.ProcessName, StringFormat=[{0}]}" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Opacity="0.7"
+                                Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
+                                Text="{Binding Dto.ProcessName, StringFormat=[{0}]}" />
+
+                            <materialDesign:PackIcon
+                                Width="14"
+                                Height="14"
+                                Margin="4,0,0,0"
+                                Kind="Calendar"
+                                Opacity="0.7"
+                                Visibility="{Binding Dto.IsScheduled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </StackPanel>
+
                         <!--  Title  -->
                         <TextBlock
-                            Margin="0,2,0,0"
+                            Margin="0,4,0,2"
                             Style="{StaticResource MaterialDesignHeadline5TextBlock}"
                             Text="{Binding Dto.Title}" />
 

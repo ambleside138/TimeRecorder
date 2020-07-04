@@ -34,6 +34,8 @@ namespace TimeRecorder.Domain.UseCase.Tasks
 
         public bool IsCompleted { get; set; }
 
+        public bool IsScheduled { get; set; }
+
         #region WorkingTimes変更通知プロパティ
         private WorkingTimeRange[] _WorkingTimes;
 

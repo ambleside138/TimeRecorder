@@ -47,7 +47,8 @@ namespace TimeRecorder.Repository.SQLite.Tasks
                         Remarks = task.Remarks,
                         TaskCategory = task.TaskCategory,
                         Title = task.Title,
-                        IsCompleted = task.ConvertToDomainObject().TaskProgress.IsCompleted
+                        IsCompleted = task.ConvertToDomainObject().TaskProgress.IsCompleted,
+                        IsScheduled = string.IsNullOrEmpty(task.Source) == false,
                     };
 
                     dto.WorkingTimes = times.Where(t => t.TaskId == task.Id)
