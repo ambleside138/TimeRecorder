@@ -55,6 +55,23 @@ WHERE
             Connection.Execute(sql, row);
         }
 
+        public void Delete(string[] ymds)
+        {
+            #region SQL
+            const string sql = @"
+DELETE FROM
+  workinghours
+WHERE
+  ymd in @ymds
+";
+            #endregion
+
+            if (ymds.Length == 0)
+                return;
+
+            Connection.Execute(sql, new { ymds });
+        }
+
         public WorkingHourTableRow SelectByYmd(string ymd)
         {
             #region SQL

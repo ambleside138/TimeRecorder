@@ -1,25 +1,53 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using TimeRecorder.Configurations;
+using TimeRecorder.Configurations.Items;
+using TimeRecorder.Domain.Domain;
+using TimeRecorder.Domain.Domain.Tracking;
+using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
+using TimeRecorder.Domain.Utility;
 using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.Exporter
 {
     class ExporterModel
     {
+        private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+        
         private readonly ExportMonthlyReportUseCase _ExportMonthlyReportUseCase;
+
+        private readonly WorkingHourUseCase _WorkingHourUseCase;
+
+        private static HttpClient client = new HttpClient();
+
+        public string WorkingHourImportUrl { get; private set; }
 
         public ExporterModel()
         {
             _ExportMonthlyReportUseCase = new ExportMonthlyReportUseCase(
                 ContainerHelper.Resolver.Resolve<IDailyWorkRecordQueryService>(),
                 ContainerHelper.Resolver.Resolve<IReportDriver>());
+
+            _WorkingHourUseCase = new WorkingHourUseCase(ContainerHelper.Resolver.Resolve<IWorkingHourRepository>());
+
+            WorkingHourImportUrl = UserConfigurationManager.Instance.GetConfiguration<WorkingHourImportApiUrlConfig>(ConfigKey.WorkingHourImportApiUrl)?.URL ?? "";
         }
 
-        public void Export(int year, int month, string path, bool autoAdjust)
+        public async void ExportAsync(int year, int month, string path, bool autoAdjust, string importkey)
         {
-            var result = _ExportMonthlyReportUseCase.Export(new Domain.Domain.YearMonth(year, month), path, autoAdjust);
+            var targetYearMonth = new Domain.Domain.YearMonth(year, month);
+            if (string.IsNullOrEmpty(importkey) == false)
+            {
+                await ImportWorkingHour(targetYearMonth, importkey);
+            }
+
+            var result = _ExportMonthlyReportUseCase.Export(targetYearMonth, path, autoAdjust);
 
             if(result.IsSuccessed)
             {
@@ -36,5 +64,40 @@ namespace TimeRecorder.Contents.Exporter
 
         }
 
+        public async Task ImportWorkingHour(YearMonth yearMonth, string param)
+        {
+            SnackbarService.Current.ShowMessage("勤務時間取込処理を開始します");
+
+            var requestUri = $"{WorkingHourImportUrl}?key={param}";
+            var response = await client.GetAsync(requestUri);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // JSONを受け取るにはSpreadSheetのAPIをanyoneで公開する必要がある
+                var json = await response.Content.ReadAsStringAsync();
+                _Logger.Info("GET JSON" + Environment.NewLine + json);
+
+                var result = JsonSerializer.Deserialize<WorkingHourJson>(json, JsonSerializerHelper.DefaultOptions);
+
+                if(result?.records.Any() == true)
+                {
+                    var targetData = result.records.Select(r => r.ConvertToDomainModel())
+                                                   .Where(r => yearMonth.Contains(r.Ymd))
+                                                   .ToArray();
+
+                    _WorkingHourUseCase.Import(targetData);
+
+                    //SnackbarService.Current.ShowMessage($"{targetData.Count(t => t.IsEmpty == false)}件の勤務時間を取り込みました");
+                    _Logger.Info($"{targetData.Count(t => t.IsEmpty == false)}件の勤務時間を取り込みました");
+                }
+            }
+            else
+            {
+                _Logger.Error("Api実行に失敗 code=" + response.StatusCode);
+            }
+        }
+
     }
+
+    
 }

@@ -42,5 +42,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
         {
             EndTime = dateTime;
         }
+
+        public bool IsEmpty => StartTime == null && EndTime == null;
     }
 }

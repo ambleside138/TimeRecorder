@@ -9,6 +9,8 @@ namespace TimeRecorder.Domain.Domain.Tracking
     {
         public void Add(WorkingHour workingHour);
 
+        public void AddRange(WorkingHour[] workingHours);
+
         public void Edit(WorkingHour workingHour);
 
         public WorkingHour SelectYmd(YmdString ymd);

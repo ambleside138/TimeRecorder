@@ -14,6 +14,8 @@ namespace TimeRecorder.Contents.Exporter
 {
     public class ExporterViewModel : ViewModel, IContentViewModel
     {
+
+
         public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "出力", IconKey = "FileExport" };
 
         public int[] Years => Enumerable.Range(DateTime.Today.Year - 2, 5).ToArray();
@@ -26,6 +28,10 @@ namespace TimeRecorder.Contents.Exporter
 
         public ReactivePropertySlim<bool> AutoAdjust { get; } = new ReactivePropertySlim<bool>(true);
 
+        public ReactivePropertySlim<string> ImportKey { get; } = new ReactivePropertySlim<string>("");
+
+        public ReactivePropertySlim<bool> UseWorkingHourImport { get; } = new ReactivePropertySlim<bool>();
+
         public string ExportFilter => "CSVファイル(*.csv)|*.csv|すべてのファイル(*.*)|*.*";
 
         public ReadOnlyReactivePropertySlim<string> InitialFileName { get; }
@@ -36,6 +42,8 @@ namespace TimeRecorder.Contents.Exporter
         {
             InitialFileName = SelectedYear.CombineLatest(SelectedMonth, (year, month) => $"工数管理_{year}年{month:00}月分")
                                           .ToReadOnlyReactivePropertySlim();
+
+            UseWorkingHourImport.Value = string.IsNullOrEmpty(_ExporterModel.WorkingHourImportUrl) == false;
         }
 
         public void Export(SavingFileSelectionMessage message)
@@ -44,7 +52,7 @@ namespace TimeRecorder.Contents.Exporter
             if (savePath == null)
                 return;
 
-            _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value);
+            _ExporterModel.ExportAsync(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value, ImportKey.Value);
 
         }
     }

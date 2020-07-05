@@ -11,6 +11,7 @@ namespace TimeRecorder.Configurations.Items
         BackupPath,
         FavoriteWorkTask,
         ScheduleTitleMap,
+        WorkingHourImportApiUrl
     };
 
     abstract class ConfigItemBase

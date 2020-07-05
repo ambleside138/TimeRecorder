@@ -26,6 +26,16 @@ namespace TimeRecorder.Domain.Domain
             Month = month;
         }
 
+        public bool Contains(YmdString ymdString)
+        {
+            var dt = ymdString.ToDateTime();
+            if (dt == null)
+                return false;
+
+            return dt.Value.Year == Year
+                    && dt.Value.Month == Month;
+        }
+
         protected override IEnumerable<object> GetAtomicValues()
         {
             yield return Year;

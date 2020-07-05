@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
@@ -15,6 +16,12 @@ namespace TimeRecorder.Domain.UseCase.Tracking
         {
             _WorkingHourRepository = workingHourRepository;
         }
+
+        public void Import(WorkingHour[] workingHours)
+        {
+            _WorkingHourRepository.AddRange(workingHours);
+        }
+
 
         public void StartWorking(DateTime time)
         {

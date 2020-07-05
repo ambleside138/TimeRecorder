@@ -39,6 +39,8 @@ namespace TimeRecorder.Contents.Configuration
         public ReactivePropertySlim<bool> ShowFavoriteDescription { get; }
         public ReactivePropertySlim<bool> ShowScheduleDescription { get; }
 
+        public ReactivePropertySlim<string> WorkingHourImportUrl { get; }
+
         public ConfigurationViewModel()
         {
             // ComboBoxの初期値を設定するにはItemsSourceで利用しているインスタンスの中から指定する必要がある
@@ -62,6 +64,9 @@ namespace TimeRecorder.Contents.Configuration
 
             ShowFavoriteDescription = new ReactivePropertySlim<bool>(FavoriteWorkTasks.Count == 0);
             ShowScheduleDescription = new ReactivePropertySlim<bool>(ScheduleTitleMaps.Count == 0);
+
+            var url = UserConfigurationManager.Instance.GetConfiguration<WorkingHourImportApiUrlConfig>(ConfigKey.WorkingHourImportApiUrl);
+            WorkingHourImportUrl = new ReactivePropertySlim<string>(url?.URL);
         }
 
         private void ChangeTheme(Swatch swatch)
@@ -80,6 +85,12 @@ namespace TimeRecorder.Contents.Configuration
 
             UserConfigurationManager.Instance.SetConfiguration(new BackupPathConfig { DirectoryPath = BackupPath.Value });
             SnackbarService.Current.ShowMessage("バックアップ先を変更しました");
+        }
+
+        public void RegistImportURL()
+        {
+            UserConfigurationManager.Instance.SetConfiguration(new WorkingHourImportApiUrlConfig { URL = WorkingHourImportUrl.Value });
+            SnackbarService.Current.ShowMessage("勤務時間取込APIを設定しました");
         }
 
 
