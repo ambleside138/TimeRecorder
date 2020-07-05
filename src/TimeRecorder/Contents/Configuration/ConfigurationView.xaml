@@ -185,7 +185,7 @@
         <TextBlock
             Grid.Row="2"
             Grid.Column="1"
-            Margin="0,24,0,0"
+            Margin="0,64,0,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
             Style="{StaticResource MaterialDesignBody1TextBlock}"
@@ -258,7 +258,7 @@
         <TextBlock
             Grid.Row="3"
             Grid.Column="1"
-            Margin="0,24,0,0"
+            Margin="0,64,0,0"
             HorizontalAlignment="Center"
             VerticalAlignment="Top"
             Style="{StaticResource MaterialDesignBody1TextBlock}"

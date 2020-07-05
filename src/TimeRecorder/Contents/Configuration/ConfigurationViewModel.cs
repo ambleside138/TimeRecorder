@@ -118,6 +118,7 @@ namespace TimeRecorder.Contents.Configuration
         {
             var editDialogVm = new TaskConfigEditDialogViewModel("ボタンタイトル", favoriteWorkTask.ButtonTitle, favoriteWorkTask.ConvertToDomainModel());
             editDialogVm.ShowQuickStartButton.Value = false;
+            editDialogVm.ShowDeleteButton.Value = true;
 
             var result = TransitionHelper.Current.TransitionModal<TaskConfigEditDialog>(editDialogVm);
 
@@ -178,6 +179,7 @@ namespace TimeRecorder.Contents.Configuration
         {
             var editDialogVm = new TaskConfigEditDialogViewModel("取込時のタイトル", favoriteWorkTask.MapTitle, favoriteWorkTask.ConvertToDomainModel());
             editDialogVm.ShowQuickStartButton.Value = false;
+            editDialogVm.ShowDeleteButton.Value = true;
 
             var result = TransitionHelper.Current.TransitionModal<TaskConfigEditDialog>(editDialogVm);
 

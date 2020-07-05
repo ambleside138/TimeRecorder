@@ -163,13 +163,7 @@
                     </behaviors:Interaction.Triggers>
                 </Button>
 
-                <c:CallMethodButton
-                    Margin="4,0"
-                    Content="{materialDesign:PackIcon Play}"
-                    MethodName="RegistAndStart"
-                    Style="{StaticResource MaterialDesignRaisedButton}"
-                    ToolTip="追加して開始"
-                    Visibility="{Binding ShowQuickStartButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                
                 <Button Content="キャンセル" Style="{StaticResource MaterialDesignFlatButton}">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="Click">
