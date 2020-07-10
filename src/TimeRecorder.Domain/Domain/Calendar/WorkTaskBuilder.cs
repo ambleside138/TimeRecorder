@@ -34,7 +34,11 @@ namespace TimeRecorder.Domain.Domain.Calendar
                 var mapConfig = _ScheduleTitleMaps.FirstOrDefault(t => t.ScheduleTitle == oTask.Title);
                 if(mapConfig != null)
                 {
-                    oTask.Title = mapConfig.MapTitle;
+                    oTask.Title = mapConfig.ScheduleTitle;
+
+                    if (string.IsNullOrEmpty(mapConfig.MapTitle) == false)
+                        oTask.Title = mapConfig.MapTitle;
+
                     oTask.TaskCategory = mapConfig.TaskCategory;
                     oTask.ProductId = new Identity<Products.Product>(mapConfig.ProductId);
                     oTask.ProcessId = new Identity<WorkProcesses.WorkProcess>(mapConfig.WorkProcessId);
