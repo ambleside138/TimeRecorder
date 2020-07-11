@@ -92,7 +92,7 @@ namespace TimeRecorder
                 // クローズ処理をキャンセルして、タスクバーの表示も消す
                 e.Cancel = true;
                 this.WindowState = System.Windows.WindowState.Minimized;
-                this.ShowInTaskbar = false;
+                ///this.ShowInTaskbar = false;
             }
         }
 

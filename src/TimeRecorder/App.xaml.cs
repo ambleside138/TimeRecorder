@@ -129,8 +129,7 @@ namespace TimeRecorder
             {
                 if (hProcess.Id != iThisProcessId)
                 {
-                    ShowWindow(hProcess.MainWindowHandle, SW_NORMAL);
-                    SetForegroundWindow(hProcess.MainWindowHandle);
+                    WindowActivator.Activate(hProcess.MainWindowHandle);
                     return true;
                 }
             }
@@ -138,20 +137,6 @@ namespace TimeRecorder
             return false;
         }
 
-        [DllImport("USER32.DLL", CharSet = CharSet.Auto)]
-        private static extern int ShowWindow(
-        System.IntPtr hWnd,
-        int nCmdShow
-    );
-
-
-        [DllImport("USER32.DLL", CharSet = CharSet.Auto)]
-        private static extern bool SetForegroundWindow(
-            System.IntPtr hWnd
-        );
-
-
-        private const int SW_NORMAL = 1; 
         #endregion
 
     }
