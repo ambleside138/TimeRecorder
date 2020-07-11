@@ -17,6 +17,6 @@ namespace TimeRecorder.Domain.Domain.Tasks
 
         WorkTask SelectById(Identity<WorkTask> identity);
 
-        WorkTask[] SelectByImportKeys(string[] keys);
+        ImportedTask[] SelectByImportKeys(string[] keys);
     }
 }

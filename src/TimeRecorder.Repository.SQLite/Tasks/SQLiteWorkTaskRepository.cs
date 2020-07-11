@@ -21,6 +21,13 @@ namespace TimeRecorder.Repository.SQLite.Tasks
 
                 // ID採番結果
                 row.Id = id;
+
+                // スケジュールからの取込の場合は取込歴にも残す
+                if(task.IsScheduled)
+                {
+                    var importDao = new ImportedTaskDao(c, t);
+                    importDao.Insert(ImportedTaskTableRow.FromDomainObject(task));
+                }
             });
 
             return row.ConvertToDomainObject();
@@ -58,13 +65,13 @@ namespace TimeRecorder.Repository.SQLite.Tasks
             return results;
         }
 
-        public WorkTask[] SelectByImportKeys(string[] importKeys)
+        public ImportedTask[] SelectByImportKeys(string[] importKeys)
         {
-            WorkTask[] results = null;
+            ImportedTask[] results = null;
 
             RepositoryAction.Query(c =>
             {
-                var dao = new WorkTaskDao(c, null);
+                var dao = new ImportedTaskDao(c, null);
 
                 results = dao.SelectByImportKeys(importKeys).Select(d => d.ConvertToDomainObject()).ToArray();
             });

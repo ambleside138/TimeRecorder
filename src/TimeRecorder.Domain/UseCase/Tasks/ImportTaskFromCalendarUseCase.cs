@@ -54,7 +54,7 @@ namespace TimeRecorder.Domain.UseCase.Tasks
             foreach(var @event in events)
             {
                 // 登録済みは無視する
-                if (registedWorkTasks.Any(t => t.ImportSource.Key == @event.Id))
+                if (registedWorkTasks.Any(t => t.ImportKey == @event.Id))
                     continue;
 
                 // 未登録ならスケジュールに合わせて登録

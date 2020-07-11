@@ -82,6 +82,8 @@ namespace TimeRecorder.Domain.Domain.Tasks
 
         public WorkTaskImportSource ImportSource { get; private set; } = new WorkTaskImportSource("", "");
 
+        public bool IsScheduled => string.IsNullOrEmpty(ImportSource.Key) == false;
+
         public static WorkTask ForNew()
         {
             return new WorkTask 
