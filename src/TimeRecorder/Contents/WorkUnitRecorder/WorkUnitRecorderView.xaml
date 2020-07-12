@@ -2,7 +2,9 @@
     x:Class="TimeRecorder.Contents.WorkUnitRecorder.WorkUnitRecorderView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,32 +16,195 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="TaskCardResource.xaml" />
-
+                <ResourceDictionary Source="Timeline/TimelineWorkingTimeCardResource.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="40" />
+            <RowDefinition Height="32" />
             <RowDefinition />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="340" />
+            <ColumnDefinition Width="240" />
             <ColumnDefinition Width="16" />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
-        <DatePicker
-            Width="140"
-            Height="32"
-            Margin="0,0,0,16"
-            HorizontalAlignment="Left"
-            materialDesign:HintAssist.Hint="Pick Date"
-            Style="{StaticResource MaterialDesignFilledDatePicker}" />
 
+        <Grid Grid.ColumnSpan="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <!--  表示日付  -->
+            <DatePicker
+                Width="120"
+                Margin="0,0,0,8"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Center"
+                FontSize="16"
+                SelectedDate="{Binding TargetDateTime.Value, Mode=TwoWay}" />
+
+            <!--  現在のタスク  -->
+
+            <Border
+                Grid.Column="1"
+                Height="32"
+                Margin="16,0,0,8"
+                VerticalAlignment="Top"
+                Background="{StaticResource MaterialDesignChipBackground}"
+                CornerRadius="3">
+                <Grid Margin="8,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <materialDesign:PackIcon
+                        Width="20"
+                        Height="20"
+                        Margin="8,0"
+                        VerticalAlignment="Center"
+                        Kind="{Binding DoingTask.Value.TaskCategory, Converter={StaticResource EnumToIconKeyConverter}}" />
+
+                    <!--  Process  -->
+                    <TextBlock
+                        Grid.Column="1"
+                        Margin="8,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Opacity="0.7"
+                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                        Text="{Binding DoingTask.Value.WorkProcessName, StringFormat=[{0}]}" />
+
+                    <!--  Title  -->
+                    <TextBlock
+                        Grid.Column="2"
+                        Margin="8,0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                        Text="{Binding DoingTask.Value.TaskTitle}" />
+
+                    <!--  Remarks  -->
+                    <!--<TextBlock
+                        Grid.Column="2"
+                        Width="128"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        Opacity="0.7"
+                        Style="{StaticResource MaterialDesignBody2TextBlock}"
+                        Text="{Binding DoingTask.Value.TaskRemarks}" />-->
+
+                    <!--  DurationTime  -->
+                    <TextBlock
+                        Grid.Column="3"
+                        Margin="4,0"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                        Text="{Binding DoingTask.Value.DurationTimeText.Value}" />
+
+                    <!--  Stop  -->
+                    <Button
+                        Grid.Column="4"
+                        Width="24"
+                        Height="24"
+                        Margin="8,0,0,0"
+                        Padding="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource MaterialDesignFloatingActionMiniButton}"
+                        ToolTip="現在の作業を停止"
+                        Visibility="{Binding DoingTask.Value.ShowStopButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Button.Background>
+                            <SolidColorBrush Color="{StaticResource RedPrimary400}" />
+                        </Button.Background>
+                        <Button.BorderBrush>
+                            <SolidColorBrush Color="{StaticResource RedPrimary400}" />
+                        </Button.BorderBrush>
+
+                        <materialDesign:PackIcon
+                            Width="16"
+                            Height="16"
+                            Kind="Stop">
+                            <materialDesign:PackIcon.Foreground>
+                                <SolidColorBrush Color="{StaticResource GreyPrimary50}" />
+                            </materialDesign:PackIcon.Foreground>
+                        </materialDesign:PackIcon>
+
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="StopCurrentTask" MethodTarget="{Binding}" />
+                            </behaviors:EventTrigger>
+                        </behaviors:Interaction.Triggers>
+                    </Button>
+                </Grid>
+            </Border>
+        </Grid>
+
+        <StackPanel
+            Grid.Row="1"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Center"
+            Orientation="Horizontal">
+            <!--<TextBlock Text="始業" />
+            <TextBlock Margin="16,0,0,0" Text="終業" />-->
+        </StackPanel>
+
+        <Button
+            Grid.Row="1"
+            Width="24"
+            Height="24"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Center"
+            Style="{StaticResource MaterialDesignIconButton}"
+            ToolTip="Googleカレンダーから取込">
+            <materialDesign:PackIcon
+                Width="16"
+                Height="16"
+                Kind="CalendarExport" />
+
+            <behaviors:Interaction.Triggers>
+                <behaviors:EventTrigger EventName="Click">
+                    <l:LivetCallMethodAction MethodName="ImportTaskFromCalendar" MethodTarget="{Binding}" />
+                </behaviors:EventTrigger>
+            </behaviors:Interaction.Triggers>
+        </Button>
+
+        <!--  表示対象日付のタイムライン  -->
+        <ScrollViewer Grid.Row="2" Padding="0,8,0,0">
+            <Grid>
+                <local:TimelineCanvas />
+
+                <ItemsControl ItemsSource="{Binding WorkingTimes}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas HorizontalAlignment="Stretch" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemContainerStyle>
+                        <Style>
+                            <Setter Property="Canvas.Top" Value="{Binding CanvasTop}" />
+                            <Setter Property="Canvas.Left" Value="40" />
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
+            </Grid>
+        </ScrollViewer>
+
+        <!--  タスク  -->
         <Border
             Grid.Row="1"
+            Grid.RowSpan="2"
+            Grid.Column="2"
             Padding="8"
             Background="{StaticResource MaterialDesignChipBackground}"
             CornerRadius="4">
@@ -54,65 +219,100 @@
                     Style="{StaticResource MaterialDesignHeadline4TextBlock}"
                     Text="ToDo" />
 
-                <ScrollViewer Grid.Row="1" Margin="0,8,4,8">
-                    <ItemsControl ItemsSource="{Binding PlanedTaskCards}">
-                        <ItemsControl.ItemContainerStyle>
-                            <Style>
-                                <Setter Property="FrameworkElement.Margin" Value="8" />
-                            </Style>
-                        </ItemsControl.ItemContainerStyle>
-
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <materialDesign:Card Width="280" Padding="16">
-                                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
-                                    <!--<TextBlock Text="test" />-->
-                                </materialDesign:Card>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
-
-            </Grid>
-
-        </Border>
-
-        <Border
-            Grid.Row="1"
-            Grid.Column="2"
-            Padding="8"
-            Background="{StaticResource MaterialDesignChipBackground}"
-            CornerRadius="4">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
-
-                <TextBlock
-                    Margin="8,0,0,0"
-                    Style="{StaticResource MaterialDesignHeadline4TextBlock}"
-                    Text="Doing" />
+                <CheckBox
+                    HorizontalAlignment="Right"
+                    Content="完了済みを表示する"
+                    IsChecked="{Binding ContainsCompleted.Value}" />
 
                 <ScrollViewer Grid.Row="1" Margin="0,8,4,8">
                     <ItemsControl ItemsSource="{Binding PlanedTaskCards}">
                         <ItemsControl.ItemContainerStyle>
                             <Style>
-                                <Setter Property="FrameworkElement.Margin" Value="8" />
+                                <Setter Property="FrameworkElement.Margin" Value="6" />
                             </Style>
                         </ItemsControl.ItemContainerStyle>
 
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <materialDesign:Card Width="280" Padding="16">
-                                    <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
-                                    <!--<TextBlock Text="test" />-->
-                                </materialDesign:Card>
+                                <Grid>
+                                    <materialDesign:Card>
+                                        <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource TaskCardKey}" />
+                                        <!--<TextBlock Text="test" />-->
+                                    </materialDesign:Card>
+                                    <ProgressBar
+                                        Margin="0,-2,0,0"
+                                        VerticalAlignment="Top"
+                                        IsIndeterminate="{Binding IsIndeterminate.Value}"
+                                        Visibility="{Binding IsIndeterminate.Value, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                        Value="0" />
+                                </Grid>
+
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </ScrollViewer>
 
+
+                <materialDesign:PopupBox
+                    Grid.Row="1"
+                    Width="48"
+                    Height="48"
+                    Margin="0,0,16,0"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Focusable="False"
+                    PlacementMode="TopAndAlignCentres"
+                    PopupMode="Click"
+                    Style="{StaticResource MaterialDesignMultiFloatingActionPopupBox}"
+                    ToolTip="タスクを追加します"
+                    ToolTipService.Placement="Right">
+
+                    <ItemsControl ItemsSource="{Binding AddingTaskButtons}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding ButtonTitle, Mode=OneTime}" ToolTip="{Binding ToolTipDescription, Mode=OneTime}">
+                                    <Button.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignFloatingActionMiniLightButton}" TargetType="Button">
+                                            <Setter Property="ToolTipService.Placement" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type materialDesign:PopupBox}}, Path=(ToolTipService.Placement)}" />
+                                            <Setter Property="ToolTipService.InitialShowDelay" Value="0" />
+                                            <Setter Property="Margin" Value="4" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UseAccentColor, Mode=OneTime}" Value="True">
+                                                    <Setter Property="Background">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource Accent400}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="BorderBrush">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource Accent400}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                    <Setter Property="Foreground">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource Accent400Foreground}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <behaviors:Interaction.Triggers>
+                                        <behaviors:EventTrigger EventName="Click">
+                                            <l:LivetCallMethodAction MethodName="Invoke" MethodTarget="{Binding}" />
+                                        </behaviors:EventTrigger>
+                                    </behaviors:Interaction.Triggers>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </materialDesign:PopupBox>
             </Grid>
 
         </Border>

@@ -5,7 +5,9 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.Tasks
 {
-    public interface IWorkTaskRepository
+    // RepositoryはList<T>のような使い心地・実装を目指す
+
+    public interface IWorkTaskRepository : IRepository
     {
         WorkTask Add(WorkTask task);
 
@@ -15,6 +17,6 @@ namespace TimeRecorder.Domain.Domain.Tasks
 
         WorkTask SelectById(Identity<WorkTask> identity);
 
-        WorkTask[] SelectToDo();
+        ImportedTask[] SelectByImportKeys(string[] keys);
     }
 }

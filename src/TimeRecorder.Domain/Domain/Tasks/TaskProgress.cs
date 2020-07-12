@@ -7,7 +7,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
     /// <summary>
     /// タスクの進捗
     /// </summary>
-    public struct TaskProgress
+    public class TaskProgress
     {
         /// <summary>
         /// 予定期間
@@ -19,10 +19,22 @@ namespace TimeRecorder.Domain.Domain.Tasks
         /// </summary>
         public DateTimePeriod ActualPeriod { get; internal set; }
 
+        public bool IsCompleted => ActualPeriod.End.HasValue;
+
+        public TaskProgress()
+        {
+
+        }
+
         public TaskProgress(DateTimePeriod planedPeriod, DateTimePeriod actualPeriod)
         {
             PlanedPeriod = planedPeriod;
             ActualPeriod = actualPeriod;
+        }
+
+        public void ClearActualPeriod()
+        {
+            ActualPeriod = new DateTimePeriod();
         }
     }
 }

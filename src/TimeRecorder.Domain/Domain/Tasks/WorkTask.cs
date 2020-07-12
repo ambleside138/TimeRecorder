@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TimeRecorder.Domain.Domain.Hospitals;
-using TimeRecorder.Domain.Domain.Processes;
+using TimeRecorder.Domain.Domain.Clients;
+using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Domain.Domain.Calendar;
 
 namespace TimeRecorder.Domain.Domain.Tasks
 {
@@ -35,30 +37,30 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
         #endregion
 
-        #region Product変更通知プロパティ
-        private Product _Product;
+        #region ProductId変更通知プロパティ
+        private Identity<Product> _ProductId;
 
-        public Product Product
+        public Identity<Product> ProductId
         {
-            get => _Product;
-            set => RaisePropertyChangedIfSet(ref _Product, value);
+            get => _ProductId;
+            set => RaisePropertyChangedIfSet(ref _ProductId, value);
         }
         #endregion
 
-        #region HospitalId変更通知プロパティ
-        private Identity<Hospital> _HospitalId;
+        #region ClientId変更通知プロパティ
+        private Identity<Client> _ClientId;
 
-        public Identity<Hospital> HospitalId
+        public Identity<Client> ClientId
         {
-            get => _HospitalId;
-            set => RaisePropertyChangedIfSet(ref _HospitalId, value);
+            get => _ClientId;
+            set => RaisePropertyChangedIfSet(ref _ClientId, value);
         }
         #endregion
 
         #region ProcessId変更通知プロパティ
-        private Identity<Process> _ProcessId;
+        private Identity<WorkProcess> _ProcessId;
 
-        public Identity<Process> ProcessId
+        public Identity<WorkProcess> ProcessId
         {
             get => _ProcessId;
             set => RaisePropertyChangedIfSet(ref _ProcessId, value);
@@ -75,35 +77,67 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
         #endregion
 
-        public TaskProgress TaskProgress { get; private set; }
+        public bool IsTemporary { get; set; } = false;
+        public TaskProgress TaskProgress { get; private set; } = new TaskProgress();
 
-        #region IsPlaned変更通知プロパティ
-        private bool _IsPlaned = true;
+        public WorkTaskImportSource ImportSource { get; private set; } = new WorkTaskImportSource("", "");
 
-        public bool IsPlaned
-        {
-            get => _IsPlaned;
-            set => RaisePropertyChangedIfSet(ref _IsPlaned, value);
-        }
-        #endregion
+        public bool IsScheduled => string.IsNullOrEmpty(ImportSource.Key) == false;
 
         public static WorkTask ForNew()
         {
-            return new WorkTask { Id = Identity<WorkTask>.Temporary, HospitalId = Identity<Hospital>.Empty, ProcessId = Identity<Process>.Empty, };
+            return new WorkTask 
+            { 
+                Id = Identity<WorkTask>.Temporary, 
+                ClientId = Identity<Client>.Empty, 
+                ProductId = Identity<Product>.Empty, 
+                ProcessId = Identity<WorkProcess>.Empty, 
+            };
+        }
+
+        public static WorkTask FromScheduledEvent(ScheduledEvent scheduledEvent)
+        {
+            var workTask = ForNew();
+            workTask.ImportSource = new WorkTaskImportSource(scheduledEvent.Id, scheduledEvent.Kind);
+            workTask.TaskProgress.PlanedPeriod = new DateTimePeriod
+            {
+                Start = scheduledEvent.StartTime,
+                End = scheduledEvent.EndTime
+            };
+            workTask.Title = scheduledEvent.Title;
+            workTask.TaskCategory = Tasks.Definitions.TaskCategory.Develop; // そのうち設定にしたい
+
+            return workTask;
         }
 
         // VSの場合、「クイックアクションとリファクタリング」からコンストラクタコードの生成が可能
-        public WorkTask(Identity<WorkTask> id, string title, TaskCategory taskCategory, Product product, Identity<Hospital> hospitalId, Identity<Process> processId, string remarks, TaskProgress taskProgress)
+        public WorkTask(
+            Identity<WorkTask> id, 
+            string title, 
+            TaskCategory taskCategory, 
+            Identity<Product> productid, 
+            Identity<Client> ClientId, 
+            Identity<WorkProcess> processId, 
+            string remarks, 
+            TaskProgress taskProgress, 
+            WorkTaskImportSource workTaskImportSource,
+            bool isTemporary)
         {
             Id = id;
             _Title = title;
             _TaskCategory = taskCategory;
-            _Product = product;
-            _HospitalId = hospitalId;
+            _ProductId = productid;
+            _ClientId = ClientId;
             _ProcessId = processId;
             _Remarks = remarks;
             TaskProgress = taskProgress;
-            
+            ImportSource = workTaskImportSource;
+            IsTemporary = isTemporary;
+        }
+
+        public void Complete(DateTime start, DateTime end)
+        {
+            TaskProgress.ActualPeriod = new DateTimePeriod { Start = start, End = end };
         }
 
         private WorkTask() { }

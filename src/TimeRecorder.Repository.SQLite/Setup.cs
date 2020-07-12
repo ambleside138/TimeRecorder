@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Linq;
 using System.Text;
+using TimeRecorder.Repository.SQLite.System;
+using TimeRecorder.Repository.SQLite.System.Versions;
 
 namespace TimeRecorder.Repository.SQLite
 {
@@ -14,35 +18,33 @@ namespace TimeRecorder.Repository.SQLite
             SQLiteConnection.CreateFile(ConnectionFactory.DbFileName);
 
             // テーブルの作成
-            CreateTables();
+            ExecuteVersionUpQuery(VersionManager.Versions);
         }
 
-        private static void CreateTables()
+        public static void VersionUp()
         {
-            using (var con = ConnectionFactory.Create())
-            {
-                // Enumはintで定義するとマッピングしてくれる
-                var sql = @"
-create table 
-  worktasks
-(
-  id INTEGER PRIMARY KEY AUTOINCREMENT
-  , title varchar(64)
-  , taskcategory int 
-  , product int
-  , hospitalId int
-  , processId int
-  , remarks varchar(128)
-  , planedStartDateTime datetime
-  , planedEndDateTime datetime
-  , actualStartDateTime datetime
-  , actualEndDateTime datetime
-)";
+            var healthChecker = new SQLiteHealthChecker();
+            var currentVer = healthChecker.GetSystemVersion();
 
-                using (var cmd = new SQLiteCommand(sql, con))
+            ExecuteVersionUpQuery(VersionManager.Versions.Where(v => v.Version.CompareTo(currentVer) > 0));
+        }
+
+        private static void ExecuteVersionUpQuery(IEnumerable<IVersion> versions)
+        {
+            foreach (var command in versions)
+            {
+                RepositoryAction.Transaction((connection, transaction) =>
                 {
-                    cmd.ExecuteNonQuery();
-                }
+                    using (var cmd = new SQLiteCommand(command.CommandQuery, connection, transaction))
+                    {
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    // バージョン情報の書き込み
+                    const string sql = "INSERT INTO systemversionlog (version, updatetime) VALUES (@version, @now)";
+                    connection.Execute(sql, new { version = command.Version, now = DateTime.Now }, transaction);
+                });
+   
             }
 
         }
