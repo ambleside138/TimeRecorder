@@ -42,7 +42,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\TimeRecorder.Domain\TimeRecorder.Domain.csproj" />
-    <ProjectReference Include="..\TimeRecorder.Driver.CsvExporter\TimeRecorder.Driver.CsvExporter.csproj" />
+    <ProjectReference Include="..\TimeRecorder.Driver.CsvDriver\TimeRecorder.Driver.CsvDriver.csproj" />
     <ProjectReference Include="..\TimeRecorder.Repository.GoogleAPI\TimeRecorder.Repository.GoogleAPI.csproj" />
     <ProjectReference Include="..\TimeRecorder.Repository.SQLite\TimeRecorder.Repository.SQLite.csproj" />
   </ItemGroup>

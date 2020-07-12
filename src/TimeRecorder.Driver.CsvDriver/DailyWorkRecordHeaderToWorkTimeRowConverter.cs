@@ -5,7 +5,7 @@ using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking.Reports;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Driver.CsvExporter
+namespace TimeRecorder.Driver.CsvDriver
 {
     class DailyWorkRecordHeaderToWorkTimeRowConverter
     {
@@ -38,23 +38,16 @@ namespace TimeRecorder.Driver.CsvExporter
 
         private string ConvertCsvCategoryText(TaskCategory category)
         {
-            switch (category)
+            return category switch
             {
-                case TaskCategory.UnKnown:
-                    return "不明";
-                case TaskCategory.Develop:
-                    return "*開発作業 (ｿﾌﾄｳｪｱ)";
-                case TaskCategory.ResearchAndDevelopment:
-                    return "研究開発";
-                case TaskCategory.Introduce:
-                    return "*契約後の導入作業";
-                case TaskCategory.Maintain:
-                    return "保守・客先対応・障害対策";
-                case TaskCategory.Other:
-                    return "その他営業・事務作業等";
-                default:
-                    return "";
-            }
+                TaskCategory.UnKnown => "不明",
+                TaskCategory.Develop => "*開発作業 (ｿﾌﾄｳｪｱ)",
+                TaskCategory.ResearchAndDevelopment => "研究開発",
+                TaskCategory.Introduce => "*契約後の導入作業",
+                TaskCategory.Maintain => "保守・客先対応・障害対策",
+                TaskCategory.Other => "その他営業・事務作業等",
+                _ => "",
+            };
         }
 
         private string ConvertToProductOrClient(DailyWorkTaskUnit taskUnit)

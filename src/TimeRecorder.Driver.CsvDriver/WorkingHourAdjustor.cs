@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tracking.Reports;
 
-namespace TimeRecorder.Driver.CsvExporter
+namespace TimeRecorder.Driver.CsvDriver
 {
     class WorkingHourAdjustor
     {

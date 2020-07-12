@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Repository.InM
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Repository.SQLite", "TimeRecorder.Repository.SQLite\TimeRecorder.Repository.SQLite.csproj", "{669DB5FC-4CF4-43EB-98CD-779AB1342DB6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Driver.CsvExporter", "TimeRecorder.Driver.CsvExporter\TimeRecorder.Driver.CsvExporter.csproj", "{F2863253-83EC-42AF-9292-176358CF3C22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Driver.CsvDriver", "TimeRecorder.Driver.CsvDriver\TimeRecorder.Driver.CsvDriver.csproj", "{F2863253-83EC-42AF-9292-176358CF3C22}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Repository.GoogleAPI", "TimeRecorder.Repository.GoogleAPI\TimeRecorder.Repository.GoogleAPI.csproj", "{6BD0CE3E-75D1-4581-8C0A-19E51D37C718}"
 EndProject

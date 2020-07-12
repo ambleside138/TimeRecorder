@@ -9,7 +9,7 @@ using TimeRecorder.Domain.Domain.Tracking.Reports;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 
-namespace TimeRecorder.Driver.CsvExporter
+namespace TimeRecorder.Driver.CsvDriver
 {
     public class CsvReportDriver : IReportDriver
     {

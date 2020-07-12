@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Driver.CsvExporter
+namespace TimeRecorder.Driver.CsvDriver
 {
     class WorkTimeRow
     {
