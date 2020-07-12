@@ -13,6 +13,7 @@ using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Driver.CsvDriver;
+using TimeRecorder.Driver.CsvDriver.Import;
 using TimeRecorder.Repository.GoogleAPI.Calendar;
 using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Products;
@@ -48,6 +49,7 @@ namespace TimeRecorder
             resolver.Register<IWorkingHourRepository, SQLiteWorkingHoursRepository>(Lifestyle.Singleton);
 
             resolver.Register<IReportDriver, CsvReportDriver>(Lifestyle.Singleton);
+            resolver.Register<IWorkingHourImportDriver, CsvWorkingHourImportDriver>(Lifestyle.Singleton);
 
             // You can configure lifestyle - Transient, Singleton or Scoped
             //resolver.Register<ILogger, MailLogger>(Lifestyle.Singleton);

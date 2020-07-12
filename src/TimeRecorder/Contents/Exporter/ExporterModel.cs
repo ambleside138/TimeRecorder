@@ -9,6 +9,7 @@ using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Tracking;
+using TimeRecorder.Domain.UseCase;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Domain.Utility;
@@ -24,6 +25,8 @@ namespace TimeRecorder.Contents.Exporter
 
         private readonly WorkingHourUseCase _WorkingHourUseCase;
 
+        private readonly ImportWorkingHourUseCase _ImportWorkingHourUseCase;
+
         private static HttpClient client = new HttpClient();
 
         public string WorkingHourImportUrl { get; private set; }
@@ -35,17 +38,17 @@ namespace TimeRecorder.Contents.Exporter
                 ContainerHelper.Resolver.Resolve<IReportDriver>());
 
             _WorkingHourUseCase = new WorkingHourUseCase(ContainerHelper.Resolver.Resolve<IWorkingHourRepository>());
+           
+            _ImportWorkingHourUseCase = new ImportWorkingHourUseCase(
+                ContainerHelper.Resolver.Resolve<IWorkingHourRepository>(),
+                ContainerHelper.Resolver.Resolve<IWorkingHourImportDriver>());
 
             WorkingHourImportUrl = UserConfigurationManager.Instance.GetConfiguration<WorkingHourImportApiUrlConfig>(ConfigKey.WorkingHourImportApiUrl)?.URL ?? "";
         }
 
-        public async void ExportAsync(int year, int month, string path, bool autoAdjust, string importkey)
+        public void Export(int year, int month, string path, bool autoAdjust)
         {
             var targetYearMonth = new Domain.Domain.YearMonth(year, month);
-            if (string.IsNullOrEmpty(importkey) == false)
-            {
-                await ImportWorkingHour(targetYearMonth, importkey);
-            }
 
             var result = _ExportMonthlyReportUseCase.Export(targetYearMonth, path, autoAdjust);
 
@@ -64,7 +67,7 @@ namespace TimeRecorder.Contents.Exporter
 
         }
 
-        public async Task ImportWorkingHour(YearMonth yearMonth, string param)
+        public async Task ImportWorkingHourByApi(YearMonth yearMonth, string param)
         {
             SnackbarService.Current.ShowMessage("勤務時間取込処理を開始します");
 
@@ -94,6 +97,29 @@ namespace TimeRecorder.Contents.Exporter
             else
             {
                 _Logger.Error("Api実行に失敗 code=" + response.StatusCode);
+            }
+        }
+
+        public void ImportFile(string path)
+        {
+            path = path.Replace("\"", "");
+            var results = _ImportWorkingHourUseCase.Import(path);
+
+            UserConfigurationManager.Instance.SetConfiguration(new ImportParamConfig { Param = path });
+
+            if(results.Any())
+            {
+                var min = results.Min(r => r.Ymd.Value);
+                var max = results.Max(r => r.Ymd.Value);
+
+                var minDate = DateTimeParser.ConvertFromYmd(min)?.ToString("yyyy/MM/dd") ?? "";
+                var maxDate = DateTimeParser.ConvertFromYmd(max)?.ToString("yyyy/MM/dd") ?? "";
+
+                SnackbarService.Current.ShowMessage($"{results.Length}件 ({minDate} ～ {maxDate}) の勤務時間情報を取り込みました");
+            }
+            else
+            {
+                SnackbarService.Current.ShowMessage($"取込対象の勤務時間情報はありません");
             }
         }
 

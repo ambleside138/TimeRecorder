@@ -30,6 +30,8 @@ namespace TimeRecorder.Domain.Utility
             return ConvertFromCore(ymd, "yyyyMMdd");
         }
 
+
+
         public static DateTime? ConvertFromYmdHHmmss(string ymd, string HHmmss)
         {
             if (string.IsNullOrEmpty(ymd))
@@ -39,6 +41,11 @@ namespace TimeRecorder.Domain.Utility
                 return null;
 
             return ConvertFromCore(ymd + HHmmss, "yyyyMMddHHmmss");
+        }
+
+        public static DateTime? ConvertFromYmdHHmmss(string ymdHHmmss)
+        {
+            return ConvertFromCore(ymdHHmmss, "yyyyMMddHHmmss");
         }
 
         private static DateTime? ConvertFromCore(string value, string format)

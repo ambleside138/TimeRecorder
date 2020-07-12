@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Text;
+using TimeRecorder.Configurations;
+using TimeRecorder.Configurations.Items;
 using TimeRecorder.Host;
 using TimeRecorder.NavigationRail.ViewModels;
 
@@ -16,7 +18,7 @@ namespace TimeRecorder.Contents.Exporter
     {
 
 
-        public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "出力", IconKey = "FileExport" };
+        public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "レポート", IconKey = "FileDocumentOutline" };
 
         public int[] Years => Enumerable.Range(DateTime.Today.Year - 2, 5).ToArray();
 
@@ -30,7 +32,7 @@ namespace TimeRecorder.Contents.Exporter
 
         public ReactivePropertySlim<string> ImportKey { get; } = new ReactivePropertySlim<string>("");
 
-        public ReactivePropertySlim<bool> UseWorkingHourImport { get; } = new ReactivePropertySlim<bool>();
+        public ReactivePropertySlim<bool> UseWorkingHourApiImport { get; } = new ReactivePropertySlim<bool>();
 
         public string ExportFilter => "CSVファイル(*.csv)|*.csv|すべてのファイル(*.*)|*.*";
 
@@ -43,7 +45,10 @@ namespace TimeRecorder.Contents.Exporter
             InitialFileName = SelectedYear.CombineLatest(SelectedMonth, (year, month) => $"工数管理_{year}年{month:00}月分")
                                           .ToReadOnlyReactivePropertySlim();
 
-            UseWorkingHourImport.Value = string.IsNullOrEmpty(_ExporterModel.WorkingHourImportUrl) == false;
+            UseWorkingHourApiImport.Value = string.IsNullOrEmpty(_ExporterModel.WorkingHourImportUrl) == false;
+
+            var paramConfig = UserConfigurationManager.Instance.GetConfiguration<ImportParamConfig>(ConfigKey.ImportParam);
+            ImportKey.Value = paramConfig?.Param ?? "";
         }
 
         public void Export(SavingFileSelectionMessage message)
@@ -52,8 +57,21 @@ namespace TimeRecorder.Contents.Exporter
             if (savePath == null)
                 return;
 
-            _ExporterModel.ExportAsync(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value, ImportKey.Value);
+            _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value);
 
+        }
+
+        public async void Import()
+        {
+            if(UseWorkingHourApiImport.Value)
+            {
+                var targetYearMonth = new Domain.Domain.YearMonth(SelectedYear.Value, SelectedMonth.Value);
+                await _ExporterModel.ImportWorkingHourByApi(targetYearMonth, ImportKey.Value);
+            }
+            else
+            {
+                _ExporterModel.ImportFile(ImportKey.Value);
+            }
         }
     }
 }
