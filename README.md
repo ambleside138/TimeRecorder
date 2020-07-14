@@ -14,11 +14,13 @@
 についてはDBでのマスタ管理となっています。
 
 マスタ管理用のUIが用意できていないため、DBを直接編集してください。
-SQLiteの編集は下記のツールが便利です
-https://sqlitebrowser.org/
 
 |項目|対応テーブル名|
 |:---:|:---:|
 |製品|products|
 |作業工程|processes|
 |ユーザ|clients|
+
+SQLiteの編集は下記のツールが便利です
+
+https://sqlitebrowser.org/
