@@ -74,7 +74,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                                         vm => vm?.Id ?? Identity<Client>.Empty)
                                      .AddTo(CompositeDisposable);
 
-            if(task.Id.IsTemporary)
+            if(task.Id.IsTemporary
+                && DomainModel.TaskCategory == Domain.Domain.Tasks.Definitions.TaskCategory.UnKnown)
             {
                 DomainModel.TaskCategory = Domain.Domain.Tasks.Definitions.TaskCategory.Develop;
             }
