@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 
-namespace TimeRecorder.Domain.Utility
+namespace TimeRecorder.Domain
 {
     // Livetから拝借
     // https://github.com/runceel/Livet/blob/master/LivetCask.Mvvm/NotificationObject.cs

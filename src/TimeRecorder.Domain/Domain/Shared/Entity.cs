@@ -5,7 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
-namespace TimeRecorder.Domain.Utility
+namespace TimeRecorder.Domain
 {
     public abstract class Entity<T> : IEquatable<T> where T : Entity<T>
     {

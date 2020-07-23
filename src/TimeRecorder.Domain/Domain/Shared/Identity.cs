@@ -3,7 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.Utility
+namespace TimeRecorder.Domain
 {
     public class Identity<T> : ValueObject<Identity<T>>
     {
