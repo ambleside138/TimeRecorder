@@ -32,8 +32,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactiveProperty<WorkProcess> WorkProcess { get; }
 
-        //public ReactiveProperty<string> Remarks { get; }
-
         public WorkTask DomainModel { get; }
 
         private readonly WorkProcess[] _Processes;
@@ -80,10 +78,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             {
                 DomainModel.TaskCategory = Domain.Domain.Tasks.Definitions.TaskCategory.Develop;
             }
-
-            //Remarks = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Remarks)
-            //                      .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "備考は入力必須です" : null)
-            //                      .AddTo(CompositeDisposable);
 
         }
 

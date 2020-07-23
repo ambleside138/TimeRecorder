@@ -33,7 +33,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="NavigationRail/NavigationRailResource.xaml" />
-
             </ResourceDictionary.MergedDictionaries>
 
             <Style

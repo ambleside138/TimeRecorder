@@ -22,9 +22,6 @@ namespace TimeRecorder.Helpers
         {
             return subject.ToReactivePropertyAsSynchronized(propertySelector, ReactivePropertyMode.Default | ReactivePropertyMode.IgnoreInitialValidationError);
         }
-        //public static ReactiveProperty<T> IgnoreInitialValidationError<T>(this ReactiveProperty<T> reactiveProperty)
-        //{
-        //    return reactiveProperty.re
-        //}
+
     }
 }
