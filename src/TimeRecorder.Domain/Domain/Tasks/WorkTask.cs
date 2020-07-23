@@ -13,7 +13,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
     /// <summary>
     /// 開発・作業内容を表します
     /// </summary>
-    public class WorkTask : NotificationDomainModel
+    public class WorkTask : Entity<WorkTask>
     {
         public Identity<WorkTask> Id { get; private set; }
 
@@ -138,6 +138,11 @@ namespace TimeRecorder.Domain.Domain.Tasks
         public void Complete(DateTime start, DateTime end)
         {
             TaskProgress.ActualPeriod = new DateTimePeriod { Start = start, End = end };
+        }
+
+        protected override IEnumerable<object> GetIdentityValues()
+        {
+            yield return Id;
         }
 
         private WorkTask() { }

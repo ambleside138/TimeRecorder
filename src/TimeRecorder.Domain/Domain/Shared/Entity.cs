@@ -11,7 +11,7 @@ namespace TimeRecorder.Domain
     /// エンティティ を表すための基底クラスです
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class Entity<T> : IEquatable<T> where T : Entity<T>
+    public abstract class Entity<T> : NotificationDomainModel, IEquatable<T> where T : Entity<T>
     {
 
         protected abstract IEnumerable<object> GetIdentityValues();
