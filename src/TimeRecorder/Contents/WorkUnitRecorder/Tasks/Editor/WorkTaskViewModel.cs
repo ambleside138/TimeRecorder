@@ -12,7 +12,7 @@ using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.WorkProcesses;
-using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain;
 using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder

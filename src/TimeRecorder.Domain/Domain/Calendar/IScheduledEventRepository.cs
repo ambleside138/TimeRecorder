@@ -6,7 +6,7 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.Calendar
 {
-    public interface IScheduledEventRepository
+    public interface IScheduledEventRepository : IRepository
     {
         /// <summary>
         /// 指定期間のスケジュールを取得します

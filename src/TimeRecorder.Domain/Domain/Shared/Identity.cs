@@ -5,6 +5,10 @@ using System.Text;
 
 namespace TimeRecorder.Domain
 {
+    /// <summary>
+    /// エンティティの同一性を表現するための値オブジェクトです
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class Identity<T> : ValueObject<Identity<T>>
     {
         private const int TemporaryIdValue = -1;

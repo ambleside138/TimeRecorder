@@ -7,7 +7,7 @@ using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
-using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain;
 using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks

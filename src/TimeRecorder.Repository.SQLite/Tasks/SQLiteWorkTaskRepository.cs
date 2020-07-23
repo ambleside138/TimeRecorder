@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain;
 using TimeRecorder.Repository.SQLite.Tasks.Dao;
 
 namespace TimeRecorder.Repository.SQLite.Tasks

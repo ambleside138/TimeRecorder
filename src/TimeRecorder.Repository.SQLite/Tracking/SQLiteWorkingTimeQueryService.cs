@@ -70,8 +70,8 @@ WHERE
                 
                 return new WorkingTimeForTimelineDto
                 {
-                    WorkingTimeId = new Domain.Utility.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
-                    WorkTaskId = new Domain.Utility.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
+                    WorkingTimeId = new Domain.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
+                    WorkTaskId = new Domain.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
                     TimePeriod = new Domain.Domain.Tracking.TimePeriod(StartTime, EndTime),
                     TaskTitle = Title,
                     TaskCategory = TaskCategory,

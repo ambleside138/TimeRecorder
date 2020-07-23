@@ -10,8 +10,8 @@ namespace TimeRecorder.Repository.InMemory
     {
         private readonly List<WorkProcess> _ListProcess = new List<WorkProcess>()
         {
-            new WorkProcess(new Domain.Utility.Identity<WorkProcess>(1), "コーディング"),
-            new WorkProcess(new Domain.Utility.Identity<WorkProcess>(2), "テスト"),
+            new WorkProcess(new Domain.Identity<WorkProcess>(1), "コーディング"),
+            new WorkProcess(new Domain.Identity<WorkProcess>(2), "テスト"),
         };
 
         public WorkProcess Regist(WorkProcess process)
@@ -22,7 +22,7 @@ namespace TimeRecorder.Repository.InMemory
                 newId = _ListProcess.Max(i => i.Id.Value) + 1;
             }
 
-            var newProcess = new WorkProcess(new Domain.Utility.Identity<WorkProcess>(newId), process.Title);
+            var newProcess = new WorkProcess(new Domain.Identity<WorkProcess>(newId), process.Title);
             _ListProcess.Add(newProcess);
             
             return newProcess;

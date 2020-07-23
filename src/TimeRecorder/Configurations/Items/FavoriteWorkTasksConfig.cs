@@ -38,9 +38,9 @@ namespace TimeRecorder.Configurations.Items
             var obj = WorkTask.ForNew();
             obj.Title = Title;
             obj.TaskCategory = TaskCategory;
-            obj.ProductId  = new Domain.Utility.Identity<Domain.Domain.Products.Product>(ProductId);
-            obj.ClientId = new Domain.Utility.Identity<Domain.Domain.Clients.Client>(ClientId);
-            obj.ProcessId = new Domain.Utility.Identity<Domain.Domain.WorkProcesses.WorkProcess>(ProcessId);
+            obj.ProductId  = new Domain.Identity<Domain.Domain.Products.Product>(ProductId);
+            obj.ClientId = new Domain.Identity<Domain.Domain.Clients.Client>(ClientId);
+            obj.ProcessId = new Domain.Identity<Domain.Domain.WorkProcesses.WorkProcess>(ProcessId);
             obj.IsTemporary = true;
 
             return obj;

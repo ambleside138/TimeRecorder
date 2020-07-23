@@ -25,8 +25,8 @@ namespace TimeRecorder.Repository.SQLite.Tracking.Dao
             var endDateTime = ToDateTime(EndTime);
 
             return new WorkingTimeRange(
-                new Domain.Utility.Identity<WorkingTimeRange>(Id),
-                new Domain.Utility.Identity<WorkTask>(TaskId),
+                new Domain.Identity<WorkingTimeRange>(Id),
+                new Domain.Identity<WorkTask>(TaskId),
                 startDateTime.Value,
                 endDateTime );
         }
