@@ -8,7 +8,7 @@ namespace TimeRecorder.Domain.Domain.Products
     /// <summary>
     /// 製品 を表します
     /// </summary>
-    public class Product
+    public class Product : Entity<Product>
     {
         public Identity<Product> Id { get; set; }
 
@@ -23,6 +23,11 @@ namespace TimeRecorder.Domain.Domain.Products
             Id = id;
             Name = name;
             ShortName = shortName;
+        }
+
+        protected override IEnumerable<object> GetIdentityValues()
+        {
+            yield return Id;
         }
     }
 }

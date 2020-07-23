@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain;
-using TimeRecorder.Domain.Utility.SystemClocks;
-using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Clients.Dao;
-using TimeRecorder.Repository.SQLite.Products;
 using TimeRecorder.Repository.SQLite.Products.Dao;
 using TimeRecorder.Repository.SQLite.Tasks.Dao;
 using TimeRecorder.Repository.SQLite.Tracking.Dao;
-using TimeRecorder.Repository.SQLite.WorkProcesses;
 using TimeRecorder.Repository.SQLite.WorkProcesses.Dao;
-using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain.Domain;
 
 namespace TimeRecorder.Repository.SQLite.Tasks
 {

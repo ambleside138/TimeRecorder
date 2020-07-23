@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 
@@ -27,7 +28,7 @@ namespace TimeRecorder.Repository.SQLite.Tracking.Dao
         public WorkingHour ConvertToDomainObjects()
         {
             return new WorkingHour(
-                new Domain.Utility.YmdString(Ymd),
+                new YmdString(Ymd),
                 DateTimeParser.ConvertFromYmdHHmmss(Ymd, StartTime),
                 DateTimeParser.ConvertFromYmdHHmmss(Ymd, EndTime)
                 );

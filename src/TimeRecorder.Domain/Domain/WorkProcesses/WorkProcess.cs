@@ -6,7 +6,7 @@ using TimeRecorder.Domain.Utility;
 namespace TimeRecorder.Domain.Domain.WorkProcesses
 {
     /// <summary>
-    /// 工程
+    /// 工程 を表します
     /// </summary>
     public class WorkProcess : Entity<WorkProcess>
     {

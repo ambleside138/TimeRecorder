@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Utilities;
 

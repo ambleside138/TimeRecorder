@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 
@@ -19,7 +20,7 @@ namespace TimeRecorder.Driver.CsvDriver.Import
         {
             return new WorkingHour
             (
-                new Domain.Utility.YmdString(Ymd),
+                new YmdString(Ymd),
                 DateTimeParser.ConvertFromYmdHHmmss(StartYmdHms),
                 DateTimeParser.ConvertFromYmdHHmmss(EndYmdHms)
             );

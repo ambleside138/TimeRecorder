@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.UseCase.Tasks

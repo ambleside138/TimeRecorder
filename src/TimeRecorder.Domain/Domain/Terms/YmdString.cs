@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Domain.Utility
+namespace TimeRecorder.Domain.Domain
 {
+    // structで定義すると引数なしコンストラクタを隠せないので必ずclassで定義するように
+
     /// <summary>
-    /// 日付を表します
+    /// 時間の概念を含まない日付の値オブジェクトを表します
     /// </summary>
-    public struct YmdString : IEquatable<YmdString>, IComparable<YmdString>
+    public class YmdString : ValueObject<YmdString>, IComparable<YmdString>
     {
         public static YmdString Empty => new YmdString("");
 
@@ -32,14 +35,18 @@ namespace TimeRecorder.Domain.Utility
             return DateTimeParser.ConvertFromYmd(Value);
         }
 
-        public bool Equals(YmdString other)
-        {
-            return Value == other.Value;
-        }
 
         public int CompareTo([AllowNull] YmdString other)
         {
+            if (other == null)
+                return 1;
+
             return Value.CompareTo(other.Value);
+        }
+
+        protected override IEnumerable<object> GetAtomicValues()
+        {
+            yield return Value;
         }
     }
 }
