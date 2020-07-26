@@ -40,7 +40,7 @@ namespace TimeRecorder.Domain.Domain.Tasks.Commands
                 throw new SpecificationCheckException(result);
             }
 
-            spec.EditActualTimes(target);
+            target.Complete();
 
             _WorkTaskRepository.Edit(target);
         }
@@ -54,7 +54,7 @@ namespace TimeRecorder.Domain.Domain.Tasks.Commands
                 throw new NotFoundException("再開対象がみつかりませんでした");
             }
 
-            target.TaskProgress.ClearActualPeriod();
+            target.ReStart();
 
             _WorkTaskRepository.Edit(target);
         }

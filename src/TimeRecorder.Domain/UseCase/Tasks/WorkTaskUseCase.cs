@@ -41,6 +41,8 @@ namespace TimeRecorder.Domain.UseCase.Tasks
 
         public void Delete(Identity<WorkTask> workTaskId)
         {
+            // todo: transaction
+
             _TaskRepository.Delete(workTaskId);
             _WorkingTimeRangeRepository.RemoveByTaskId(workTaskId);
         }

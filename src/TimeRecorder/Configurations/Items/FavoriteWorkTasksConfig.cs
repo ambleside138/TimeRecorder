@@ -4,7 +4,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json.Serialization;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 
 namespace TimeRecorder.Configurations.Items
 {
@@ -35,13 +34,12 @@ namespace TimeRecorder.Configurations.Items
 
         public WorkTask ConvertToDomainModel()
         {
-            var obj = WorkTask.ForNew();
+            var obj = WorkTask.ForNewFavorite();
             obj.Title = Title;
             obj.TaskCategory = TaskCategory;
             obj.ProductId  = new Domain.Identity<Domain.Domain.Products.Product>(ProductId);
             obj.ClientId = new Domain.Identity<Domain.Domain.Clients.Client>(ClientId);
             obj.ProcessId = new Domain.Identity<Domain.Domain.WorkProcesses.WorkProcess>(ProcessId);
-            obj.IsTemporary = true;
 
             return obj;
         }

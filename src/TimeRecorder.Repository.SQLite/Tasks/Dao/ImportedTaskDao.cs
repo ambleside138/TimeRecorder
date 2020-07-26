@@ -25,6 +25,7 @@ INSERT INTO importedtasks
   , title
   , source
   , createdatetime
+  , worktaskid
 )
 VALUES
 (
@@ -32,6 +33,7 @@ VALUES
   , @title
   , @source
   , @createdatetime
+  , @worktaskid
 )
 ";
             #endregion
@@ -50,6 +52,7 @@ SELECT
   , title
   , source
   , createdatetime
+  , worktaskid
 FROM
   importedtasks
 WHERE

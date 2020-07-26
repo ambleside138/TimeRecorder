@@ -6,7 +6,6 @@ using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Utility;

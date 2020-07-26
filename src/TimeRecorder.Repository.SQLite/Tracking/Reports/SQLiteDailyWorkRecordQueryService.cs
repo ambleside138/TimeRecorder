@@ -9,7 +9,6 @@ using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
@@ -37,8 +36,7 @@ SELECT
   , task.clientid as clientid
   , task.processid as workprocessid
   , task.productid as productid
-  , task.istemporary as istemporary
-  , task.importkey as importkey
+  , task.TaskSource as tasksource
 FROM
   workingtimes time
 INNER JOIN
@@ -100,8 +98,8 @@ WHERE
                         Title = task.Title,
                         WorkingTimeId = new Identity<WorkingTimeRange>(task.WorkingTimeId),
                         WorkTaskId = new Identity<WorkTask>(task.WorkTaskId),
-                        IsTemporary = task.IsTemporary == "1",
-                        IsScheduled = string.IsNullOrEmpty(task.ImportKey) == false,
+                        IsTemporary = task.TaskSource.IsTemporary(),
+                        IsScheduled = task.TaskSource == TaskSource.Schedule,
                     };
 
                     list.Add(dto);
@@ -134,15 +132,13 @@ WHERE
 
             public TaskCategory TaskCategory { get; set; }
 
-            public string Remarks { get; set; }
-
             public int WorkProcessId { get; set; }
 
             public int ClientId { get; set; }
 
             public int ProductId { get; set; }
 
-            public string IsTemporary { get; set; }
+            public TaskSource TaskSource { get; set; }
 
             public string ImportKey { get; set; }
         }

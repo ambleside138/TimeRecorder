@@ -6,7 +6,6 @@ using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.Tracking.Reports;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -83,7 +82,7 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
                 },
             };
 
-            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records });
+            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records, WorkingHours = new WorkingHour[0] });
 
             Assert.IsTrue(list.Length == 31);
             Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);
@@ -146,7 +145,7 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
                 },
            };
 
-            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records });
+            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records, WorkingHours = new WorkingHour[0] });
 
             Assert.IsTrue(list.Length == 31);
             Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);

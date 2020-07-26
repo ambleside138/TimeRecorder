@@ -47,7 +47,7 @@ namespace TimeRecorder.Domain.UseCase.Tracking
                 StopWorkingCore(working);
             }
 
-            if(targetTask.TaskProgress.IsCompleted)
+            if(targetTask.IsCompleted)
             {
                 _WorkTaskCompletionCommand.ReStartTask(id);
             }

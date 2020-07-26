@@ -11,6 +11,10 @@ namespace TimeRecorder.Domain.Domain.Tasks
     {
         WorkTask Add(WorkTask task);
 
+        // WorkTask以外の引数を受けるのはセオリーから外れる気がするが...
+        // 正解がわからないのでこれで。
+        WorkTask AddForSchedule(WorkTask task, ImportedTask workTaskImportSource);
+
         void Edit(WorkTask task);
 
         void Delete(Identity<WorkTask> identity);

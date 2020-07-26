@@ -12,8 +12,19 @@ namespace TimeRecorder.Repository.SQLite.Tasks
     {
         public WorkTask Add(WorkTask task)
         {
+            return AddCore(task, null);
+        }
+
+        public WorkTask AddForSchedule(WorkTask task, ImportedTask workTaskImportSource)
+        {
+
+            return AddCore(task, workTaskImportSource);
+        }
+
+        private WorkTask AddCore(WorkTask task, ImportedTask workTaskImportSource)
+        {
             var row = WorkTaskTableRow.FromDomainObject(task);
-            
+
             RepositoryAction.Transaction((c, t) =>
             {
                 var dao = new WorkTaskDao(c, t);
@@ -23,14 +34,14 @@ namespace TimeRecorder.Repository.SQLite.Tasks
                 row.Id = id;
 
                 // スケジュールからの取込の場合は取込歴にも残す
-                if(task.IsScheduled)
+                if (task.IsScheduled)
                 {
                     var importDao = new ImportedTaskDao(c, t);
-                    importDao.Insert(ImportedTaskTableRow.FromDomainObject(task));
+                    importDao.Insert(ImportedTaskTableRow.FromDomainObject(id, workTaskImportSource));
                 }
             });
 
-            return row.ConvertToDomainObject();
+            return WorkTaskFactory.Create(row, task.IsCompleted);
         }
 
         public void Delete(Identity<WorkTask> identity)
@@ -38,6 +49,7 @@ namespace TimeRecorder.Repository.SQLite.Tasks
             RepositoryAction.Transaction((c, t) =>
             {
                 new WorkTaskDao(c, t).Delete(identity.Value);
+                new WorkTaskCompletedDao(c, t).DeleteByWorkTaskId(identity.Value);
             });
         }
 
@@ -47,7 +59,17 @@ namespace TimeRecorder.Repository.SQLite.Tasks
             {
                 var row = WorkTaskTableRow.FromDomainObject(task);
                 var dao = new WorkTaskDao(c, t);
+                var compDao = new WorkTaskCompletedDao(c, t);
                 dao.Update(row);
+
+                if(task.IsCompleted)
+                {
+                    compDao.InsertIfNotExist(task.Id.Value);
+                }
+                else
+                {
+                    compDao.DeleteByWorkTaskId(task.Id.Value);
+                }
             });
         }
 
@@ -58,8 +80,10 @@ namespace TimeRecorder.Repository.SQLite.Tasks
             RepositoryAction.Query(c =>
             {
                 var dao = new WorkTaskDao(c, null);
+                var compDao = new WorkTaskCompletedDao(c, null);
+                var exist = compDao.IsCompleted(identity.Value);
 
-                results = dao.SelectById(identity.Value)?.ConvertToDomainObject();
+                results = WorkTaskFactory.Create(dao.SelectById(identity.Value), exist);
             });
 
             return results;

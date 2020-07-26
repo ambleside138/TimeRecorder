@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
+using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking.Reports;
 using TimeRecorder.Domain.Utility;
 
