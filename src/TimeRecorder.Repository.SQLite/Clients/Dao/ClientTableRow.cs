@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
-using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain;
 
 namespace TimeRecorder.Repository.SQLite.Clients.Dao
 {

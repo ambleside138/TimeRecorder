@@ -7,6 +7,9 @@ using TimeRecorder.Domain.Domain.Tracking;
 
 namespace TimeRecorder.Domain.Domain.Tasks.Specifications
 {
+    /// <summary>
+    /// タスク完了時に満たすべき仕様を表します
+    /// </summary>
     class WorkTaskCompletionSpecification
     {
         private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
@@ -27,17 +30,6 @@ namespace TimeRecorder.Domain.Domain.Tasks.Specifications
                 return new ValidationResult("作業中なので完了できません");
 
             return ValidationResult.Success;
-        }
-
-        public void EditActualTimes(WorkTask workTask)
-        {
-            var times = _WorkingTimeRangeRepository.SelectByTaskId(workTask.Id);
-
-            var start = times.Min(t => t.TimePeriod.StartDateTime);
-            var end = times.Where(t => t.TimePeriod.IsStopped)
-                           .Max(t => t.TimePeriod.EndDateTime.Value);
-
-            workTask.Complete(start, end);
         }
     }
 }

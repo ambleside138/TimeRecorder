@@ -5,10 +5,15 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain
 {
+    /// <summary>
+    /// 年月を表す値オブジェクトです
+    /// </summary>
     public class YearMonth : ValueObject<YearMonth>
     {
+        /// <summary> 年 </summary>
         public int Year { get; }
 
+        /// <summary> 月 </summary>
         public int Month { get; }
 
         public static YearMonth FromYmdString(YmdString ymdString)
@@ -26,6 +31,11 @@ namespace TimeRecorder.Domain.Domain
             Month = month;
         }
 
+        /// <summary>
+        /// 引数の日付を含むかどうかを判定します
+        /// </summary>
+        /// <param name="ymdString"></param>
+        /// <returns></returns>
         public bool Contains(YmdString ymdString)
         {
             var dt = ymdString.ToDateTime();

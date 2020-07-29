@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.WorkProcesses;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Calendar;
@@ -13,7 +12,7 @@ namespace TimeRecorder.Domain.Domain.Tasks
     /// <summary>
     /// 開発・作業内容を表します
     /// </summary>
-    public class WorkTask : NotificationDomainModel
+    public class WorkTask : Entity<WorkTask>
     {
         public Identity<WorkTask> Id { get; private set; }
 
@@ -67,22 +66,13 @@ namespace TimeRecorder.Domain.Domain.Tasks
         }
         #endregion
 
-        #region Remarks変更通知プロパティ
-        private string _Remarks;
+        public TaskSource TaskSource { get; private set; }
 
-        public string Remarks
-        {
-            get => _Remarks;
-            set => RaisePropertyChangedIfSet(ref _Remarks, value);
-        }
-        #endregion
+        public bool IsTemporary => TaskSource.IsTemporary();
 
-        public bool IsTemporary { get; set; } = false;
-        public TaskProgress TaskProgress { get; private set; } = new TaskProgress();
+        public bool IsScheduled => TaskSource == TaskSource.Schedule;
 
-        public WorkTaskImportSource ImportSource { get; private set; } = new WorkTaskImportSource("", "");
-
-        public bool IsScheduled => string.IsNullOrEmpty(ImportSource.Key) == false;
+        public bool IsCompleted { get; private set; } = false;
 
         public static WorkTask ForNew()
         {
@@ -95,17 +85,20 @@ namespace TimeRecorder.Domain.Domain.Tasks
             };
         }
 
+        public static WorkTask ForNewFavorite()
+        {
+            var t = ForNew();
+            t.TaskSource = TaskSource.Favorite;
+
+            return t;
+        }
+
         public static WorkTask FromScheduledEvent(ScheduledEvent scheduledEvent)
         {
             var workTask = ForNew();
-            workTask.ImportSource = new WorkTaskImportSource(scheduledEvent.Id, scheduledEvent.Kind);
-            workTask.TaskProgress.PlanedPeriod = new DateTimePeriod
-            {
-                Start = scheduledEvent.StartTime,
-                End = scheduledEvent.EndTime
-            };
             workTask.Title = scheduledEvent.Title;
-            workTask.TaskCategory = Tasks.Definitions.TaskCategory.Develop; // そのうち設定にしたい
+            workTask.TaskCategory = TaskCategory.Develop;
+            workTask.TaskSource = TaskSource.Schedule;
 
             return workTask;
         }
@@ -118,10 +111,8 @@ namespace TimeRecorder.Domain.Domain.Tasks
             Identity<Product> productid, 
             Identity<Client> ClientId, 
             Identity<WorkProcess> processId, 
-            string remarks, 
-            TaskProgress taskProgress, 
-            WorkTaskImportSource workTaskImportSource,
-            bool isTemporary)
+            TaskSource source,
+            bool isCompleted)
         {
             Id = id;
             _Title = title;
@@ -129,15 +120,23 @@ namespace TimeRecorder.Domain.Domain.Tasks
             _ProductId = productid;
             _ClientId = ClientId;
             _ProcessId = processId;
-            _Remarks = remarks;
-            TaskProgress = taskProgress;
-            ImportSource = workTaskImportSource;
-            IsTemporary = isTemporary;
+            TaskSource = source;
+            IsCompleted = isCompleted;
         }
 
-        public void Complete(DateTime start, DateTime end)
+        public void Complete()
         {
-            TaskProgress.ActualPeriod = new DateTimePeriod { Start = start, End = end };
+            IsCompleted = true;
+        }
+
+        public void ReStart()
+        {
+            IsCompleted = false;
+        }
+
+        protected override IEnumerable<object> GetIdentityValues()
+        {
+            yield return Id;
         }
 
         private WorkTask() { }

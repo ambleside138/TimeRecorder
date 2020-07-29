@@ -5,7 +5,10 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.Clients
 {
-    public class Client
+    /// <summary>
+    /// ユーザ を表します
+    /// </summary>
+    public class Client : Entity<Client>
     {
         public Identity<Client> Id { get; set; }
 
@@ -20,6 +23,11 @@ namespace TimeRecorder.Domain.Domain.Clients
             Id = id;
             Name = name;
             KanaName = kanaName;
+        }
+
+        protected override IEnumerable<object> GetIdentityValues()
+        {
+            yield return Id;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using MicroResolver;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -42,6 +41,8 @@ namespace TimeRecorder.Domain.UseCase.Tasks
 
         public void Delete(Identity<WorkTask> workTaskId)
         {
+            // todo: transaction
+
             _TaskRepository.Delete(workTaskId);
             _WorkingTimeRangeRepository.RemoveByTaskId(workTaskId);
         }

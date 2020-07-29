@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
@@ -58,8 +59,8 @@ namespace TimeRecorder.Domain.UseCase.Tasks
                     continue;
 
                 // 未登録ならスケジュールに合わせて登録
-                var workTask = builder.Build(@event);
-                workTask = _WorkTaskRepository.Add(workTask);
+                (WorkTask workTask, ImportedTask importedTask) = builder.Build(@event);
+                workTask = _WorkTaskRepository.AddForSchedule(workTask, importedTask);
                 list.Add(workTask);
 
                 var newWorkingTime = WorkingTimeRange.FromScheduledEvent(workTask.Id, @event);

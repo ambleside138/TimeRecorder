@@ -4,7 +4,7 @@ using System.Text;
 
 namespace TimeRecorder.Domain.Domain.System
 {
-    public interface IConfigurationRepository
+    public interface IConfigurationRepository : IRepository
     {
         void UpdateConfiguration(ConfigurationItem item);
 

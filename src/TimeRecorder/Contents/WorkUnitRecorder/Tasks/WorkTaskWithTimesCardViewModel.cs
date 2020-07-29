@@ -58,7 +58,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                             })
                         .AddTo(CompositeDisposable);
 
-            ShowWarning.Value = dto.TaskCategory != Domain.Domain.Tasks.Definitions.TaskCategory.Other
+            ShowWarning.Value = dto.TaskCategory != Domain.Domain.Tasks.TaskCategory.Other
                                 && string.IsNullOrEmpty(dto.ProductName)
                                 && string.IsNullOrEmpty(dto.ClientName);
         }

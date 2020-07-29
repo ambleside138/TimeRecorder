@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 
@@ -29,8 +29,6 @@ namespace TimeRecorder.Domain.UseCase.Tasks
         public string ClientName { get; set; }
 
         public string ProcessName { get; set; }
-
-        public string Remarks { get; set; }
 
         public bool IsCompleted { get; set; }
 

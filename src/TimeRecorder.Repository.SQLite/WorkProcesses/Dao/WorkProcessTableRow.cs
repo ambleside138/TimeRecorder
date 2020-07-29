@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain;
 using TimeRecorder.Domain.Domain.WorkProcesses;
-using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Repository.SQLite.WorkProcesses.Dao
 {

@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
+using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.Utility;
 
@@ -22,7 +22,6 @@ SELECT
   , time.endtime as endtime
   , task.title as title
   , task.taskcategory as taskcategory
-  , task.remarks as remarks
   , processes.title as workprocessname
 FROM
   workingtimes time
@@ -61,8 +60,6 @@ WHERE
 
             public TaskCategory  TaskCategory { get; set; }
 
-            public string Remarks { get; set; }
-
             public string WorkProcessName { get; set; }
 
             public WorkingTimeForTimelineDto ConvertToDto()
@@ -70,12 +67,11 @@ WHERE
                 
                 return new WorkingTimeForTimelineDto
                 {
-                    WorkingTimeId = new Domain.Utility.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
-                    WorkTaskId = new Domain.Utility.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
+                    WorkingTimeId = new Domain.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
+                    WorkTaskId = new Domain.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
                     TimePeriod = new Domain.Domain.Tracking.TimePeriod(StartTime, EndTime),
                     TaskTitle = Title,
                     TaskCategory = TaskCategory,
-                    TaskRemarks = Remarks,
                     WorkProcessName = WorkProcessName,
                 };
             }

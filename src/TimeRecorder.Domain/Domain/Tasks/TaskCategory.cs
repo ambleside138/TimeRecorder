@@ -5,7 +5,7 @@ using System.Text;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Utility.Attributes;
 
-namespace TimeRecorder.Domain.Domain.Tasks.Definitions
+namespace TimeRecorder.Domain.Domain.Tasks
 {
     public enum TaskCategory
     {

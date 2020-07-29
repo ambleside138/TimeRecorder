@@ -10,9 +10,8 @@ using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.WorkProcesses;
-using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain;
 using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
@@ -75,9 +74,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                                      .AddTo(CompositeDisposable);
 
             if(task.Id.IsTemporary
-                && DomainModel.TaskCategory == Domain.Domain.Tasks.Definitions.TaskCategory.UnKnown)
+                && DomainModel.TaskCategory == Domain.Domain.Tasks.TaskCategory.UnKnown)
             {
-                DomainModel.TaskCategory = Domain.Domain.Tasks.Definitions.TaskCategory.Develop;
+                DomainModel.TaskCategory = Domain.Domain.Tasks.TaskCategory.Develop;
             }
 
         }

@@ -9,6 +9,9 @@ using TimeRecorder.Repository.SQLite.System.Versions;
 
 namespace TimeRecorder.Repository.SQLite
 {
+    /// <summary>
+    /// SQLite DBファイルのセットアップ処理を提供します
+    /// </summary>
     public static class Setup
     {
 

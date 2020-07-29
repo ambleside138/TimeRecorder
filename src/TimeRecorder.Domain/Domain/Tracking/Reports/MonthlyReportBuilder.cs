@@ -33,7 +33,7 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
                 var oHeader = new DailyWorkRecordHeader 
                 { 
                     WorkYmd = date.ToString("yyyyMMdd"),
-                    WorkingHour = results.WorkingHours.FirstOrDefault(h => h.Ymd.Equals(new Utility.YmdString(date))),
+                    WorkingHour = results.WorkingHours.FirstOrDefault(h => h.Ymd == new YmdString(date)),
                 };
 
                 foreach(var record in records.Where(r => r.Ymd.ToDateTime().Value.Day == date.Day))

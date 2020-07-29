@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Tracking.Reports;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Helpers;
@@ -37,7 +38,7 @@ namespace TimeRecorder.Contents.Archive
         {
             DailyWorkRecordHeaders.Clear();
 
-            var headers = _GetDailyWorkRecordHeadersUseCase.Get(new Domain.Utility.YmdString(TargetDate.Value));
+            var headers = _GetDailyWorkRecordHeadersUseCase.Get(new YmdString(TargetDate.Value));
             DailyWorkRecordHeaders.AddRange(headers);
 
             NoResults.Value = DailyWorkRecordHeaders.Count == 0;

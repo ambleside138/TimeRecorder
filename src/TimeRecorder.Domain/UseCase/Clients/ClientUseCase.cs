@@ -6,7 +6,7 @@ using TimeRecorder.Domain.Domain.Clients;
 namespace TimeRecorder.UseCase.Clients
 {
     /// <summary>
-    /// 病院（＝案件） に関するPresentation層との相互作用を実装します
+    /// 案件に関するPresentation層との相互作用を実装します
     /// </summary>
     public class ClientUseCase
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
+using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking.Reports;
 using TimeRecorder.Domain.Utility;
 
@@ -24,7 +24,7 @@ namespace TimeRecorder.Driver.CsvDriver
                     DateText = dateText,
                     TaskCategory = ConvertCsvCategoryText(task.TaskCategory),
                     ProductOrClient = ConvertToProductOrClient(task),
-                    TaskProcess = task.WorkProcess.Title,
+                    TaskProcess = task.WorkProcess?.Title ?? "不明",
                     Remarks = task.Title,
                     TotalMinutes = task.TotalWorkMinutes,
                     IsFixed = task.IsScheduled,
