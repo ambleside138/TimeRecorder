@@ -5,7 +5,7 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.Tracking
 {
-    public interface IWorkingHourRepository
+    public interface IWorkingHourRepository : IRepository
     {
         public void Add(WorkingHour workingHour);
 

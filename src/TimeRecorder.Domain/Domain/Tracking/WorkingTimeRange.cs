@@ -12,7 +12,7 @@ namespace TimeRecorder.Domain.Domain.Tracking
     /// <summary>
     /// 作業時間の最小単位を表します
     /// </summary>
-    public class WorkingTimeRange : NotificationDomainModel
+    public class WorkingTimeRange : Entity<WorkingTimeRange>
     {
         public Identity<WorkingTimeRange> Id { get; private set; }
 
@@ -88,6 +88,11 @@ namespace TimeRecorder.Domain.Domain.Tracking
             }
 
             TimePeriod = new TimePeriod(start, end);
+        }
+
+        protected override IEnumerable<object> GetIdentityValues()
+        {
+            yield return Id;
         }
     }
 }

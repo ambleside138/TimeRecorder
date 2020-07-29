@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Utility.Exceptions;

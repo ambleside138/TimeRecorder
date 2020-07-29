@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Xml.Schema;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
 
@@ -19,7 +21,7 @@ namespace TimeRecorder.Domain.Domain.Calendar
             _ScheduleTitleMaps = maps ?? new ScheduleTitleMap[0];
         }
 
-        public WorkTask Build(ScheduledEvent scheduledEvent)
+        public (WorkTask task, ImportedTask imported) Build(ScheduledEvent scheduledEvent)
         {
             var oTask = WorkTask.FromScheduledEvent(scheduledEvent);
 
@@ -56,8 +58,14 @@ namespace TimeRecorder.Domain.Domain.Calendar
                 }
             }
 
+            var importedTask = new ImportedTask
+            {
+                Title = oTask.Title,
+                ImportKey = scheduledEvent.Id,
+                Source = scheduledEvent.Kind,
+            };
 
-            return oTask;
+            return (oTask, importedTask);
         }
 
         

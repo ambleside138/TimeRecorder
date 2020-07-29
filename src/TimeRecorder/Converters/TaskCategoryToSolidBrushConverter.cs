@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Text;
 using System.Windows.Data;
 using System.Windows.Media;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
+using TimeRecorder.Domain.Domain.Tasks;
 
 namespace TimeRecorder.Converters
 {

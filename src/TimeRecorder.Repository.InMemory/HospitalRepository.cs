@@ -1,6 +1,6 @@
 ﻿using System;
+using TimeRecorder.Domain;
 using TimeRecorder.Domain.Domain.Clients;
-using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Repository.InMemory
 {

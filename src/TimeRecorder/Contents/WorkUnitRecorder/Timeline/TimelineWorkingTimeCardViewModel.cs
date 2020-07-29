@@ -7,7 +7,6 @@ using System.Reactive.Concurrency;
 using System.Text;
 using System.Threading;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.Utility.SystemClocks;

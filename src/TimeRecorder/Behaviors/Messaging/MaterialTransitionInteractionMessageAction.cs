@@ -19,10 +19,10 @@ using Livet.Behaviors.Messaging;
 
 namespace TimeRecorder.Behaviors.Messaging
 {
+
     public class MaterialTransitionInteractionMessageAction : TransitionInteractionMessageAction
     {
-
-
+        #region HostBorder依存関係プロパティ
         public Border HostBorder
         {
             get { return (Border)GetValue(HostBorderProperty); }
@@ -31,7 +31,8 @@ namespace TimeRecorder.Behaviors.Messaging
 
         // Using a DependencyProperty as the backing store for HostBorder.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HostBorderProperty =
-            DependencyProperty.Register("HostBorder", typeof(Border), typeof(MaterialTransitionInteractionMessageAction), new PropertyMetadata(null));
+            DependencyProperty.Register("HostBorder", typeof(Border), typeof(MaterialTransitionInteractionMessageAction), new PropertyMetadata(null)); 
+        #endregion
 
 
         protected override void InvokeAction(Livet.Messaging.InteractionMessage m)

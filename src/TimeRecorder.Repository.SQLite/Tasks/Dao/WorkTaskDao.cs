@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Utilities;
 
@@ -25,14 +26,7 @@ insert into worktasks
   , productid
   , clientId 
   , processId 
-  , remarks
-  , planedStartDateTime 
-  , planedEndDateTime 
-  , actualStartDateTime 
-  , actualEndDateTime 
-  , source
-  , importkey
-  , istemporary
+  , tasksource
 )
 values
 (
@@ -41,14 +35,7 @@ values
   , @productId
   , @clientId 
   , @processId 
-  , @remarks
-  , @planedStartDateTime 
-  , @planedEndDateTime 
-  , @actualStartDateTime 
-  , @actualEndDateTime 
-  , @source
-  , @importkey
-  , @istemporary
+  , @tasksource
 )
 ";
             #endregion
@@ -83,11 +70,6 @@ set
   , productId = @productId
   , clientId = @clientId
   , processId = @processId
-  , remarks = @remarks
-  , planedStartDateTime = @planedStartDateTime 
-  , planedEndDateTime  = @planedEndDateTime
-  , actualStartDateTime = @actualStartDateTime
-  , actualEndDateTime = @actualEndDateTime
 where
   id = @id
 ";
@@ -103,14 +85,27 @@ where
         /// <returns></returns>
         public WorkTaskTableRow[] SelectPlaned(YmdString ymd, bool containsCompleted)
         {
-            var where = "";
+            string where;
+            object param;
 
             if (containsCompleted)
-                where = "( id IN ( select taskid from workingtimes where ymd = @ymd ) OR actualenddatetime IS NULL )";
+            {
+                where = @"
+( id IN ( SELECT worktaskid FROM worktaskscompleted WHERE registdatetime BETWEEN @start AND @end ) 
+  OR NOT EXISTS ( SELECT 1 FROM worktaskscompleted WHERE worktaskid = worktasks.id )
+)";
+                param = new { start = ymd.ToDateTime().Value, end = ymd.ToDateTime().Value.AddDays(1).AddMinutes(-1) };
+            }
             else
-                where = "actualenddatetime IS NULL";
+            {
+                where = @"
+NOT EXISTS ( 
+  SELECT 1 FROM worktaskscompleted WHERE worktaskid = worktasks.id 
+)";
 
-            return SelectCore(where, new { ymd = ymd.Value }).ToArray();
+                param = new object();
+            }
+            return SelectCore(where, param).ToArray();
         }
 
         public WorkTaskTableRow SelectById(int taskId)
@@ -133,15 +128,8 @@ SELECT
   , taskcategory 
   , productId
   , clientId 
-  , processId 
-  , remarks
-  , planedStartDateTime 
-  , planedEndDateTime 
-  , actualStartDateTime 
-  , actualEndDateTime 
-  , source
-  , importkey
-  , istemporary
+  , processId  
+  , tasksource
 FROM
   worktasks
 WHERE

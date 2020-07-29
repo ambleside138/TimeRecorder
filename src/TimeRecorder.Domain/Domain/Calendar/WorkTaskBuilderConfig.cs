@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Utility;
 
@@ -80,7 +79,6 @@ namespace TimeRecorder.Domain.Domain.Calendar
             obj.ProductId = new Identity<Product>(ProductId);
             obj.ClientId = new Identity<Client>(ClientId);
             obj.ProcessId = new Identity<WorkProcess>(WorkProcessId);
-            obj.IsTemporary = true;
 
             return obj;
         }

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.WorkProcesses;
-using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor
 {

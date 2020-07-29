@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace TimeRecorder.Domain.Utility
+namespace TimeRecorder.Domain
 {
     /// <summary>
     /// 値オブジェクトの基底クラスを表します

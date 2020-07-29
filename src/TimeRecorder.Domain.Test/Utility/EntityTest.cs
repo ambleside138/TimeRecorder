@@ -35,6 +35,9 @@ namespace TimeRecorder.Domain.Test.Utility
 
             Assert.IsTrue(t1.Equals(t1_copy));
             Assert.IsFalse(t1.Equals(t2));
+
+            Assert.IsTrue(t1.Id == t1_copy.Id);
+            Assert.IsFalse(t1.Id == t2.Id);
         }
 
         [Test]

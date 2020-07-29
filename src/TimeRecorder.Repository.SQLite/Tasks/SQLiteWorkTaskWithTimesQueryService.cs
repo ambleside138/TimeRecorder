@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TimeRecorder.Domain.UseCase.Tasks;
-using TimeRecorder.Domain.Utility;
-using TimeRecorder.Domain.Utility.SystemClocks;
-using TimeRecorder.Repository.SQLite.Clients;
+using TimeRecorder.Domain;
 using TimeRecorder.Repository.SQLite.Clients.Dao;
-using TimeRecorder.Repository.SQLite.Products;
 using TimeRecorder.Repository.SQLite.Products.Dao;
 using TimeRecorder.Repository.SQLite.Tasks.Dao;
 using TimeRecorder.Repository.SQLite.Tracking.Dao;
-using TimeRecorder.Repository.SQLite.WorkProcesses;
 using TimeRecorder.Repository.SQLite.WorkProcesses.Dao;
+using TimeRecorder.Domain.Domain;
 
 namespace TimeRecorder.Repository.SQLite.Tasks
 {
@@ -32,9 +26,11 @@ namespace TimeRecorder.Repository.SQLite.Tasks
                 var processes = new WorkProcessDao(c, null).SelectAll();
                 var products = new ProductDao(c, null).SelectAll();
                 var clients = new ClientDao(c, null).SelectAll();
+                var completedDao = new WorkTaskCompletedDao(c, null);
 
                 var tasks = workTaskDao.SelectPlaned(ymd, containsCompleted);
                 var times = workingTimeDao.SelectByTaskIds(tasks.Select(t => t.Id).Distinct().ToArray());
+                var completed = completedDao.SelectCompleted(tasks.Select(t => t.Id).Distinct().ToArray());
 
                 foreach(var task in tasks)
                 {
@@ -44,11 +40,10 @@ namespace TimeRecorder.Repository.SQLite.Tasks
                         ClientName = clients.FirstOrDefault(c => c.Id == task.ClientId)?.Name ?? "",
                         ProcessName = processes.FirstOrDefault(p => p.Id == task.ProcessId)?.Title ?? "",
                         ProductName = products.FirstOrDefault(p => p.Id == task.ProductId)?.Name ?? "",
-                        Remarks = task.Remarks,
                         TaskCategory = task.TaskCategory,
                         Title = task.Title,
-                        IsCompleted = task.ConvertToDomainObject().TaskProgress.IsCompleted,
-                        IsScheduled = string.IsNullOrEmpty(task.Source) == false,
+                        IsCompleted = completed.Any(c => c == task.Id),
+                        IsScheduled = task.TaskSource == Domain.Domain.Tasks.TaskSource.Schedule,
                     };
 
                     dto.WorkingTimes = times.Where(t => t.TaskId == task.Id)

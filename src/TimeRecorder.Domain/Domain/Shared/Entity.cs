@@ -5,9 +5,13 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 
-namespace TimeRecorder.Domain.Utility
+namespace TimeRecorder.Domain
 {
-    public abstract class Entity<T> : IEquatable<T> where T : Entity<T>
+    /// <summary>
+    /// エンティティ を表すための基底クラスです
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public abstract class Entity<T> : NotificationDomainModel, IEquatable<T> where T : Entity<T>
     {
 
         protected abstract IEnumerable<object> GetIdentityValues();

@@ -10,9 +10,8 @@ using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Tasks;
-using TimeRecorder.Domain.Domain.Tasks.Definitions;
 using TimeRecorder.Domain.Domain.WorkProcesses;
-using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain;
 using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
@@ -31,8 +30,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public ReactiveProperty<Client> Client { get; }
 
         public ReactiveProperty<WorkProcess> WorkProcess { get; }
-
-        //public ReactiveProperty<string> Remarks { get; }
 
         public WorkTask DomainModel { get; }
 
@@ -76,14 +73,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                                         vm => vm?.Id ?? Identity<Client>.Empty)
                                      .AddTo(CompositeDisposable);
 
-            if(task.Id.IsTemporary)
+            if(task.Id.IsTemporary
+                && DomainModel.TaskCategory == Domain.Domain.Tasks.TaskCategory.UnKnown)
             {
-                DomainModel.TaskCategory = Domain.Domain.Tasks.Definitions.TaskCategory.Develop;
+                DomainModel.TaskCategory = Domain.Domain.Tasks.TaskCategory.Develop;
             }
-
-            //Remarks = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Remarks)
-            //                      .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "備考は入力必須です" : null)
-            //                      .AddTo(CompositeDisposable);
 
         }
 

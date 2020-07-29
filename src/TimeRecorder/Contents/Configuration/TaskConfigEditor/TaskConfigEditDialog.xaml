@@ -163,7 +163,7 @@
                     </behaviors:Interaction.Triggers>
                 </Button>
 
-                
+
                 <Button Content="キャンセル" Style="{StaticResource MaterialDesignFlatButton}">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="Click">

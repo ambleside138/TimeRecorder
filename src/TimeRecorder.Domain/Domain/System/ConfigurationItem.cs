@@ -7,6 +7,9 @@ using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.System
 {
+    /// <summary>
+    /// 設定内容を表します
+    /// </summary>
     public class ConfigurationItem
     {
         public string Key { get; set; }
