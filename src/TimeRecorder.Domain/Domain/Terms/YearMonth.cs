@@ -54,6 +54,15 @@ namespace TimeRecorder.Domain.Domain
 
         public DateTime StartDate => new DateTime(Year, Month, 1);
 
-        public DateTime EndDate => new DateTime(Year, Month +1, 1).AddDays(-1);
+        public DateTime EndDate
+
+        {
+            get
+            {
+                var nextMonth = new DateTime(Year, Month, 1).AddMonths(1);
+                return nextMonth.AddDays(-1);
+            }
+
+        }
     }
 }
