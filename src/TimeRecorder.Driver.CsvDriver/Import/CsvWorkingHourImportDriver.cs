@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -17,12 +18,12 @@ namespace TimeRecorder.Driver.CsvDriver.Import
             // .Net CoreでSJISを扱うために呼ぶ必要がある
             // パッケージも必要: System.Text.Encoding.CodePages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+            
+            var config = new CsvConfiguration(CultureInfo.CurrentCulture) { HasHeaderRecord = false, };
 
             using (var streamReader = new StreamReader(param, Encoding.GetEncoding("shift_jis")))
-            using (var csv = new CsvReader(streamReader, CultureInfo.CurrentCulture))
+            using (var csv = new CsvReader(streamReader, config))
             {
-                csv.Configuration.HasHeaderRecord = false;
-
                 return csv.GetRecords<WorkingHourRow>()
                           .Select(r => r.ConvertToDomainModel())
                           .ToArray();
