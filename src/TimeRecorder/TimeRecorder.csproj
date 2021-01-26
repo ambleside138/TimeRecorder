@@ -8,6 +8,7 @@
     <Version>0.9.3</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SatelliteResourceLanguages>ja</SatelliteResourceLanguages>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
