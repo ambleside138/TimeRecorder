@@ -31,9 +31,9 @@
     <PackageReference Include="LivetCask" Version="3.2.3.1" />
     <PackageReference Include="LivetExtensions" Version="3.2.3.1" />
     <PackageReference Include="MahApps.Metro" Version="2.4.3" />
-    <PackageReference Include="MaterialDesignColors" Version="2.0.0-ci2387" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.0.0-ci2387" />
-    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.6-ci2387" />
+    <PackageReference Include="MaterialDesignColors" Version="1.2.7" />
+    <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.5" />
     <PackageReference Include="MicroResolver" Version="2.3.5" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
     <PackageReference Include="NLog" Version="4.7.7" />
