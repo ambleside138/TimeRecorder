@@ -9,7 +9,7 @@ namespace TimeRecorder.Domain
     /// エンティティの同一性を表現するための値オブジェクトです
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Identity<T> : ValueObject<Identity<T>>
+    public class Identity<T> : ValueObject<Identity<T>>, IComparable<Identity<T>>
     {
         private const int TemporaryIdValue = -1;
 
@@ -31,6 +31,33 @@ namespace TimeRecorder.Domain
             else
             {
                 yield return Value;
+            }
+        }
+
+        public int CompareTo(Identity<T> other)
+        {
+            if(IsTemporary)
+            {
+                if(other.IsTemporary)
+                {
+                    return TempValue.CompareTo(other.TempValue);
+                }
+                else
+                {
+                    return -1;
+                }
+            }
+            else
+            {
+                if (other.IsTemporary)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return Value.CompareTo(other.Value);
+
+                }
             }
         }
 

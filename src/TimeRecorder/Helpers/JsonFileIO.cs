@@ -39,7 +39,7 @@ namespace TimeRecorder.Helpers
         }
 
         /// <summary>
-        /// 指定した source をシリアル化し、生成された XML ドキュメントをファイルに書き込みます。
+        /// 指定した source をシリアル化し、生成された JSON ドキュメントをファイルに書き込みます。
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="source"></param>
