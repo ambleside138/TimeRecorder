@@ -51,10 +51,18 @@
                             <materialDesign:PackIcon
                                 Width="14"
                                 Height="14"
-                                Margin="4,0,0,0"
+                                Margin="16,0,0,0"
                                 Kind="Calendar"
                                 Opacity="0.7"
-                                Visibility="{Binding Dto.IsScheduled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                Visibility="{Binding IsScheduled, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                            <TextBlock
+                                Margin="4,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Opacity="0.7"
+                                Text="{Binding ScheduleDateTimeText}"
+                                Visibility="{Binding IsScheduled, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </StackPanel>
 
                         <!--  Title  -->
@@ -185,8 +193,9 @@
 
             <ListBox
                 Grid.Row="1"
-                Margin="24,2,32,16"
-                ItemsSource="{Binding Dto.WorkingTimes}">
+                MaxHeight="160"
+                Margin="48,2,32,16"
+                ItemsSource="{Binding WorkingTimes}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel
