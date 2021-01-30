@@ -17,6 +17,8 @@ namespace TimeRecorder.Domain.UseCase.Tasks
     /// </summary>
     public class ImportTaskFromCalendarUseCase
     {
+        private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+
         private readonly IWorkTaskRepository _WorkTaskRepository;
         private readonly IScheduledEventRepository _ScheduledEventRepository;
         private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
@@ -37,37 +39,55 @@ namespace TimeRecorder.Domain.UseCase.Tasks
             _ScheduleTitleMaps = scheduleTitleMaps;
         }
 
+        /// <summary>
+        /// 指定した日付の予定をタスクとして取り込みます
+        /// </summary>
+        /// <param name="ymdString">取り込み対象日付</param>
+        /// <returns></returns>
         public async Task<WorkTask[]> ImportToTaskAsync(YmdString ymdString)
         {
-            // イベントの取得
-            var fromDateTime = ymdString.ToDateTime().Value;
-            var toDateTime = fromDateTime.AddDays(1).AddMinutes(-1);
-            var targetKinds = _WorkTaskBuilderConfig.EventMappers.Select(e => e.EventKind).ToArray();
-            var events = await _ScheduledEventRepository.FetchScheduledEventsAsync(targetKinds, fromDateTime, toDateTime);
-            if (events == null)
-                return new WorkTask[0];
-
-            // 未登録のイベントを取り込み
-            var registedWorkTasks = _WorkTaskRepository.SelectByImportKeys(events.Select(e => e.Id).ToArray());
-
-            var list = new List<WorkTask>();
-            var builder = new WorkTaskBuilder(_WorkTaskBuilderConfig, _ScheduleTitleMaps);
-            foreach(var @event in events)
+            try
             {
-                // 登録済みは無視する
-                if (registedWorkTasks.Any(t => t.ImportKey == @event.Id))
-                    continue;
+                _Logger.Info($"[ScheduleImporter] ▼スケジュール取り込み開始　target=[{ymdString}]");
 
-                // 未登録ならスケジュールに合わせて登録
-                (WorkTask workTask, ImportedTask importedTask) = builder.Build(@event);
-                workTask = _WorkTaskRepository.AddForSchedule(workTask, importedTask);
-                list.Add(workTask);
+                // イベントの取得
+                var fromDateTime = ymdString.ToDateTime().Value;
+                var toDateTime = fromDateTime.AddDays(1).AddMinutes(-1);
+                var targetKinds = _WorkTaskBuilderConfig.EventMappers.Select(e => e.EventKind).ToArray();
+                var events = await _ScheduledEventRepository.FetchScheduledEventsAsync(targetKinds, fromDateTime, toDateTime);
+                if (events == null)
+                {
+                    _Logger.Error("[ScheduleImporter] unknown error");
+                    return Array.Empty<WorkTask>();
+                }
 
-                var newWorkingTime = WorkingTimeRange.FromScheduledEvent(workTask.Id, @event);
-                _WorkingTimeRangeRepository.Add(newWorkingTime);
+                // 未登録のイベントを取り込み
+                var registedWorkTasks = _WorkTaskRepository.SelectByImportKeys(events.Select(e => e.Id).ToArray());
+
+                var list = new List<WorkTask>();
+                var builder = new WorkTaskBuilder(_WorkTaskBuilderConfig, _ScheduleTitleMaps);
+                foreach (var @event in events)
+                {
+                    // 登録済みは無視する
+                    if (registedWorkTasks.Any(t => t.ImportKey == @event.Id))
+                        continue;
+
+                    // 未登録ならスケジュールに合わせて登録
+                    (WorkTask workTask, ImportedTask importedTask) = builder.Build(@event);
+                    workTask = _WorkTaskRepository.AddForSchedule(workTask, importedTask);
+                    list.Add(workTask);
+
+                    var newWorkingTime = WorkingTimeRange.FromScheduledEvent(workTask.Id, @event);
+                    _WorkingTimeRangeRepository.Add(newWorkingTime);
+                }
+
+                return list.ToArray();
+            }
+            finally
+            {
+                _Logger.Info($"[ScheduleImporter] ▲スケジュール取り込み終了　target=[{ymdString}]");
             }
 
-            return list.ToArray();
         }
     }
 }

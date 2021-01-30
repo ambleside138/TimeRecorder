@@ -48,5 +48,10 @@ namespace TimeRecorder.Domain.Domain
         {
             yield return Value;
         }
+
+        public override string ToString()
+        {
+            return Value;
+        }
     }
 }

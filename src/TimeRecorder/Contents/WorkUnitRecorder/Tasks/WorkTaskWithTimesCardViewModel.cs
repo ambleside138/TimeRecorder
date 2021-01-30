@@ -41,9 +41,16 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactivePropertySlim<bool> ShowWarning { get; } = new ReactivePropertySlim<bool>();
 
+        public bool IsScheduled => Dto.IsScheduled;
+
+        public string ScheduleDateTimeText => IsScheduled ? Dto.WorkingTimes.FirstOrDefault()?.TimePeriod.StartDateTime.ToString("M/d HH:mm ～") : "";
+
+        public WorkingTimeRange[] WorkingTimes { get; }
+
         public WorkTaskWithTimesCardViewModel(WorkTaskWithTimesDto dto)
         {
             Dto = dto;
+            WorkingTimes = dto.WorkingTimes.OrderByDescending(t => t.TimePeriod.StartDateTime).ToArray();
             UpdateStatus();
 
             IsCompleted = new ReactivePropertySlim<bool>(dto.IsCompleted, ReactivePropertyMode.DistinctUntilChanged);

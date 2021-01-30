@@ -17,7 +17,7 @@ namespace TimeRecorder.Repository.GoogleAPI.Calendar
             // アクセストークン取得
             var credential = await CredentialProvider.GetUserCredentialAsync();
             if(credential == null)
-                return new ScheduledEvent[0];
+                return Array.Empty<ScheduledEvent>();
 
             // Create Google Calendar API service.
             var service = new CalendarService(new BaseClientService.Initializer()
