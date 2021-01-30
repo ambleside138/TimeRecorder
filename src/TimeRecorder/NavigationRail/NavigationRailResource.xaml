@@ -37,7 +37,7 @@
                             x:Name="ContentSize"
                             Grid.Column="1"
                             Padding="{TemplateBinding Padding}"
-                            BorderBrush="{StaticResource SemiTransparentGreyBrush}"
+                            BorderBrush="{StaticResource MahApps.Brushes.Gray.SemiTransparent}"
                             BorderThickness="1,0,0,0">
                             <ContentPresenter x:Name="PART_SelectedContentHost" ContentSource="SelectedContent" />
                         </Border>

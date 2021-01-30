@@ -1,12 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <Platforms>AnyCPU;x64;x86</Platforms>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.45.0.1949" />
+    <PackageReference Include="Google.Apis.Calendar.v3" Version="1.49.0.2187" />
+    <PackageReference Include="NLog" Version="4.7.7" />
   </ItemGroup>
 
   <ItemGroup>

@@ -16,6 +16,9 @@ namespace TimeRecorder.Repository.GoogleAPI
 
     class CredentialProvider
     {
+        private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+
+
         // とりあえずスコープは固定
         private static readonly string[] _Scopes = { CalendarService.Scope.CalendarReadonly };
         
@@ -27,8 +30,13 @@ namespace TimeRecorder.Repository.GoogleAPI
             var currentPath = Directory.GetParent(Process.GetCurrentProcess().MainModule.FileName);
             var credentialFullPath = Path.Combine(currentPath.FullName, _CredentialFileName);
 
+            _Logger.Info($"認証ファイル取得 path=[{credentialFullPath}]");
+
             if (File.Exists(credentialFullPath) == false)
+            {
+                _Logger.Warn("認証ファイルが見つかりませんでした。");
                 return null;
+            }
 
             using (var stream = new FileStream(credentialFullPath, FileMode.Open, FileAccess.Read))
             {

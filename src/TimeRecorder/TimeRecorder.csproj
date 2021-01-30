@@ -1,13 +1,14 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>clock_32.ico</ApplicationIcon>
     <Version>0.9.3</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SatelliteResourceLanguages>ja</SatelliteResourceLanguages>
+    <DebugType>embedded</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,17 +28,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LivetCask" Version="3.2.2.2" />
-    <PackageReference Include="LivetExtensions" Version="3.2.2.2" />
-    <PackageReference Include="MahApps.Metro" Version="1.6.5" />
-    <PackageReference Include="MaterialDesignColors" Version="1.2.4" />
-    <PackageReference Include="MaterialDesignThemes" Version="3.1.1" />
-    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.0" />
+    <PackageReference Include="LivetCask" Version="3.2.3.1" />
+    <PackageReference Include="LivetExtensions" Version="3.2.3.1" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.3" />
+    <PackageReference Include="MaterialDesignColors" Version="1.2.7" />
+    <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.5" />
     <PackageReference Include="MicroResolver" Version="2.3.5" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
-    <PackageReference Include="NLog" Version="4.7.2" />
-    <PackageReference Include="ReactiveProperty" Version="7.0.0" />
-    <PackageReference Include="System.Management" Version="4.7.0" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
+    <PackageReference Include="NLog" Version="4.7.7" />
+    <PackageReference Include="ReactiveProperty" Version="7.6.1" />
+    <PackageReference Include="System.Management" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

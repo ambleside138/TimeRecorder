@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CsvHelper.Configuration;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
@@ -31,12 +32,12 @@ namespace TimeRecorder.Driver.CsvDriver
             // パッケージも必要: System.Text.Encoding.CodePages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
-            using (var sw = new StreamWriter(filePath, false, Encoding.GetEncoding("shift_jis")))
-            using (var csv = new CsvHelper.CsvWriter(sw, CultureInfo.CurrentCulture))
-            {
-                // ヘッダーなし
-                csv.Configuration.HasHeaderRecord = false;
+            // ヘッダーなし
+            var config = new CsvConfiguration(CultureInfo.CurrentCulture) { HasHeaderRecord = false, };
 
+            using (var sw = new StreamWriter(filePath, false, Encoding.GetEncoding("shift_jis")))
+            using (var csv = new CsvHelper.CsvWriter(sw, config))
+            {
                 // データを読み出し
                 csv.WriteRecords(rows);
             }
