@@ -16,6 +16,7 @@ using TimeRecorder.Contents.WorkUnitRecorder.Tasks;
 using TimeRecorder.Contents.WorkUnitRecorder.Tracking;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
+using TimeRecorder.Domain.Utility.SystemClocks;
 using TimeRecorder.Helpers;
 using TimeRecorder.Host;
 
@@ -43,7 +44,33 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public bool IsScheduled => Dto.IsScheduled;
 
-        public string ScheduleDateTimeText => IsScheduled ? Dto.WorkingTimes.FirstOrDefault()?.TimePeriod.StartDateTime.ToString("M/d HH:mm ～") : "";
+        public string ScheduleDateTimeText
+        {
+            get
+            {
+                if (IsScheduled && Dto.WorkingTimes.Any())
+                {
+                    var format = "HH:mm ～";
+
+                    var scheduleDate = Dto.WorkingTimes.First().TimePeriod.StartDateTime;
+                    if (scheduleDate.Date == SystemClockServiceLocator.Current.Now.Date)
+                    {
+                        format = "[今日] " + format;
+                    }
+                    else
+                    {
+                        // 日付が異なる場合だけ月日を表示する
+                        format = "M/d " + format;
+                    }
+
+                    return scheduleDate.ToString(format);
+                }
+                else
+                {
+                    return "";
+                }
+            }
+        }
 
         public WorkingTimeRange[] WorkingTimes { get; }
 
