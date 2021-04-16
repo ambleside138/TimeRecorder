@@ -5,10 +5,12 @@
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>clock_32.ico</ApplicationIcon>
-    <Version>0.9.3</Version>
+    <Version>0.10.0</Version>
     <Platforms>AnyCPU;x64;x86</Platforms>
     <SatelliteResourceLanguages>ja</SatelliteResourceLanguages>
     <DebugType>embedded</DebugType>
+    <Authors>ambleside138</Authors>
+    <Company>ambleside138AtHome</Company>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
