@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
+﻿using Microsoft.Toolkit.Uwp.Notifications;
 
 namespace TimeRecorder.Host
 {
@@ -16,9 +13,11 @@ namespace TimeRecorder.Host
 
         public void Info(string title, string content)
         {
-            GetMainWindow().Notify(ToolTipIconKind.Info, title, content);
+            new ToastContentBuilder()
+                 .AddText(title)
+                 .AddText(content)
+                 .AddAttributionText("TimeRecorder ⏰ 工数管理")
+                 .Show();
         }
-
-        private MainWindow GetMainWindow() => (MainWindow)Application.Current.MainWindow;
     }
 }

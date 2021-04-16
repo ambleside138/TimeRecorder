@@ -1,22 +1,10 @@
 ﻿
 using MahApps.Metro.Controls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TimeRecorder.Contents;
 using TimeRecorder.Controls.WindowLocation;
 using TimeRecorder.Host;
@@ -113,11 +101,6 @@ namespace TimeRecorder
             this.Show();
             this.Activate();
             this.ShowInTaskbar = true;
-        }
-
-        public void Notify(ToolTipIconKind kind, string title, string message)
-        {
-            _NotifyIcon.ShowBalloonTip(1000, title, message, kind);
         }
 
     }
