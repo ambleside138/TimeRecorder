@@ -39,6 +39,7 @@ namespace TimeRecorder
             var iconPath = new Uri("pack://application:,,,/TimeRecorder;component/clock_32.ico", UriKind.Absolute);
             _NotifyIcon = new NotifyIconProxy(iconPath, "工数管理");
             _NotifyIcon.DoubleClick += (_, __) => ShowWindow();
+            _NotifyIcon.Click += (_, __) => ShowWindow();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -92,7 +93,7 @@ namespace TimeRecorder
             _NotifyIcon.Dispose();
         }
 
-        private void ShowWindow()
+        public void ShowWindow()
         {
             // ウィンドウ表示&最前面に持ってくる
             if (this.WindowState == System.Windows.WindowState.Minimized)

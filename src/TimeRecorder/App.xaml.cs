@@ -1,16 +1,9 @@
-﻿using MaterialDesignThemes.Wpf;
-using NLog;
+﻿using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using TimeRecorder.Host;
 
@@ -50,10 +43,14 @@ namespace TimeRecorder
             base.OnStartup(e);
 
             ContainerHelper.Setup();
+
+            NotificationService.Current.Setup();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
+            NotificationService.Current.Uninstall();
+
             _Logger.Info("アプリケーションの終了");
             NLog.LogManager.Shutdown(); // Flush and close down internal threads and timers
             base.OnExit(e);
