@@ -65,7 +65,7 @@ namespace TimeRecorder.Host
 
         public void Uninstall()
         {
-            Clear();
+            ToastNotificationManagerCompat.History.Clear();
             ToastNotificationManagerCompat.Uninstall();
         }
 
@@ -82,6 +82,7 @@ namespace TimeRecorder.Host
         {
             var title = "お知らせ";
             var content = "作業タスクが設定されていません";
+            var attribute = "TimeRecorder ⏰ 工数管理";
 
             var selector = new ToastSelectionBox(_SelectionTaskKey);
             
@@ -97,18 +98,13 @@ namespace TimeRecorder.Host
                  .SetToastScenario(ToastScenario.Reminder)
                  .AddText(title)
                  .AddText(content)
-                 .AddAttributionText("TimeRecorder ⏰ 工数管理")
+                 .AddAttributionText(attribute)
                  .AddToastInput(selector)
                  .AddButton(new ToastButton()
                                 .SetContent("開始")
                                 .AddArgument(_ActionTypeCode, _ActionTypeStartTask))
                  .AddButton(new ToastButtonSnooze())
                  .Show();
-        }
-
-        public void Clear()
-        {
-            ToastNotificationManagerCompat.History.Clear();
         }
     }
 }
