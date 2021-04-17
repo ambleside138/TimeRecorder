@@ -51,8 +51,6 @@ namespace TimeRecorder.Host
 
         public void Initialize()
         {
-
-
             Contents.Add(new WorkUnitRecorderViewModel());
             Contents.Add(new ArchiveManagerViewModel());
             Contents.Add(new ExporterViewModel());
