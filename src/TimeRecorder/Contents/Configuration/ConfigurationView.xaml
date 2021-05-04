@@ -48,8 +48,9 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="64" />
                     <RowDefinition Height="64" />
+                    <RowDefinition Height="64" />
                     <RowDefinition Height="196" />
-                    <RowDefinition Height="196" />
+                    <RowDefinition Height="324" />
                     <RowDefinition Height="64" />
                     <RowDefinition />
                 </Grid.RowDefinitions>
@@ -121,16 +122,69 @@
                         Text="１時間おきに指定フォルダへローカルDBをバックアップします" />
                 </Grid>
 
-                <!--  3. Favorites  -->
+                <!--  3. backup  -->
                 <TextBlock
                     Grid.Row="2"
+                    Grid.Column="0"
+                    Margin="0,8,16,4"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Top"
+                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                    Text="休憩時間" />
+
+                <Grid Grid.Row="2" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal">
+                        <TextBox
+                            Width="64"
+                            Margin="0,0,16,0"
+                            VerticalAlignment="Center"
+                            MaxLength="4"
+                            Text="{Binding LunchStartTimeHHmm.Value}" />
+
+                        <TextBlock VerticalAlignment="Center" Text="～" />
+
+                        <TextBox
+                            Width="64"
+                            Margin="16,0,16,0"
+                            VerticalAlignment="Center"
+                            MaxLength="4"
+                            Text="{Binding LunchEndTimeHHmm.Value}" />
+                    </StackPanel>
+
+
+                    <c:CallMethodButton
+                        Grid.Column="1"
+                        VerticalAlignment="Center"
+                        Content="保存"
+                        MethodName="RegistLunchTime"
+                        Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+
+                    <TextBlock
+                        Grid.Row="1"
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                        Text="休憩時間をHHmm形式で設定します。開始時間になるとタスク停止、終了時間になるとタスク再開します。" />
+                </Grid>
+
+                <!--  4. Favorites  -->
+                <TextBlock
+                    Grid.Row="3"
                     Margin="0,8,16,4"
                     HorizontalAlignment="Right"
                     Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                     Text="お気に入りタスク" />
 
                 <StackPanel
-                    Grid.Row="2"
+                    Grid.Row="3"
                     Grid.Column="1"
                     Margin="0,4,0,0">
                     <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="よく利用するタスクを登録します" />
@@ -200,21 +254,21 @@
                     Visibility="{Binding ShowFavoriteDescription.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
 
-                <!--  4. Import  -->
+                <!--  5. Import  -->
                 <TextBlock
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Margin="0,8,16,4"
                     HorizontalAlignment="Right"
                     Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                     Text="スケジュール取込" />
 
                 <StackPanel
-                    Grid.Row="3"
+                    Grid.Row="4"
                     Grid.Column="1"
                     Margin="0,4,0,0">
                     <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="スケジュールタイトルに応じたタスク内容を設定します" />
                     <ListBox
-                        Height="120"
+                        Height="240"
                         BorderBrush="{StaticResource MaterialDesignBodyLight}"
                         BorderThickness="1"
                         ItemsSource="{Binding ScheduleTitleMaps}">
@@ -272,9 +326,9 @@
                     Text="追加ボタンをクリックしてスケジュール取込マッピング設定を登録します"
                     Visibility="{Binding ShowScheduleDescription.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                <!--  5. workinghour import  -->
+                <!--  6. workinghour import  -->
                 <TextBlock
-                    Grid.Row="4"
+                    Grid.Row="5"
                     Grid.Column="0"
                     Margin="0,16,16,4"
                     HorizontalAlignment="Right"
@@ -283,7 +337,7 @@
                     Text="勤務時間取込API" />
 
                 <Grid
-                    Grid.Row="4"
+                    Grid.Row="5"
                     Grid.Column="1"
                     Margin="0,16,0,0">
                     <Grid.ColumnDefinitions>
