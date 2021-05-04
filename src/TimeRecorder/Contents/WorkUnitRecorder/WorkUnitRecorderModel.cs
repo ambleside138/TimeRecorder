@@ -47,6 +47,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         private DateTime? _LatestBackupTime = null;
 
+        private bool _LunchTimeStartNotificated = false;
+        private bool _LunchTimeEndNotificated = false;
+
         #region UseCases
         private readonly WorkTaskUseCase _WorkTaskUseCase;
         private readonly GetWorkTaskWithTimesUseCase _GetWorkTaskWithTimesUseCase;
@@ -132,6 +135,35 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                 {
                     NotificationService.Current.Info("作業タスク 更新のお知らせ", message);
                 }
+            }
+        }
+
+        public void CheckLunchTime()
+        {
+            var config = UserConfigurationManager.Instance.GetConfiguration<LunchTimeConfig>(ConfigKey.LunchTime);
+            if (config == null
+                || string.IsNullOrEmpty(config.StartHHmm)
+                || string.IsNullOrEmpty(config.EndHHmm))
+            {
+                return;
+            }
+
+            // 休憩開始
+            var lunchPeriod = config.TimePeriod;
+            if (lunchPeriod.WithinRangeAtCurrentTime
+                && _LunchTimeStartNotificated == false)
+            {
+                NotificationService.Current.ShowLunchStartInteractor();
+                _LunchTimeStartNotificated = true;
+            }
+            // 仕事再開
+            if(lunchPeriod.EndDateTime.Value < SystemClockServiceLocator.Current.Now
+                && _LunchTimeEndNotificated == false
+                && _LunchTimeStartNotificated )
+            {
+                var selectableTasks = PlanedTaskModels.Where(c => c.IsScheduled == false);
+                NotificationService.Current.ShowTaskStarterInteractor(selectableTasks, "お昼休憩が終了しました" + Environment.NewLine + "再開するタスクを選択してください");
+                _LunchTimeEndNotificated = true; 
             }
         }
 

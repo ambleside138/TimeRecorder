@@ -14,7 +14,11 @@ namespace TimeRecorder.Host
 
         private const string _ActionTypeStartTask = "starttask";
 
+        private const string _ActionTypeStartLunch = "startlunch";
+
         private const string _SelectionTaskKey = "task";
+
+        private const string _AttributeText = "TimeRecorder ⏰ 工数管理";
 
         public static NotificationService Current => new NotificationService();
 
@@ -45,6 +49,10 @@ namespace TimeRecorder.Host
                                 userInput.TryGetValue(_SelectionTaskKey, out object key);
                                 StartSelectedWorkTask(key?.ToString());
                                 break;
+
+                            case _ActionTypeStartLunch:
+                                StartBreak();
+                                break;
                         }
                     }
                     else
@@ -63,6 +71,12 @@ namespace TimeRecorder.Host
             selectedTask?.StartOrStopWorkTask();
         }
 
+        private void StartBreak()
+        {
+            var contents = MainWindowViewModel.Instance.Contents.OfType<WorkUnitRecorderViewModel>().First();
+            contents.StopCurrentTask();
+        }
+
         public void Uninstall()
         {
             ToastNotificationManagerCompat.History.Clear();
@@ -70,20 +84,19 @@ namespace TimeRecorder.Host
         }
 
         public void Info(string title, string content)
+               => InfoCore(title, content).Show();
+
+        private ToastContentBuilder InfoCore(string title, string content)
         {
-            new ToastContentBuilder()
+            return new ToastContentBuilder()
                  .AddText(title)
                  .AddText(content)
-                 .AddAttributionText("TimeRecorder ⏰ 工数管理")
-                 .Show();
+                 .AddAttributionText(_AttributeText);
         }
 
-        public void PutInteractor(IEnumerable<WorkTaskWithTimesDto> workTasks)
+        public void ShowTaskStarterInteractor(IEnumerable<WorkTaskWithTimesDto> workTasks, string content)
         {
             var title = "お知らせ";
-            var content = "作業タスクが設定されていません";
-            var attribute = "TimeRecorder ⏰ 工数管理";
-
             var selector = new ToastSelectionBox(_SelectionTaskKey);
             
             // 表示できる項目数に上限があるよう
@@ -98,11 +111,28 @@ namespace TimeRecorder.Host
                  .SetToastScenario(ToastScenario.Reminder)
                  .AddText(title)
                  .AddText(content)
-                 .AddAttributionText(attribute)
+                 .AddAttributionText(_AttributeText)
                  .AddToastInput(selector)
                  .AddButton(new ToastButton()
                                 .SetContent("開始")
                                 .AddArgument(_ActionTypeCode, _ActionTypeStartTask))
+                 .AddButton(new ToastButtonSnooze())
+                 .Show();
+        }
+
+        public void ShowLunchStartInteractor()
+        {
+            var title = "お知らせ";
+            var content = "お昼休憩の時間になりました";
+
+            new ToastContentBuilder()
+                 .SetToastScenario(ToastScenario.Reminder)
+                 .AddText(title)
+                 .AddText(content)
+                 .AddAttributionText(_AttributeText)
+                 .AddButton(new ToastButton()
+                                .SetContent("休む")
+                                .AddArgument(_ActionTypeCode, _ActionTypeStartLunch))
                  .AddButton(new ToastButtonSnooze())
                  .Show();
         }

@@ -73,6 +73,7 @@
             </Button>
 
             <Button
+                Margin="8,0,0,0"
                 Command="materialDesign:DialogHost.CloseDialogCommand"
                 Content="キャンセル"
                 Style="{StaticResource MaterialDesignFlatButton}">

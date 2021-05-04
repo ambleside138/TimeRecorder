@@ -1,30 +1,26 @@
-﻿using Google.Apis.Util;
-using Livet;
+﻿using Livet;
 using MaterialDesignColors;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
-using System.Text;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
-using TimeRecorder.Contents;
 using TimeRecorder.Contents.Configuration.TaskConfigEditor;
-using TimeRecorder.Contents.WorkUnitRecorder.Editor;
 using TimeRecorder.Domain.Domain.Calendar;
+using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Helpers;
 using TimeRecorder.Host;
 using TimeRecorder.NavigationRail.ViewModels;
-using TimeRecorder.Repository.SQLite;
 
 namespace TimeRecorder.Contents.Configuration
 {
     public class ConfigurationViewModel : ViewModel, IContentViewModel
     {
+        private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+
         public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "設定", IconKey = "Cog" };
 
         public Swatch[] Swatches { get; } = new SwatchesProvider().Swatches.ToArray();
@@ -41,6 +37,9 @@ namespace TimeRecorder.Contents.Configuration
 
         public ReactivePropertySlim<string> WorkingHourImportUrl { get; }
 
+        public ReactivePropertySlim<string> LunchStartTimeHHmm { get; }
+        public ReactivePropertySlim<string> LunchEndTimeHHmm { get; }
+
         public ConfigurationViewModel()
         {
             // ComboBoxの初期値を設定するにはItemsSourceで利用しているインスタンスの中から指定する必要がある
@@ -49,6 +48,10 @@ namespace TimeRecorder.Contents.Configuration
 
             var backupPath = UserConfigurationManager.Instance.GetConfiguration<BackupPathConfig>(ConfigKey.BackupPath);
             BackupPath = new ReactivePropertySlim<string>(backupPath?.DirectoryPath);
+
+            var lunchTime = UserConfigurationManager.Instance.GetConfiguration<LunchTimeConfig>(ConfigKey.LunchTime);
+            LunchStartTimeHHmm = new ReactivePropertySlim<string>(lunchTime?.StartHHmm);
+            LunchEndTimeHHmm = new ReactivePropertySlim<string>(lunchTime?.EndHHmm);
 
             var favorites = UserConfigurationManager.Instance.GetConfiguration<FavoriteWorkTasksConfig>(ConfigKey.FavoriteWorkTask);
             FavoriteWorkTasks = new ObservableCollection<FavoriteWorkTask>(favorites?.FavoriteWorkTasks ?? new FavoriteWorkTask[0]);
@@ -85,6 +88,38 @@ namespace TimeRecorder.Contents.Configuration
 
             UserConfigurationManager.Instance.SetConfiguration(new BackupPathConfig { DirectoryPath = BackupPath.Value });
             SnackbarService.Current.ShowMessage("バックアップ先を変更しました");
+        }
+
+        public void RegistLunchTime()
+        {
+            try
+            {
+                var time = new TimePeriod(LunchStartTimeHHmm.Value + "00", LunchEndTimeHHmm.Value + "00");
+                if (time == null)
+                {
+                    SnackbarService.Current.ShowMessage("時間形式が不正です");
+                    return;
+                }
+                if (time.EndDateTime.HasValue == false)
+                {
+                    SnackbarService.Current.ShowMessage("終了時間を入力してください");
+                    return;
+                }
+                if (time.StartDateTime > time.EndDateTime.Value)
+                {
+                    SnackbarService.Current.ShowMessage("時間の前後関係が不正です");
+                    return;
+                }
+            }
+            catch (Exception ex)
+            {
+                _Logger.Error(ex);
+                SnackbarService.Current.ShowMessage("不正な入力形式です");
+                return;
+            }
+
+            UserConfigurationManager.Instance.SetConfiguration(new LunchTimeConfig { StartHHmm = LunchStartTimeHHmm.Value, EndHHmm = LunchEndTimeHHmm.Value });
+            SnackbarService.Current.ShowMessage("休憩時間を設定しました");
         }
 
         public void RegistImportURL()
