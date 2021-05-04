@@ -94,11 +94,14 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                     }
 
                     UpdateDurationTime();
+                    _Model.CheckLunchTime();
                 }
             );
             timer.AddTo(CompositeDisposable);
             timer.Start();
         }
+
+
 
         public async void Initialize()
         {
@@ -124,7 +127,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                 {
                     if (PlanedTaskCards.Any())
                     {
-                        NotificationService.Current.PutInteractor(PlanedTaskCards.Where(c => c.IsScheduled == false).Select(c => c.Dto));
+                        var selectableTasks = PlanedTaskCards.Where(c => c.IsScheduled == false).Select(c => c.Dto);
+                        NotificationService.Current.ShowTaskStarterInteractor(selectableTasks, "作業タスクが設定されていません");
                     }
                     else
                     {

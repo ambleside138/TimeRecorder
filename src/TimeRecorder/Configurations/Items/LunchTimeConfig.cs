@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.Json.Serialization;
+using TimeRecorder.Domain.Domain.Tracking;
 
 namespace TimeRecorder.Configurations.Items
 {
@@ -17,6 +14,8 @@ namespace TimeRecorder.Configurations.Items
 
         internal override ConfigKey Key => ConfigKey.LunchTime;
 
+        [JsonIgnore]
+        public TimePeriod TimePeriod => new TimePeriod(StartHHmm + "00", EndHHmm + "00");
         
     }
 }
