@@ -92,30 +92,35 @@ namespace TimeRecorder.Contents.Configuration
 
         public void RegistLunchTime()
         {
-            try
+            var isEmpty = string.IsNullOrEmpty(LunchStartTimeHHmm.Value + LunchEndTimeHHmm.Value);
+
+            if(isEmpty == false)
             {
-                var time = new TimePeriod(LunchStartTimeHHmm.Value + "00", LunchEndTimeHHmm.Value + "00");
-                if (time == null)
+                try
                 {
-                    SnackbarService.Current.ShowMessage("時間形式が不正です");
+                    var time = new TimePeriod(LunchStartTimeHHmm.Value + "00", LunchEndTimeHHmm.Value + "00");
+                    if (time == null)
+                    {
+                        SnackbarService.Current.ShowMessage("時間形式が不正です");
+                        return;
+                    }
+                    if (time.EndDateTime.HasValue == false)
+                    {
+                        SnackbarService.Current.ShowMessage("終了時間を入力してください");
+                        return;
+                    }
+                    if (time.StartDateTime > time.EndDateTime.Value)
+                    {
+                        SnackbarService.Current.ShowMessage("時間の前後関係が不正です");
+                        return;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _Logger.Error(ex);
+                    SnackbarService.Current.ShowMessage("不正な入力形式です");
                     return;
                 }
-                if (time.EndDateTime.HasValue == false)
-                {
-                    SnackbarService.Current.ShowMessage("終了時間を入力してください");
-                    return;
-                }
-                if (time.StartDateTime > time.EndDateTime.Value)
-                {
-                    SnackbarService.Current.ShowMessage("時間の前後関係が不正です");
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                _Logger.Error(ex);
-                SnackbarService.Current.ShowMessage("不正な入力形式です");
-                return;
             }
 
             UserConfigurationManager.Instance.SetConfiguration(new LunchTimeConfig { StartHHmm = LunchStartTimeHHmm.Value, EndHHmm = LunchEndTimeHHmm.Value });

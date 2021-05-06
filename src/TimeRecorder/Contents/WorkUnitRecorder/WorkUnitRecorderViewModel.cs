@@ -123,6 +123,19 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
             if(_NoValueCount >= 0)
             {
+                var config = UserConfigurationManager.Instance.GetConfiguration<LunchTimeConfig>(ConfigKey.LunchTime);
+                if (config != null
+                    && string.IsNullOrEmpty(config.StartHHmm) == false
+                    && string.IsNullOrEmpty(config.EndHHmm) == false)
+                {
+                    // 休憩中はカウントしない
+                    if (config.TimePeriod.WithinRangeAtCurrentTime)
+                    {
+                        _NoValueCount = 0;
+                        return;
+                    }
+                }
+
                 if (_NoValueCount > _AlertCount)
                 {
                     if (PlanedTaskCards.Any())
