@@ -1,22 +1,10 @@
 ﻿
 using MahApps.Metro.Controls;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Interop;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TimeRecorder.Contents;
 using TimeRecorder.Controls.WindowLocation;
 using TimeRecorder.Host;
@@ -51,6 +39,7 @@ namespace TimeRecorder
             var iconPath = new Uri("pack://application:,,,/TimeRecorder;component/clock_32.ico", UriKind.Absolute);
             _NotifyIcon = new NotifyIconProxy(iconPath, "工数管理");
             _NotifyIcon.DoubleClick += (_, __) => ShowWindow();
+            _NotifyIcon.Click += (_, __) => ShowWindow();
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -104,7 +93,7 @@ namespace TimeRecorder
             _NotifyIcon.Dispose();
         }
 
-        private void ShowWindow()
+        public void ShowWindow()
         {
             // ウィンドウ表示&最前面に持ってくる
             if (this.WindowState == System.Windows.WindowState.Minimized)
@@ -113,11 +102,6 @@ namespace TimeRecorder
             this.Show();
             this.Activate();
             this.ShowInTaskbar = true;
-        }
-
-        public void Notify(ToolTipIconKind kind, string title, string message)
-        {
-            _NotifyIcon.ShowBalloonTip(1000, title, message, kind);
         }
 
     }

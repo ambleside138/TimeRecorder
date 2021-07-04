@@ -24,9 +24,12 @@ using TimeRecorder.Configurations.Items;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder
 {
+    /// <summary>
+    /// 入力タブ に対応するViewModelを表します
+    /// </summary>
     public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
     {
-        public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "入力", IconKey = "CalendarClock" };
+        public NavigationIconButtonViewModel NavigationIcon => new() { Title = "入力", IconKey = "CalendarClock" };
 
         private readonly WorkUnitRecorderModel _Model = new WorkUnitRecorderModel();
 
@@ -41,6 +44,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public ReactiveCollection<AddingTaskButtonViewModel> AddingTaskButtons { get; }
 
         public ReactiveProperty<bool> ContainsCompleted { get; }
+
+        private int _NoValueCount = 0;
+
+        // 通知間隔[sec]
+        private const int _AlertCount = 60 * 5;
 
         public WorkUnitRecorderViewModel()
         {
@@ -84,11 +92,16 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
                     {
                         obj.UpdateStatus();
                     }
+
+                    UpdateDurationTime();
+                    _Model.CheckLunchTime();
                 }
             );
             timer.AddTo(CompositeDisposable);
             timer.Start();
         }
+
+
 
         public async void Initialize()
         {
@@ -96,6 +109,57 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             //  _Model.Load();
             await ImportTaskFromCalendarCore(needMessage:false);
 
+        }
+
+        public void UpdateDurationTime()
+        {
+            if (DoingTask?.Value?.DomainModel != null)
+            {
+                _NoValueCount = 0;
+                return;
+            }
+
+            // 一定時間タスク開始していないなら通知する
+
+            if(_NoValueCount >= 0)
+            {
+                var config = UserConfigurationManager.Instance.GetConfiguration<LunchTimeConfig>(ConfigKey.LunchTime);
+                if (config != null
+                    && string.IsNullOrEmpty(config.StartHHmm) == false
+                    && string.IsNullOrEmpty(config.EndHHmm) == false)
+                {
+                    // 休憩中はカウントしない
+                    if (config.TimePeriod.WithinRangeAtCurrentTime)
+                    {
+                        _NoValueCount = 0;
+                        return;
+                    }
+                }
+
+                if (_NoValueCount > _AlertCount)
+                {
+                    if (PlanedTaskCards.Any())
+                    {
+                        var selectableTasks = PlanedTaskCards.Where(c => c.IsScheduled == false).Select(c => c.Dto);
+                        NotificationService.Current.ShowTaskStarterInteractor(selectableTasks, "作業タスクが設定されていません");
+                    }
+                    else
+                    {
+                        NotificationService.Current.Info("お知らせ", "作業タスクが設定されていません");
+                    }
+
+                    // snooze機能はToast側の実装にまかせる
+                    _NoValueCount = -1;
+                }
+                else
+                {
+                    _NoValueCount++;
+                }
+            }
+            else
+            {
+                // 通知済み
+            }
         }
 
         private void InitializeAddingTaskButtons()

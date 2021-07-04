@@ -21,10 +21,6 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
     {
         private readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
 
-        private int _NoValueCount = 0;
-
-        private const int _AlertCount = 60 * 5;
-
 
         public TimelineWorkingTimeCardViewModel(WorkingTimeForTimelineDto workingTimeRange)
         {
@@ -60,18 +56,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
         public void UpdateDurationTime()
         {
             if (DomainModel == null)
-            {
-                // 一定時間タスク開始していないなら通知する
-                _NoValueCount++;
-                if(_NoValueCount > 0 && _NoValueCount % _AlertCount == 0)
-                {
-                    NotificationService.Current.Info("⏰ TimeRecorder ⏰", "作業タスクが設定されていません");
-                }
-
                 return;
-            }
-
-            _NoValueCount = 0;
 
             var diff = _SystemClock.Now - DomainModel.TimePeriod.StartDateTime;
             DurationTimeText.Value = $"{diff.Hours:00}:{diff.Minutes:00}:{diff.Seconds:00}";
