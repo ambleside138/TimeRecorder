@@ -14,9 +14,11 @@ namespace TimeRecorder.Repository.SQLite.Products.Dao
 
         public string ShortName { get; set; }
 
+        public string Invalid { get; set; }
+
         public Product ToDomainObject()
         {
-            return new Product(new Identity<Product>(Id), Name, ShortName);
+            return new Product(new Identity<Product>(Id), Name, ShortName, Invalid == "1");
         }
     }
 }

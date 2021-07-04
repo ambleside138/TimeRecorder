@@ -18,17 +18,24 @@ namespace TimeRecorder.Domain.Domain.WorkProcesses
         public string Title { get; }
 
         /// <summary>
+        /// 無効フラグ
+        /// </summary>
+        public bool Invalid { get; }
+
+
+        /// <summary>
         /// Domain層内のみで、titleのみでの生成を許可する
         /// </summary>
         /// <param name="title"></param>
         internal WorkProcess(string title)
-            : this(Identity<WorkProcess>.Temporary, title) { }
+            : this(Identity<WorkProcess>.Temporary, title, false) { }
 
 
-        public WorkProcess(Identity<WorkProcess> identity, string title)
+        public WorkProcess(Identity<WorkProcess> identity, string title, bool invalid = false)
         {
             Id = identity;
             Title = title;
+            Invalid = invalid;
         }
 
         protected override IEnumerable<object> GetIdentityValues()
