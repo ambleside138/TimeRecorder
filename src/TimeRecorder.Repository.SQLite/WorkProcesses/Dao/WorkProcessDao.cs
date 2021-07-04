@@ -21,8 +21,11 @@ namespace TimeRecorder.Repository.SQLite.WorkProcesses.Dao
 SELECT
   id
   , title
+  , invalid
 FROM
   processes
+ORDER BY
+  displayorder
 ";
             #endregion
 

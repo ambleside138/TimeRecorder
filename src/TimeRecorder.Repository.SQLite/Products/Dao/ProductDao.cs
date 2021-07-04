@@ -22,8 +22,11 @@ SELECT
   id
   , name
   , shortname
+  , invalid
 FROM
   products
+ORDER BY
+  displayorder
 ";
             #endregion
 
