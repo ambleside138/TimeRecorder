@@ -12,9 +12,11 @@ namespace TimeRecorder.Repository.SQLite.WorkProcesses.Dao
 
         public string Title { get; set; }
 
+        public string Invalid { get; set; }
+
         public WorkProcess ToDomainObject()
         {
-            return new WorkProcess(new Identity<WorkProcess>(Id), Title);
+            return new WorkProcess(new Identity<WorkProcess>(Id), Title, Invalid == "1");
         }
 
     }

@@ -48,9 +48,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
         {
             IsEditMode.Value = model.Id.IsTemporary == false;
 
-            Processes = _WorkTaskEditDialogModel.GetProcesses();
+            Processes = _WorkTaskEditDialogModel.GetProcesses(model.ProcessId);
             Clients = _WorkTaskEditDialogModel.GetClients();
-            Products = _WorkTaskEditDialogModel.GetProducts();
+            Products = _WorkTaskEditDialogModel.GetProducts(model.ProductId);
 
             TaskCardViewModel = new WorkTaskViewModel(model, Processes, Clients, Products);
 

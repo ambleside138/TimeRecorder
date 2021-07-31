@@ -1,6 +1,7 @@
-﻿using System;
+﻿using System.Linq;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -23,9 +24,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor
             _ProductUseCase = new ProductUseCase(ContainerHelper.Resolver.Resolve<IProductRepository>());
         }
 
-        public WorkProcess[] GetProcesses()
+        public WorkProcess[] GetProcesses(Identity<WorkProcess> currentId)
         {
-            return _ProcessUseCase.GetProcesses();
+            return _ProcessUseCase.GetProcesses()
+                                  .Where(p => p.Id == currentId || p.Invalid == false)
+                                  .ToArray();
         }
 
         public Client[] GetClients()
@@ -35,10 +38,10 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor
             return list.ToArray();
         }
 
-        public Product[] GetProducts()
+        public Product[] GetProducts(Identity<Product> currentId)
         {
             var list = new List<Product> { Product.Empty };
-            list.AddRange(_ProductUseCase.GetProducts());
+            list.AddRange(_ProductUseCase.GetProducts().Where(p => p.Id == currentId || p.Invalid == false));
             return list.ToArray();
         }
     }
