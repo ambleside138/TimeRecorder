@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Contents.WorkUnitRecorder.Editor;
-using TimeRecorder.NavigationRail.ViewModels;
+using TimeRecorder.NavigationRail;
 using Reactive.Bindings.Helpers;
 using Reactive.Bindings.Extensions;
 using TimeRecorder.Contents.WorkUnitRecorder.Timeline;

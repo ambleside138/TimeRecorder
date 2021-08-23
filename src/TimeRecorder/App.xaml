@@ -43,6 +43,7 @@
                 <ResourceDictionary Source="Styles/MaterialTextBlockStyle.xaml" />
                 <ResourceDictionary Source="Styles/MacLikeScrollBarStyle.xaml" />
                 <ResourceDictionary Source="Styles/ChipBorderStyle.xaml" />
+                <ResourceDictionary Source="Styles/ListBoxItemStyle.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
@@ -85,6 +86,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:TaskCategoryToSolidBrushConverter x:Key="TaskCategoryToSolidBrushConverter" />
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

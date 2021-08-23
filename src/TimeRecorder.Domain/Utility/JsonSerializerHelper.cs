@@ -12,7 +12,8 @@ namespace TimeRecorder.Domain.Utility
         public static JsonSerializerOptions DefaultOptions { get; } = new JsonSerializerOptions
                                                                 {
                                                                     Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // デフォルトでは日本語がエンコードされない
-                                                                    WriteIndented = true
+                                                                    WriteIndented = true,
+                                                                    AllowTrailingCommas = true, // 末尾のカンマを許可する
                                                                 };
     }
 }

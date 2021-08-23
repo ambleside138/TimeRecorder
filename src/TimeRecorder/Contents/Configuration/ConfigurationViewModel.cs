@@ -13,7 +13,7 @@ using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Helpers;
 using TimeRecorder.Host;
-using TimeRecorder.NavigationRail.ViewModels;
+using TimeRecorder.NavigationRail;
 
 namespace TimeRecorder.Contents.Configuration
 {

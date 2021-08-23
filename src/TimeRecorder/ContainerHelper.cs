@@ -7,6 +7,7 @@ using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Tasks;
+using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.UseCase.Tasks;
@@ -14,7 +15,9 @@ using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Driver.CsvDriver;
 using TimeRecorder.Driver.CsvDriver.Import;
+using TimeRecorder.Repository.Firebase.System;
 using TimeRecorder.Repository.GoogleAPI.Calendar;
+using TimeRecorder.Repository.InMemory;
 using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Products;
 using TimeRecorder.Repository.SQLite.System;
@@ -47,9 +50,15 @@ namespace TimeRecorder
             resolver.Register<IScheduledEventRepository, GoogleApiScheduledEventRepository>(Lifestyle.Singleton);
             resolver.Register<IConfigurationRepository, SQLiteConfigurationRepository>(Lifestyle.Singleton);
             resolver.Register<IWorkingHourRepository, SQLiteWorkingHoursRepository>(Lifestyle.Singleton);
+            resolver.Register<ITodoRepository, InMemoryTodoRepository>(Lifestyle.Singleton);
+            resolver.Register<IAccountRepository, FirebaseAccountRepository>(Lifestyle.Singleton);
 
             resolver.Register<IReportDriver, CsvReportDriver>(Lifestyle.Singleton);
             resolver.Register<IWorkingHourImportDriver, CsvWorkingHourImportDriver>(Lifestyle.Singleton);
+
+            Repository.Firebase.Accessor.Access();
+            //new TimeRecorder.Repository.Firebase.System.FirebaseAccountRepository().GetLoginStatus();
+
 
             // You can configure lifestyle - Transient, Singleton or Scoped
             //resolver.Register<ILogger, MailLogger>(Lifestyle.Singleton);

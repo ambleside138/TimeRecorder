@@ -6,7 +6,7 @@ using System.Linq;
 using TimeRecorder.Contents;
 using TimeRecorder.Contents.Configuration;
 using TimeRecorder.Contents.Exporter;
-using TimeRecorder.NavigationRail.ViewModels;
+using TimeRecorder.NavigationRail;
 using TimeRecorder.Contents.WorkUnitRecorder;
 using MaterialDesignThemes.Wpf;
 using Reactive.Bindings;
@@ -14,6 +14,7 @@ using TimeRecorder.Helpers;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using TimeRecorder.Contents.Archive;
+using TimeRecorder.Contents.Todo;
 
 namespace TimeRecorder.Host
 {
@@ -51,6 +52,7 @@ namespace TimeRecorder.Host
 
         public void Initialize()
         {
+            Contents.Add(new TodoViewModel());
             Contents.Add(new WorkUnitRecorderViewModel());
             Contents.Add(new ArchiveManagerViewModel());
             Contents.Add(new ExporterViewModel());

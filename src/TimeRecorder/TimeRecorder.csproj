@@ -33,9 +33,9 @@
     <PackageReference Include="LivetCask" Version="3.2.3.1" />
     <PackageReference Include="LivetExtensions" Version="3.2.3.1" />
     <PackageReference Include="MahApps.Metro" Version="2.4.3" />
-    <PackageReference Include="MaterialDesignColors" Version="1.2.7" />
-    <PackageReference Include="MaterialDesignThemes" Version="3.2.0" />
-    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.5" />
+    <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.7" />
     <PackageReference Include="MicroResolver" Version="2.3.5" />
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.0.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
@@ -47,7 +47,9 @@
   <ItemGroup>
     <ProjectReference Include="..\TimeRecorder.Domain\TimeRecorder.Domain.csproj" />
     <ProjectReference Include="..\TimeRecorder.Driver.CsvDriver\TimeRecorder.Driver.CsvDriver.csproj" />
+    <ProjectReference Include="..\TimeRecorder.Repository.Firebase\TimeRecorder.Repository.Firebase.csproj" />
     <ProjectReference Include="..\TimeRecorder.Repository.GoogleAPI\TimeRecorder.Repository.GoogleAPI.csproj" />
+    <ProjectReference Include="..\TimeRecorder.Repository.InMemory\TimeRecorder.Repository.InMemory.csproj" />
     <ProjectReference Include="..\TimeRecorder.Repository.SQLite\TimeRecorder.Repository.SQLite.csproj" />
   </ItemGroup>
 

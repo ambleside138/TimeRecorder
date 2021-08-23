@@ -15,7 +15,7 @@ namespace TimeRecorder.Converters
 
         static TaskCategoryToSolidBrushConverter()
         {
-            Color brush(string key) => (Color)App.Current.Resources[key];
+            static Color brush(string key) => (Color)App.Current.Resources[key];
 
             _DictColors  = new Dictionary<TaskCategory, SolidColorBrush>
             {
