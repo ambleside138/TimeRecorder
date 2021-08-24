@@ -9,7 +9,7 @@ namespace TimeRecorder.Repository.Firebase
     /// <summary>
     /// Firebaseプロジェクトのアクセス情報を表します
     /// </summary>
-    internal class FirebaseToken
+    internal class FirebaseCredentialConfig
     {
         /// <summary>
         /// FirebaseのAPIキーを取得・設定します

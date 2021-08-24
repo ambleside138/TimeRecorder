@@ -15,6 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.System;
+using TimeRecorder.Repository.Firebase.Shared;
 
 namespace TimeRecorder.Repository.Firebase.System
 {
@@ -22,13 +23,17 @@ namespace TimeRecorder.Repository.Firebase.System
     {
         public LoginStatus GetLoginStatus()
         {
+            FirebaseAuthLink link = FirebaseAuthenticator.Current.SignInWithGoogleOAuthAsyncCached().Result;
 
-            return null;
+
+            return new LoginStatus
+            {
+                DisplayName = link.User.DisplayName,
+                Email = link.User.Email,
+                PhotoUrl = link.User.PhotoUrl,
+                UserId = link.User.LocalId,
+            };
         }
-
-        
-
-
 
     }
 }
