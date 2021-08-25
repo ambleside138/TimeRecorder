@@ -58,6 +58,18 @@ namespace TimeRecorder.Contents.Todo
 
             LoginStatus = _Model.ToReactivePropertySlimAsSynchronized(m => m.LoginStatus)
                                 .AddTo(CompositeDisposable);
+
+            var listener = new PropertyChangedEventListener(NavigationIcon);
+            listener.RegisterHandler(nameof(NavigationIconButtonViewModel.IsSelected), Handler);
+            CompositeDisposable.Add(listener);
+        }
+
+        private void Handler(object sender, PropertyChangedEventArgs e)
+        {
+            if(NavigationIcon.IsSelected)
+            {
+                _Model.LoadTodoItems(CurrentTodoList.Id);
+            }
         }
 
         // ViewからのEnterキー押下で呼び出し

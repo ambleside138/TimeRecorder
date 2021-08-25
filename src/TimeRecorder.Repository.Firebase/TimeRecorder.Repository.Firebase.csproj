@@ -5,10 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Todo\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FirebaseAuthentication.net" Version="3.7.2" />
     <PackageReference Include="FirebaseDatabase.net" Version="4.0.6" />
     <PackageReference Include="Google.Cloud.Firestore" Version="2.4.0" />

@@ -61,6 +61,8 @@ namespace TimeRecorder.Repository.Firebase
 
 
         // Sample Source
+        // from dotnet-docs-samples
+        // https://github.com/GoogleCloudPlatform/dotnet-docs-samples
 
         //public static void Access()
         //{
@@ -82,6 +84,63 @@ namespace TimeRecorder.Repository.Firebase
         //        Console.WriteLine("Born: {0}", documentDictionary["Born"]);
         //        Console.WriteLine();
         //    }
+        //}
+
+
+        //private static async Task AddData1(string project)
+        //{
+        //    FirestoreDb db = FirestoreDb.Create(project);
+        //    // [START fs_add_data_1]
+        //    DocumentReference docRef = db.Collection("users").Document("alovelace");
+        //    Dictionary<string, object> user = new Dictionary<string, object>
+        //    {
+        //        { "First", "Ada" },
+        //        { "Last", "Lovelace" },
+        //        { "Born", 1815 }
+        //    };
+        //    await docRef.SetAsync(user);
+        //    // [END fs_add_data_1]
+        //    Console.WriteLine("Added data to the alovelace document in the users collection.");
+        //}
+
+
+        //// [START fs_class_definition]
+        //[FirestoreData]
+        //public class City
+        //{
+        //    [FirestoreProperty]
+        //    public string Name { get; set; }
+
+        //    [FirestoreProperty]
+        //    public string State { get; set; }
+
+        //    [FirestoreProperty]
+        //    public string Country { get; set; }
+
+        //    [FirestoreProperty]
+        //    public bool Capital { get; set; }
+
+        //    [FirestoreProperty]
+        //    public long Population { get; set; }
+        //}
+        //// [END fs_class_definition]
+
+        //private static async Task AddSimpleDocAsEntity(string project)
+        //{
+        //    FirestoreDb db = FirestoreDb.Create(project);
+        //    // [START fs_add_simple_doc_as_entity]
+        //    DocumentReference docRef = db.Collection("cities").Document("LA");
+        //    City city = new City
+        //    {
+        //        Name = "Los Angeles",
+        //        State = "CA",
+        //        Country = "USA",
+        //        Capital = false,
+        //        Population = 3900000L
+        //    };
+        //    await docRef.SetAsync(city);
+        //    // [END fs_add_simple_doc_as_entity]
+        //    Console.WriteLine("Added custom City object to the cities collection.");
         //}
     }
 }

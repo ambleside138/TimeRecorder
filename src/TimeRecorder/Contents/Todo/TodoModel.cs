@@ -47,8 +47,6 @@ namespace TimeRecorder.Contents.Todo
             TodoListCollection.Add(_ImportantList);
             TodoListCollection.Add(_FutureList);
             TodoListCollection.Add(_NoneList);
-
-            //Signin();
         }
 
         private void LoadTodoList()
@@ -56,7 +54,7 @@ namespace TimeRecorder.Contents.Todo
 
         }
 
-        private void LoadTodoItems(TodoListIdentity selectedListId)
+        public void LoadTodoItems(TodoListIdentity selectedListId)
         {
             if(LoginStatus == null)
             {
