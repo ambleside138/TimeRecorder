@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Reactive.Bindings;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using TimeRecorder.Domain;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Domain.UseCase.System;
@@ -9,7 +11,7 @@ using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.Todo
 {
-    internal class TodoModel
+    internal class TodoModel : NotificationDomainModel
     {
         private readonly TodoList _TodayList = new(TodoListIdentity.Today) { Title = "今日の予定", IconKey = "WhiteBalanceSunny" };
         private readonly TodoList _ImportantList = new(TodoListIdentity.Important) { Title = "重要", IconKey = "Star" };
@@ -24,6 +26,17 @@ namespace TimeRecorder.Contents.Todo
         public TodoItem[] TodoItems { get; private set; } = System.Array.Empty<TodoItem>();
 
         public ObservableCollection<TodoItem> FilteredTodoItems { get; } = new();
+
+        #region LoginStatus変更通知プロパティ
+        private LoginStatus _LoginStatus;
+
+        public LoginStatus LoginStatus
+        {
+            get => _LoginStatus;
+            set => RaisePropertyChangedIfSet(ref _LoginStatus, value);
+        }
+        #endregion
+
 
         public TodoModel()
         {
@@ -45,6 +58,11 @@ namespace TimeRecorder.Contents.Todo
 
         private void LoadTodoItems(TodoListIdentity selectedListId)
         {
+            if(LoginStatus == null)
+            {
+                LoginStatus = _AuthenticationUseCase.TrySignin();
+            }
+
             TodoItems = _TodoUseCase.Select();
 
             Filter(selectedListId);
@@ -79,9 +97,5 @@ namespace TimeRecorder.Contents.Todo
             LoadTodoItems(selectedListId);
         }
 
-        public void Signin()
-        {
-            _AuthenticationUseCase.TrySignin();
-        }
     }
 }

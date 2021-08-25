@@ -130,52 +130,99 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <TabControl ItemsSource="{Binding NavigationItems}">
-        <TabControl.Style>
-            <Style BasedOn="{StaticResource SplitableNavigationRailControlStyleKey}" TargetType="TabControl">
-                <Setter Property="Background">
-                    <Setter.Value>
-                        <SolidColorBrush Color="{DynamicResource Primary300}" />
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </TabControl.Style>
+    <Grid>
+        <TabControl ItemsSource="{Binding NavigationItems}">
+            <TabControl.Style>
+                <Style BasedOn="{StaticResource SplitableNavigationRailControlStyleKey}" TargetType="TabControl">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <SolidColorBrush Color="{DynamicResource Primary300}" />
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </TabControl.Style>
 
-        <TabControl.ContentTemplate>
-            <DataTemplate>
-                <Grid Margin="0">
-                    <Grid.ColumnDefinitions>
-                        <!--  tasklist  -->
-                        <ColumnDefinition Width="*" />
-                        <!--  detail  -->
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Grid Margin="0">
+                        <Grid.ColumnDefinitions>
+                            <!--  tasklist  -->
+                            <ColumnDefinition Width="*" />
+                            <!--  detail  -->
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <Grid.RowDefinitions>
-                        <!--  Header  -->
-                        <RowDefinition Height="Auto" />
-                        <!--  content  -->
-                        <RowDefinition Height="*" />
-                        <!--  footer  -->
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <!--  Header  -->
+                            <RowDefinition Height="Auto" />
+                            <!--  content  -->
+                            <RowDefinition Height="*" />
+                            <!--  footer  -->
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <StackPanel Margin="16" Orientation="Horizontal">
+                        <StackPanel Margin="16" Orientation="Horizontal">
 
+
+                            <c:CallMethodButton
+                                Width="40"
+                                Height="40"
+                                Padding="0"
+                                MethodName="EditWorkTask"
+                                Style="{StaticResource MaterialDesignFlatButton}"
+                                ToolTip="タイトルアイコンの編集">
+                                <materialDesign:PackIcon
+                                    Width="32"
+                                    Height="32"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="{Binding IconKey}">
+                                    <materialDesign:PackIcon.Style>
+                                        <Style TargetType="materialDesign:PackIcon">
+                                            <Setter Property="Foreground">
+                                                <Setter.Value>
+                                                    <SolidColorBrush Color="{DynamicResource Primary300Foreground}" />
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </materialDesign:PackIcon.Style>
+                                </materialDesign:PackIcon>
+                            </c:CallMethodButton>
+
+                            <TextBlock
+                                Grid.Column="2"
+                                Margin="8,0,0,0"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Text="{Binding Title}">
+                                <TextBlock.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignHeadline4TextBlock}" TargetType="TextBlock">
+                                        <Setter Property="Foreground">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="{DynamicResource Primary300Foreground}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </StackPanel>
 
                         <c:CallMethodButton
-                            Width="40"
-                            Height="40"
+                            Width="32"
+                            Height="32"
+                            Margin="0,0,16,0"
                             Padding="0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
                             MethodName="EditWorkTask"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="タイトルアイコンの編集">
+                            ToolTip="タスクリストのオプション">
                             <materialDesign:PackIcon
-                                Width="32"
-                                Height="32"
+                                Width="24"
+                                Height="24"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
-                                Kind="{Binding IconKey}">
+                                Kind="DotsHorizontal">
                                 <materialDesign:PackIcon.Style>
                                     <Style TargetType="materialDesign:PackIcon">
                                         <Setter Property="Foreground">
@@ -188,244 +235,257 @@
                             </materialDesign:PackIcon>
                         </c:CallMethodButton>
 
-                        <TextBlock
-                            Grid.Column="2"
-                            Margin="8,0,0,0"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Text="{Binding Title}">
-                            <TextBlock.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignHeadline4TextBlock}" TargetType="TextBlock">
-                                    <Setter Property="Foreground">
-                                        <Setter.Value>
-                                            <SolidColorBrush Color="{DynamicResource Primary300Foreground}" />
-                                        </Setter.Value>
-                                    </Setter>
+
+                        <!--  Task Collection View  -->
+                        <ListBox
+                            x:Name="TodoItemListBox"
+                            Grid.Row="1"
+                            Margin="24,8"
+                            HorizontalContentAlignment="Stretch"
+                            IsSynchronizedWithCurrentItem="True"
+                            ItemsSource="{Binding DataContext.TodoItems, ElementName=TodoHostElement}">
+
+                            <ListBox.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource ExMaterialDesignListBoxItemKey}" TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}" />
+                                    <Setter Property="Margin" Value="0,1,0,0" />
+                                    <Setter Property="Padding" Value="0" />
+                                    <Setter Property="style:ListBoxItemAssist.CornerRadius" Value="4" />
+                                    <Setter Property="IsSelected" Value="{Binding IsSelected.Value, Mode=TwoWay}" />
                                 </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                    </StackPanel>
+                            </ListBox.ItemContainerStyle>
+                        </ListBox>
 
-                    <c:CallMethodButton
-                        Width="32"
-                        Height="32"
-                        Margin="0,0,16,0"
-                        Padding="0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        MethodName="EditWorkTask"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        ToolTip="タスクリストのオプション">
-                        <materialDesign:PackIcon
-                            Width="24"
-                            Height="24"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Kind="DotsHorizontal">
-                            <materialDesign:PackIcon.Style>
-                                <Style TargetType="materialDesign:PackIcon">
-                                    <Setter Property="Foreground">
-                                        <Setter.Value>
-                                            <SolidColorBrush Color="{DynamicResource Primary300Foreground}" />
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </materialDesign:PackIcon.Style>
-                        </materialDesign:PackIcon>
-                    </c:CallMethodButton>
+                        <Grid Grid.Row="2" Margin="24,8">
+                            <TextBox
+                                Height="48"
+                                VerticalContentAlignment="Center"
+                                materialDesign:HintAssist.Hint="タスクの追加"
+                                materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                materialDesign:TextFieldAssist.HasFilledTextField="true"
+                                materialDesign:TextFieldAssist.HasLeadingIcon="True"
+                                materialDesign:TextFieldAssist.RippleOnFocusEnabled="true"
+                                materialDesign:TextFieldAssist.TextFieldCornerRadius="8"
+                                BorderThickness="0"
+                                FontSize="14"
+                                Text="{Binding DataContext.NewTodoTitle.Value, ElementName=TodoHostElement, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="NoWrap">
+                                <TextBox.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
+                                        <Setter Property="materialDesign:TextFieldAssist.LeadingIcon" Value="Plus" />
+                                        <Style.Triggers>
+                                            <Trigger Property="IsFocused" Value="True">
+                                                <Setter Property="materialDesign:TextFieldAssist.LeadingIcon" Value="CheckboxBlankCircleOutline" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBox.Style>
 
+                                <behaviors:Interaction.Triggers>
+                                    <behaviors:KeyTrigger Key="Enter">
+                                        <l:LivetCallMethodAction MethodName="AddTodoItem" MethodTarget="{Binding DataContext, ElementName=TodoHostElement}" />
+                                    </behaviors:KeyTrigger>
+                                </behaviors:Interaction.Triggers>
 
-                    <!--  Task Collection View  -->
-                    <ListBox
-                        x:Name="TodoItemListBox"
-                        Grid.Row="1"
-                        Margin="24,8"
-                        HorizontalContentAlignment="Stretch"
-                        IsSynchronizedWithCurrentItem="True"
-                        ItemsSource="{Binding DataContext.TodoItems, ElementName=TodoHostElement}">
+                            </TextBox>
 
-                        <ListBox.ItemContainerStyle>
-                            <Style BasedOn="{StaticResource ExMaterialDesignListBoxItemKey}" TargetType="{x:Type ListBoxItem}">
-                                <Setter Property="Background" Value="{StaticResource MaterialDesignPaper}" />
-                                <Setter Property="Margin" Value="0,1,0,0" />
-                                <Setter Property="Padding" Value="0" />
-                                <Setter Property="style:ListBoxItemAssist.CornerRadius" Value="4" />
-                                <Setter Property="IsSelected" Value="{Binding IsSelected.Value, Mode=TwoWay}" />
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                    </ListBox>
-
-                    <Grid Grid.Row="2" Margin="24,8">
-                        <TextBox
-                            Height="48"
-                            VerticalContentAlignment="Center"
-                            materialDesign:HintAssist.Hint="タスクの追加"
-                            materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                            materialDesign:TextFieldAssist.HasFilledTextField="true"
-                            materialDesign:TextFieldAssist.HasLeadingIcon="True"
-                            materialDesign:TextFieldAssist.RippleOnFocusEnabled="true"
-                            materialDesign:TextFieldAssist.TextFieldCornerRadius="8"
-                            BorderThickness="0"
-                            FontSize="14"
-                            Text="{Binding DataContext.NewTodoTitle.Value, ElementName=TodoHostElement, UpdateSourceTrigger=PropertyChanged}"
-                            TextWrapping="NoWrap">
-                            <TextBox.Style>
-                                <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
-                                    <Setter Property="materialDesign:TextFieldAssist.LeadingIcon" Value="Plus" />
-                                    <Style.Triggers>
-                                        <Trigger Property="IsFocused" Value="True">
-                                            <Setter Property="materialDesign:TextFieldAssist.LeadingIcon" Value="CheckboxBlankCircleOutline" />
-                                        </Trigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBox.Style>
-
-                            <behaviors:Interaction.Triggers>
-                                <behaviors:KeyTrigger Key="Enter">
-                                    <l:LivetCallMethodAction MethodName="AddTodoItem" MethodTarget="{Binding DataContext, ElementName=TodoHostElement}" />
-                                </behaviors:KeyTrigger>
-                            </behaviors:Interaction.Triggers>
-
-                        </TextBox>
-
-                        <!--  あとでボタンを配置する  -->
-                    </Grid>
-                    <!--  END: Task Collection View  -->
-
-                    <!--  DetailView  -->
-                    <Grid
-                        Grid.RowSpan="3"
-                        Grid.Column="2"
-                        Width="360"
-                        Margin="0,-2,-2,-2"
-                        Background="{StaticResource MaterialDesignPaper}"
-                        DataContext="{Binding DataContext, ElementName=TodoHostElement}"
-                        Visibility="{Binding SelectedItem, ElementName=TodoItemListBox, Converter={StaticResource NullableToVisibilityConverter}}">
-
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-
-                        <Grid Margin="0,16,0,16">
-                            <Grid Height="48" Margin="16,0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-
-                                <CheckBox
-                                    Width="24"
-                                    Height="24"
-                                    MinWidth="0"
-                                    Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}" />
-
-                                <TextBox
-                                    Grid.Column="1"
-                                    Margin="12,0"
-                                    Padding="4,4"
-                                    VerticalAlignment="Center"
-                                    BorderThickness="0"
-                                    FontSize="14"
-                                    Text="{Binding TodoItems/TemporaryTitle.Value}" />
-
-                                <c:CallMethodButton
-                                    Grid.Column="2"
-                                    Width="24"
-                                    Height="24"
-                                    MethodName="ToggleImportStatus"
-                                    Style="{StaticResource MaterialDesignIconButton}"
-                                    ToolTip="重要としてマークする">
-                                    <materialDesign:PackIcon
-                                        Width="16"
-                                        Height="16"
-                                        Kind="StarOutline" />
-                                </c:CallMethodButton>
-                            </Grid>
+                            <!--  あとでボタンを配置する  -->
                         </Grid>
+                        <!--  END: Task Collection View  -->
 
-                        <!--  menus  -->
-                        <Border Grid.Row="1">
-                            <Border.Style>
-                                <Style TargetType="Border">
-                                    <Setter Property="Background">
-                                        <Setter.Value>
-                                            <SolidColorBrush Color="{StaticResource Blue GreyPrimary50}" />
-                                        </Setter.Value>
-                                    </Setter>
-                                </Style>
-                            </Border.Style>
+                        <!--  DetailView  -->
+                        <Grid
+                            Grid.RowSpan="3"
+                            Grid.Column="2"
+                            Width="360"
+                            Margin="0,-2,-2,-2"
+                            Background="{StaticResource MaterialDesignPaper}"
+                            DataContext="{Binding DataContext, ElementName=TodoHostElement}"
+                            Visibility="{Binding SelectedItem, ElementName=TodoItemListBox, Converter={StaticResource NullableToVisibilityConverter}}">
 
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
 
-                            <StackPanel Margin="8">
+                            <Grid Margin="0,16,0,16">
+                                <Grid Height="48" Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
 
-                                <TextBox
-                                    MinHeight="72"
-                                    materialDesign:HintAssist.Hint="メモの追加"
-                                    materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                                    materialDesign:TextFieldAssist.HasFilledTextField="true"
-                                    AcceptsReturn="True"
-                                    Background="{StaticResource MaterialDesignBackground}"
-                                    BorderBrush="{StaticResource MaterialDesignDivider}"
-                                    BorderThickness="1"
-                                    Text=""
-                                    TextWrapping="Wrap" />
-                            </StackPanel>
-                        </Border>
-
-                        <Border
-                            Grid.Row="2"
-                            BorderBrush="{StaticResource MaterialDesignDivider}"
-                            BorderThickness="0,1,0,0">
-                            <Grid>
-                                <c:CallMethodButton
-                                    Width="48"
-                                    Height="48"
-                                    Padding="0"
-                                    HorizontalAlignment="Left"
-                                    MethodName="CloseDetailView"
-                                    Style="{StaticResource MaterialDesignFlatButton}"
-                                    ToolTip="詳細ビューを閉じる">
-                                    <materialDesign:PackIcon
+                                    <CheckBox
                                         Width="24"
                                         Height="24"
-                                        HorizontalAlignment="Center"
-                                        Kind="ChevronRight" />
-                                </c:CallMethodButton>
+                                        MinWidth="0"
+                                        Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}" />
 
-                                <TextBlock
-                                    Grid.Row="2"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Text="作成：昨日" />
+                                    <TextBox
+                                        Grid.Column="1"
+                                        Margin="12,0"
+                                        Padding="4,4"
+                                        VerticalAlignment="Center"
+                                        BorderThickness="0"
+                                        FontSize="14"
+                                        Text="{Binding TodoItems/TemporaryTitle.Value}" />
 
-                                <c:CallMethodButton
-                                    Grid.Row="2"
-                                    Width="48"
-                                    Height="48"
-                                    Padding="0"
-                                    HorizontalAlignment="Right"
-                                    MethodName="Delete"
-                                    Style="{StaticResource MaterialDesignFlatButton}"
-                                    ToolTip="タスクの削除">
-                                    <materialDesign:PackIcon
+                                    <c:CallMethodButton
+                                        Grid.Column="2"
                                         Width="24"
                                         Height="24"
-                                        HorizontalAlignment="Center"
-                                        Kind="TrashCanOutline" />
-                                </c:CallMethodButton>
+                                        MethodName="ToggleImportStatus"
+                                        Style="{StaticResource MaterialDesignIconButton}"
+                                        ToolTip="重要としてマークする">
+                                        <materialDesign:PackIcon
+                                            Width="16"
+                                            Height="16"
+                                            Kind="StarOutline" />
+                                    </c:CallMethodButton>
+                                </Grid>
                             </Grid>
 
-                        </Border>
+                            <!--  menus  -->
+                            <Border Grid.Row="1">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="{StaticResource Blue GreyPrimary50}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Border.Style>
+
+
+                                <StackPanel Margin="8">
+
+                                    <TextBox
+                                        MinHeight="72"
+                                        materialDesign:HintAssist.Hint="メモの追加"
+                                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                                        materialDesign:TextFieldAssist.HasFilledTextField="true"
+                                        AcceptsReturn="True"
+                                        Background="{StaticResource MaterialDesignBackground}"
+                                        BorderBrush="{StaticResource MaterialDesignDivider}"
+                                        BorderThickness="1"
+                                        Text=""
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Border>
+
+                            <Border
+                                Grid.Row="2"
+                                BorderBrush="{StaticResource MaterialDesignDivider}"
+                                BorderThickness="0,1,0,0">
+                                <Grid>
+                                    <c:CallMethodButton
+                                        Width="48"
+                                        Height="48"
+                                        Padding="0"
+                                        HorizontalAlignment="Left"
+                                        MethodName="CloseDetailView"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        ToolTip="詳細ビューを閉じる">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            Kind="ChevronRight" />
+                                    </c:CallMethodButton>
+
+                                    <TextBlock
+                                        Grid.Row="2"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Text="作成：昨日" />
+
+                                    <c:CallMethodButton
+                                        Grid.Row="2"
+                                        Width="48"
+                                        Height="48"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        MethodName="Delete"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        ToolTip="タスクの削除">
+                                        <materialDesign:PackIcon
+                                            Width="24"
+                                            Height="24"
+                                            HorizontalAlignment="Center"
+                                            Kind="TrashCanOutline" />
+                                    </c:CallMethodButton>
+                                </Grid>
+
+                            </Border>
+
+                        </Grid>
+                        <!--  END: DetailView  -->
+
 
                     </Grid>
-                    <!--  END: DetailView  -->
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+
+        <!--  タブの上から無理やりアカウント情報を表示する  -->
+        <Grid
+            Margin="0,4"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6*" />
+                <RowDefinition Height="4*" />
+            </Grid.RowDefinitions>
+
+            <Border
+                Grid.RowSpan="2"
+                Width="32"
+                Height="32"
+                Margin="8,6"
+                CornerRadius="16">
+                <!--  背景の設定  -->
+                <Border.Background>
+                    <ImageBrush ImageSource="{Binding LoginStatus.Value.PhotoUrl}" Stretch="Uniform" />
+                </Border.Background>
+            </Border>
+
+            <TextBlock
+                Grid.Column="1"
+                Margin="0"
+                Padding="0"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource MaterialDesignBody1TextBlock}"
+                Text="{Binding LoginStatus.Value.DisplayName}" />
+
+            <TextBlock
+                Grid.Row="1"
+                Grid.Column="1"
+                Margin="0,2,0,0"
+                Padding="0"
+                VerticalAlignment="Top"
+                Text="{Binding LoginStatus.Value.Account}">
+                <TextBlock.Style>
+                    <Style BasedOn="{StaticResource MaterialDesignCaptionTextBlock}" TargetType="TextBlock">
+                        <Setter Property="Foreground">
+                            <Setter.Value>
+                                <SolidColorBrush Color="{StaticResource GreyPrimary700}" />
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+
+        </Grid>
+    </Grid>
 
 
-                </Grid>
-            </DataTemplate>
-        </TabControl.ContentTemplate>
-    </TabControl>
 </UserControl>

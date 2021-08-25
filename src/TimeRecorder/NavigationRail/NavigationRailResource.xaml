@@ -293,17 +293,15 @@
                 <ControlTemplate TargetType="{x:Type TabControl}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="{Binding Path=(style:TabControlAssist.SplitterWidth), Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" MinWidth="64" />
+                            <ColumnDefinition Width="{Binding Path=(style:TabControlAssist.SplitterWidth), Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" MinWidth="156" />
                             <ColumnDefinition Width="*" MinWidth="64" />
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Margin="0,8,0,8">
+                        <StackPanel Margin="0,56,0,8">
                             <StackPanel
                                 x:Name="HeaderPanel"
                                 Background="{DynamicResource BackgroundBrushKey}"
                                 IsItemsHost="True" />
-
-                            <TextBlock Text="test" />
                         </StackPanel>
 
 

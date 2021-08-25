@@ -14,6 +14,7 @@ namespace TimeRecorder.Domain.Domain.System
 
         public string Email { get; set; }
 
+        public string Account => string.IsNullOrEmpty(Email) ? "" : Email.Split('@', StringSplitOptions.None).FirstOrDefault();
         public string PhotoUrl { get; set; }
     }
 }

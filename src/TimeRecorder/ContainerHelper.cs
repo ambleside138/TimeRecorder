@@ -56,10 +56,6 @@ namespace TimeRecorder
             resolver.Register<IReportDriver, CsvReportDriver>(Lifestyle.Singleton);
             resolver.Register<IWorkingHourImportDriver, CsvWorkingHourImportDriver>(Lifestyle.Singleton);
 
-            Repository.Firebase.Accessor.Access();
-            //new TimeRecorder.Repository.Firebase.System.FirebaseAccountRepository().GetLoginStatus();
-
-
             // You can configure lifestyle - Transient, Singleton or Scoped
             //resolver.Register<ILogger, MailLogger>(Lifestyle.Singleton);
 

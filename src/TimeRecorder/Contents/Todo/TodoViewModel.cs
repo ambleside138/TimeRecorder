@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.NavigationRail;
 
@@ -34,6 +35,8 @@ namespace TimeRecorder.Contents.Todo
         public TodoList CurrentTodoList 
             => NavigationItems.FirstOrDefault(i => i.IsSelected)?.TodoList;
 
+        public ReactivePropertySlim<LoginStatus> LoginStatus { get; }
+
         public TodoViewModel()
         {
             NavigationItems = _Model.TodoListCollection
@@ -52,6 +55,9 @@ namespace TimeRecorder.Contents.Todo
                               .AddTo(CompositeDisposable);
 
             NavigationItems.First().IsSelected = true;
+
+            LoginStatus = _Model.ToReactivePropertySlimAsSynchronized(m => m.LoginStatus)
+                                .AddTo(CompositeDisposable);
         }
 
         // ViewからのEnterキー押下で呼び出し
@@ -89,5 +95,7 @@ namespace TimeRecorder.Contents.Todo
                 item.IsSelected.Value = false;
             }
         }
+
+
     }
 }
