@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Todo;
+using TimeRecorder.Repository.Firebase.Todo.Dao;
 
 namespace TimeRecorder.Repository.Firebase.Todo
 {
@@ -11,7 +12,8 @@ namespace TimeRecorder.Repository.Firebase.Todo
     {
         public TodoItemIdentity Add(TodoItem item)
         {
-            throw new NotImplementedException();
+            var doc = TodoDocument.FromDomainObject(item);
+            return null;
         }
 
         public void Delete(TodoItemIdentity id)

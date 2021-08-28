@@ -14,4 +14,8 @@
     <ProjectReference Include="..\TimeRecorder.Domain\TimeRecorder.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Docs\" />
+  </ItemGroup>
+
 </Project>

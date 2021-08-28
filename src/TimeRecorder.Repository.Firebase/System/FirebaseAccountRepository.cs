@@ -16,6 +16,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Repository.Firebase.Shared;
+using TimeRecorder.Repository.Firebase.System.Dao;
 
 namespace TimeRecorder.Repository.Firebase.System
 {
@@ -23,16 +24,54 @@ namespace TimeRecorder.Repository.Firebase.System
     {
         public LoginStatus GetLoginStatus()
         {
-            FirebaseAuthLink link = FirebaseAuthenticator.Current.SignInWithGoogleOAuthAsyncCached().Result;
+            FirebaseAuthLink link = FirebaseAuthenticator.Current
+                                                         .SignInWithGoogleOAuthAsyncCached()
+                                                         .Result;
 
-
-            return new LoginStatus
+            LoginStatus status = new()
             {
                 DisplayName = link.User.DisplayName,
                 Email = link.User.Email,
                 PhotoUrl = link.User.PhotoUrl,
                 UserId = link.User.LocalId,
             };
+
+            var db = FirestoreAccessor.CreateDbClientAsync().Result;
+
+            DocumentReference docRef = new UsersDao().GetUsersReference(db).Document(status.UserId);
+
+
+            DocumentSnapshot snapshot = docRef.GetSnapshotAsync().Result;
+
+            var timestamp = Timestamp.GetCurrentTimestamp();
+
+            if (snapshot.Exists)
+            {
+                Dictionary<string, object> updates = new()
+                {
+                    { nameof(UserDocument.LatestSignInDateTime), timestamp }
+                };
+
+                docRef.UpdateAsync(updates).Wait();
+            }
+            else
+            {
+                // 新規登録
+                UserDocument doc = new()
+                {
+                    UserId = status.UserId,
+                    DisplayName = status.DisplayName,
+                    Email = status.Email,
+                    PhotoUrl = status.PhotoUrl,
+                    LatestSignInDateTime = timestamp,
+                    CreatedAt = timestamp,
+                    UpdatedAt = timestamp,
+                };
+
+                docRef.SetAsync(doc).Wait();
+            }
+
+            return status;
         }
 
     }

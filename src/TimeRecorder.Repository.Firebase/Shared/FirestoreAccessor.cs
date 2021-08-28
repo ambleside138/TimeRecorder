@@ -10,7 +10,7 @@ using Google.Cloud.Firestore.V1;
 using Grpc.Core;
 using System.Diagnostics;
 using System.Threading;
-
+using TimeRecorder.Repository.Firebase.Shared;
 
 namespace TimeRecorder.Repository.Firebase
 {
@@ -19,6 +19,18 @@ namespace TimeRecorder.Repository.Firebase
         private readonly string _FirebaseProjectId;
 
         private FirebaseAuthLink _FirebaseAuthLink;
+
+
+        public static async Task<FirestoreDb> CreateDbClientAsync()
+        {
+            FirebaseAuthLink firebaseAuthLink = await FirebaseAuthenticator.Current
+                                                                     .SignInWithGoogleOAuthAsyncCached();
+
+            string projectId = FirebaseCredentialConfigLoader.Value.ProjectId;
+
+            return await new FirestoreAccessor(firebaseAuthLink, projectId).CreateFirestoreDbAsync();
+        }
+
 
         public FirestoreAccessor(FirebaseAuthLink firebaseAuthLink, string firebaseProjectId)
         {
