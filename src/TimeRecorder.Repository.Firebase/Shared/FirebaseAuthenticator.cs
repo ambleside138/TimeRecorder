@@ -68,7 +68,7 @@ namespace TimeRecorder.Repository.Firebase.Shared
 
             if (result.Token.IsExpired(SystemClock.Default))
             {
-                _ = await result.RefreshTokenAsync(CancellationToken.None);
+                _ = result.RefreshTokenAsync(CancellationToken.None).Result;
             }
 
             // Firebase.AuthenticatioサービスにOAuthトークンを渡す
@@ -77,6 +77,7 @@ namespace TimeRecorder.Repository.Firebase.Shared
             // The authentication expires every hour, so we need to use the obtained refresh token to obtain a new authentication token as the previous one expires
             FirebaseAuthProvider authProvider = new(new FirebaseConfig(FirebaseCredentialConfigLoader.Value.ApiKey));
             
+            // なぜかawaitするとフリーズする...
             _firebaseAuthLink = authProvider.SignInWithGoogleIdTokenAsync(result.Token.IdToken).Result;
             
             return _firebaseAuthLink;

@@ -42,6 +42,8 @@ namespace TimeRecorder.Contents.Todo
 
         public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
+        public ReactivePropertySlim<int> SelectedListIndex { get; } = new();
+
 
         public TodoViewModel()
         {
@@ -66,6 +68,7 @@ namespace TimeRecorder.Contents.Todo
                                 .AddTo(CompositeDisposable);
 
             IsSelected.Subscribe(i => Handler(i)).AddTo(CompositeDisposable);
+            SelectedListIndex.Subscribe(i => Handler(IsSelected.Value)).AddTo(CompositeDisposable);
         }
 
         private async void Handler(bool isselected)

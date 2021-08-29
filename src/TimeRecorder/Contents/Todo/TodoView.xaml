@@ -131,7 +131,7 @@
     </UserControl.Resources>
 
     <Grid>
-        <TabControl ItemsSource="{Binding NavigationItems}">
+        <TabControl ItemsSource="{Binding NavigationItems}" SelectedIndex="{Binding SelectedListIndex.Value}">
             <TabControl.Style>
                 <Style BasedOn="{StaticResource SplitableNavigationRailControlStyleKey}" TargetType="TabControl">
                     <Setter Property="Background">
