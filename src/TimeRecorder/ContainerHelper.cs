@@ -16,6 +16,7 @@ using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Driver.CsvDriver;
 using TimeRecorder.Driver.CsvDriver.Import;
 using TimeRecorder.Repository.Firebase.System;
+using TimeRecorder.Repository.Firebase.Todo;
 using TimeRecorder.Repository.GoogleAPI.Calendar;
 using TimeRecorder.Repository.InMemory;
 using TimeRecorder.Repository.SQLite.Clients;
@@ -50,7 +51,7 @@ namespace TimeRecorder
             resolver.Register<IScheduledEventRepository, GoogleApiScheduledEventRepository>(Lifestyle.Singleton);
             resolver.Register<IConfigurationRepository, SQLiteConfigurationRepository>(Lifestyle.Singleton);
             resolver.Register<IWorkingHourRepository, SQLiteWorkingHoursRepository>(Lifestyle.Singleton);
-            resolver.Register<ITodoRepository, InMemoryTodoRepository>(Lifestyle.Singleton);
+            resolver.Register<ITodoRepository, FirestoreTodoRepository>(Lifestyle.Singleton);
             resolver.Register<IAccountRepository, FirebaseAccountRepository>(Lifestyle.Singleton);
 
             resolver.Register<IReportDriver, CsvReportDriver>(Lifestyle.Singleton);

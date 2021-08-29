@@ -30,6 +30,7 @@ namespace TimeRecorder.Contents.Archive
 
         // もっと良い書き方があるはずだが...
         public ReadOnlyReactivePropertySlim<bool> NoResults { get; set; }
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
         public ArchiveManagerViewModel()
         {

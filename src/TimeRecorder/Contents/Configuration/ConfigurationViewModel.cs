@@ -39,6 +39,7 @@ namespace TimeRecorder.Contents.Configuration
 
         public ReactivePropertySlim<string> LunchStartTimeHHmm { get; }
         public ReactivePropertySlim<string> LunchEndTimeHHmm { get; }
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
         public ConfigurationViewModel()
         {

@@ -39,6 +39,7 @@ namespace TimeRecorder.Contents.Exporter
         public ReadOnlyReactivePropertySlim<string> InitialFileName { get; }
 
         private readonly ExporterModel _ExporterModel = new ExporterModel();
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
         public ExporterViewModel()
         {

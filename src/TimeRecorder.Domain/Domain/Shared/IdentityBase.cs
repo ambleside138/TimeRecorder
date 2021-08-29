@@ -12,9 +12,9 @@ namespace TimeRecorder.Domain.Domain.Shared
 
         internal Guid TempValue { get; set; } = Guid.Empty;
 
-        public bool HasValue => string.IsNullOrEmpty(Value);
+        public bool HasValue => IsEmpty == false;
 
-        public bool IsEmpty => HasValue == false;
+        public bool IsEmpty => string.IsNullOrEmpty(Value);
 
         public IdentityBase(string id)
         {

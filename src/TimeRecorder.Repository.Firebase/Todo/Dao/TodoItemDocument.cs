@@ -6,6 +6,7 @@ using TimeRecorder.Repository.Firebase.Shared.Helpers;
 
 namespace TimeRecorder.Repository.Firebase.Todo.Dao
 {
+    [FirestoreData]
     class TodoItemDocument : DocumentBase
     {
         public string Id { get; set; }
@@ -33,6 +34,7 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                 IsImportant = todoItem.IsImportant,
                 CompletedDateTime = todoItem.CompletedDateTime.ToTimestamp(),
                 Memo = todoItem.Memo,
+                TodoListId = todoItem.TodoListId.Value,
             };
         }
 

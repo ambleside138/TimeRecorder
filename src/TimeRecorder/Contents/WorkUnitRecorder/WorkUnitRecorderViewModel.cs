@@ -50,6 +50,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         // 通知間隔[sec]
         private const int _AlertCount = 60 * 5;
 
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
+
         public WorkUnitRecorderViewModel()
         {
             PlanedTaskCards = _Model.PlanedTaskModels

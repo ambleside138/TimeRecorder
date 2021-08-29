@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using TimeRecorder.Domain;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Todo;
@@ -49,19 +50,19 @@ namespace TimeRecorder.Contents.Todo
             TodoListCollection.Add(_NoneList);
         }
 
-        private void LoadTodoList()
-        {
+        //private void LoadTodoList()
+        //{
 
-        }
+        //}
 
-        public void LoadTodoItems(TodoListIdentity selectedListId)
+        public async Task LoadTodoItemsAsync(TodoListIdentity selectedListId)
         {
             if(LoginStatus == null)
             {
                 LoginStatus = _AuthenticationUseCase.TrySignin();
             }
 
-            TodoItems = _TodoUseCase.Select();
+            TodoItems = await _TodoUseCase.SelectAsync();
 
             Filter(selectedListId);
         }
@@ -82,17 +83,17 @@ namespace TimeRecorder.Contents.Todo
 
         }
 
-        public void AddTodoItem(TodoListIdentity selectedListId, TodoItem item)
+        public async Task AddTodoItemAsync(TodoListIdentity selectedListId, TodoItem item)
         {
             item.TodoListId = selectedListId;
-            _TodoUseCase.Add(item);
-            LoadTodoItems(selectedListId);
+            _ = await _TodoUseCase.AddAsync(item);
+            await LoadTodoItemsAsync(selectedListId);
         }
 
         public void DeleteTodoItem(TodoListIdentity selectedListId, TodoItemIdentity itemIdentity)
         {
-            _TodoUseCase.Delete(itemIdentity);
-            LoadTodoItems(selectedListId);
+            _TodoUseCase.DeleteAsync(itemIdentity);
+            LoadTodoItemsAsync(selectedListId);
         }
 
     }

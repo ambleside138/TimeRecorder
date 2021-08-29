@@ -283,7 +283,7 @@
 
                                 <behaviors:Interaction.Triggers>
                                     <behaviors:KeyTrigger Key="Enter">
-                                        <l:LivetCallMethodAction MethodName="AddTodoItem" MethodTarget="{Binding DataContext, ElementName=TodoHostElement}" />
+                                        <l:LivetCallMethodAction MethodName="AddTodoItemAsync" MethodTarget="{Binding DataContext, ElementName=TodoHostElement}" />
                                     </behaviors:KeyTrigger>
                                 </behaviors:Interaction.Triggers>
 
@@ -485,6 +485,11 @@
             </TextBlock>
 
         </Grid>
+
+        <ProgressBar
+            VerticalAlignment="Top"
+            IsIndeterminate="{Binding IsProcessing.Value}"
+            Visibility="{Binding IsProcessing.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
     </Grid>
 
 

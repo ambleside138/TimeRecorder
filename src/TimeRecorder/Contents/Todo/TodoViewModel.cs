@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.NavigationRail;
@@ -37,6 +38,11 @@ namespace TimeRecorder.Contents.Todo
 
         public ReactivePropertySlim<LoginStatus> LoginStatus { get; }
 
+        public ReactivePropertySlim<bool> IsProcessing { get; } = new();
+
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
+
+
         public TodoViewModel()
         {
             NavigationItems = _Model.TodoListCollection
@@ -59,21 +65,46 @@ namespace TimeRecorder.Contents.Todo
             LoginStatus = _Model.ToReactivePropertySlimAsSynchronized(m => m.LoginStatus)
                                 .AddTo(CompositeDisposable);
 
-            var listener = new PropertyChangedEventListener(NavigationIcon);
-            listener.RegisterHandler(nameof(NavigationIconButtonViewModel.IsSelected), Handler);
-            CompositeDisposable.Add(listener);
+            IsSelected.Subscribe(i => Handler(i)).AddTo(CompositeDisposable);
         }
 
-        private void Handler(object sender, PropertyChangedEventArgs e)
+        private async void Handler(bool isselected)
         {
-            if(NavigationIcon.IsSelected)
+            if(isselected)
             {
-                _Model.LoadTodoItems(CurrentTodoList.Id);
+
+                try
+                {
+                    IsProcessing.Value = true;
+                    await _Model.LoadTodoItemsAsync(CurrentTodoList.Id);
+                }
+                finally
+                {
+                    IsProcessing.Value = false;
+                }
+                //await ActionAsync(() =>
+                //{
+                //    _Model.LoadTodoItemsAsync(CurrentTodoList.Id);
+                //});
+            }
+        }
+
+
+        private async void ActionAsync(Func<Task> action)
+        {
+            try
+            {
+                IsProcessing.Value = true;
+                await action();
+            }
+            finally
+            {
+                IsProcessing.Value = false;
             }
         }
 
         // ViewからのEnterキー押下で呼び出し
-        public void AddTodoItem()
+        public async void AddTodoItemAsync()
         {
             var item = TodoItem.ForNew();
             item.Title = NewTodoTitle.Value;
@@ -81,9 +112,19 @@ namespace TimeRecorder.Contents.Todo
             if (string.IsNullOrEmpty(item.Title))
                 return;
 
-            _Model.AddTodoItem(CurrentTodoList.Id, item);
+            try
+            {
+                IsProcessing.Value = true;
+                
+                NewTodoTitle.Value = "";
 
-            NewTodoTitle.Value = "";
+                await _Model.AddTodoItemAsync(CurrentTodoList.Id, item);
+            }
+            finally
+            {
+                IsProcessing.Value = false;
+            }
+
         }
 
         public void CloseDetailView()

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Todo;
+using TimeRecorder.Repository.Firebase.Shared.Helpers;
 
 namespace TimeRecorder.Repository.Firebase.Todo.Dao
 {
@@ -25,17 +26,26 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
 
         public async Task<TodoItemIdentity> SetAsync(TodoItemIdentity docId, TodoItemDocument todoDocument)
         {
-            var subCollectionRef = GetRootDocumentReference().Collection(SubCollectionName);
+            DocumentReference rootDocRef = GetRootDocumentReference();
 
-            if(docId.IsEmpty)
+            // 初回の場合はUIdを設定する
+            var doc = await rootDocRef.GetSnapshotAsync();
+            if(doc.Exists == false)
+            {
+                _ = await rootDocRef.SetAsync(new TodoRootDocument { UserId = _UserId, CreatedAt = Timestamp.GetCurrentTimestamp() });
+            }
+
+            var subCollectionRef = rootDocRef.Collection(SubCollectionName);
+
+
+            if (docId.IsEmpty)
             {
                 // get auto-generated-id
                 DocumentReference documentReference = subCollectionRef.Document();
                 docId = new TodoItemIdentity(documentReference.Id);
             }
 
-            await subCollectionRef.Document(docId.Value).SetAsync(todoDocument);
-
+            _ = await subCollectionRef.Document(docId.Value).SetAsync(todoDocument);
             return docId;
         }
 
@@ -43,7 +53,7 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
 
         private DocumentReference GetRootDocumentReference()
         {
-            return _FirestoreDb.Document($"{CollectionName}/{_UserId}");
+            return _FirestoreDb.Collection(CollectionName).Document(_UserId);
         }
 
 
@@ -64,7 +74,7 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
             var todoCollection = await docRef.Reference.Collection(SubCollectionName).GetSnapshotAsync();
 
             var list = todoCollection.Documents
-                                     .Select(d => d.ConvertTo<TodoItemDocument>())
+                                     .Select(d => d.ConvertToWithId<TodoItemDocument>((obj,id) => obj.Id = id))
                                      .ToList();
 
 

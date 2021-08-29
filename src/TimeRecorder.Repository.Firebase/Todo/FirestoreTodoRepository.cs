@@ -33,9 +33,9 @@ namespace TimeRecorder.Repository.Firebase.Todo
 
             TodoRootDocument doc = await new TodoDao(db, FirebaseAuthenticator.Current.UserId).SelectAsync();
 
-            return doc.TodoItems
+            return doc?.TodoItems
                       .Select(i => i.ConvertToDomainObject())
-                      .ToArray();
+                      .ToArray() ?? Array.Empty<TodoItem>();
         }
 
         public TodoItem[] SelectByListId(TodoListIdentity id)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Reactive.Bindings;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.NavigationRail;
@@ -12,6 +13,6 @@ namespace TimeRecorder.Contents
     {
         NavigationIconButtonViewModel NavigationIcon { get; }
 
-
+        ReactivePropertySlim<bool> IsSelected { get; }
     }
 }

@@ -26,7 +26,7 @@ namespace TimeRecorder.Host
 
         public SnackbarMessageQueue SnackMessageQueue { get; } = SnackbarService.Current.MessageQueue;
 
-        private readonly MainModel _MainModel = new MainModel();
+        private readonly MainModel _MainModel = new();
 
         public static MainWindowViewModel Instance { get; } = new MainWindowViewModel();
 
@@ -41,7 +41,7 @@ namespace TimeRecorder.Host
             SetupTheme();
         }
 
-        private void SetupTheme()
+        private static void SetupTheme()
         {
             var theme = UserConfigurationManager.Instance.GetConfiguration<ThemeConfig>(ConfigKey.Theme);
             if(theme != null)

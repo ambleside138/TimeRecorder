@@ -16,24 +16,24 @@ namespace TimeRecorder.Domain.UseCase.Todo
             _TodoRepository = todoRepository;
         }
 
-        public TodoItemIdentity Add(TodoItem workTask)
+        public async Task<TodoItemIdentity> AddAsync(TodoItem workTask)
         {
-            return _TodoRepository.Add(workTask);
+            return await _TodoRepository.AddAsync(workTask);
         }
 
-        public void Edit(TodoItem workTask)
+        public async Task EditAsync(TodoItem workTask)
         {
-            _TodoRepository.Edit(workTask);
+            await _TodoRepository.EditAsync(workTask);
         }
 
-        public void Delete(TodoItemIdentity todoId)
+        public async Task DeleteAsync(TodoItemIdentity todoId)
         {
-            _TodoRepository.Delete(todoId);
+            await _TodoRepository.DeleteAsync(todoId);
         }
 
-        public TodoItem[] Select()
+        public async Task<TodoItem[]> SelectAsync()
         {
-            return _TodoRepository.Select();
+            return await _TodoRepository.SelectAsync();
         }
 
     }
