@@ -19,11 +19,27 @@ namespace TimeRecorder.Repository.InMemory
             throw new NotImplementedException();
         }
 
-        TodoItemIdentity ITodoRepository.Add(TodoItem item)
+        async Task<TodoItemIdentity> ITodoRepository.AddAsync(TodoItem item)
         {
             var clone = TodoItem.Rebuild(new TodoItemIdentity(Guid.NewGuid().ToString()), item);
             Add(clone);
+            await Task.Delay(100);
             return clone.Id;
+        }
+
+        Task ITodoRepository.DeleteAsync(TodoItemIdentity id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task ITodoRepository.EditAsync(TodoItem item)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<TodoItem[]> ITodoRepository.SelectAsync()
+        {
+            throw new NotImplementedException();
         }
     }
 }

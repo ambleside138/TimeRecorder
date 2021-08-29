@@ -19,6 +19,8 @@ namespace TimeRecorder.Repository.Firebase.Shared
 
         public static FirebaseAuthenticator Current { get; } = new();
 
+        public string UserId => _firebaseAuthLink?.User.LocalId;
+
         private FirebaseAuthenticator()
         {
 

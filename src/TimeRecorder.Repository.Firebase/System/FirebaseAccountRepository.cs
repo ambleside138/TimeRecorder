@@ -38,7 +38,7 @@ namespace TimeRecorder.Repository.Firebase.System
 
             var db = FirestoreAccessor.CreateDbClientAsync().Result;
 
-            DocumentReference docRef = new UsersDao().GetUsersReference(db).Document(status.UserId);
+            DocumentReference docRef = UsersDao.GetUsersReference(db).Document(status.UserId);
 
 
             DocumentSnapshot snapshot = docRef.GetSnapshotAsync().Result;

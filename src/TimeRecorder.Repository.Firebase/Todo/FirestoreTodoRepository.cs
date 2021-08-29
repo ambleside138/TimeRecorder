@@ -1,34 +1,41 @@
-﻿using System;
+﻿using Google.Cloud.Firestore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Todo;
+using TimeRecorder.Repository.Firebase.Shared;
 using TimeRecorder.Repository.Firebase.Todo.Dao;
 
 namespace TimeRecorder.Repository.Firebase.Todo
 {
-    class FirestoreTodoRepository : ITodoRepository
+    public class FirestoreTodoRepository : ITodoRepository
     {
-        public TodoItemIdentity Add(TodoItem item)
+        public async Task<TodoItemIdentity> AddAsync(TodoItem item)
         {
-            var doc = TodoDocument.FromDomainObject(item);
-            return null;
+            FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
+            TodoItemDocument doc = TodoItemDocument.FromDomainObject(item);
+
+            return await new TodoDao(db, FirebaseAuthenticator.Current.UserId).SetAsync(item.Id, doc);
         }
 
-        public void Delete(TodoItemIdentity id)
+        public Task DeleteAsync(TodoItemIdentity id)
         {
             throw new NotImplementedException();
         }
 
-        public void Edit(TodoItem item)
-        {
-            throw new NotImplementedException();
-        }
+        public async Task EditAsync(TodoItem item) =>  await AddAsync(item);
 
-        public TodoItem[] Select()
+        public async Task<TodoItem[]> SelectAsync()
         {
-            throw new NotImplementedException();
+            FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
+
+            TodoRootDocument doc = await new TodoDao(db, FirebaseAuthenticator.Current.UserId).SelectAsync();
+
+            return doc.TodoItems
+                      .Select(i => i.ConvertToDomainObject())
+                      .ToArray();
         }
 
         public TodoItem[] SelectByListId(TodoListIdentity id)

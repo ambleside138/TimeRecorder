@@ -12,7 +12,7 @@ namespace TimeRecorder.Repository.Firebase.System.Dao
         public const string CollectionName = "users";
 
 
-        public CollectionReference GetUsersReference(FirestoreDb firestoreDb)
+        public static CollectionReference GetUsersReference(FirestoreDb firestoreDb)
         {
             return firestoreDb.Collection(CollectionName);
         }

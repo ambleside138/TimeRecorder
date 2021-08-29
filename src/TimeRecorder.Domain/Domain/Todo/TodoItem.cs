@@ -73,6 +73,7 @@ namespace TimeRecorder.Domain.Domain.Todo
         private TodoItem() { }
 
 
+
         protected override IEnumerable<object> GetIdentityValues()
         {
             yield return Id;
@@ -86,6 +87,25 @@ namespace TimeRecorder.Domain.Domain.Todo
                 Title = source.Title,
                 IsImportant = source.IsImportant,
                 Memo = source.Memo,
+            };
+        }
+
+        public static TodoItem FromRepository(
+            string id, 
+            string title, 
+            bool isImportant, 
+            DateTime? completedDateTime, 
+            string memo, 
+            string todoListId)
+        {
+            return new TodoItem
+            {
+                Id = new TodoItemIdentity(id),
+                Title = title,
+                IsImportant = isImportant,
+                CompletedDateTime = completedDateTime,
+                Memo = memo,
+                TodoListId = new TodoListIdentity(todoListId),
             };
         }
 

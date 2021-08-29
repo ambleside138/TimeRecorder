@@ -8,16 +8,16 @@ namespace TimeRecorder.Domain.Domain.Todo
 {
     public interface ITodoRepository : IRepository
     {
-        TodoItem[] Select();
+        Task<TodoItem[]> SelectAsync();
 
-        TodoItem[] SelectWithCompleted();
+        //TodoItem[] SelectWithCompleted();
 
-        TodoItemIdentity Add(TodoItem item);
+        Task<TodoItemIdentity> AddAsync(TodoItem item);
 
-        void Edit(TodoItem item);
+        Task EditAsync(TodoItem item);
 
-        void Delete(TodoItemIdentity id);
+        Task DeleteAsync(TodoItemIdentity id);
 
-        TodoItem[] SelectByListId(TodoListIdentity id);
+        //TodoItem[] SelectByListId(TodoListIdentity id);
     }
 }
