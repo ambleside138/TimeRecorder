@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MessagePipe;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,22 +10,36 @@ using TimeRecorder.Domain.UseCase.Todo;
 
 namespace TimeRecorder.Contents.Todo
 {
-    class TodoItemModel
+    interface ITodoItemModel { }
+
+
+    class TodoItemModel : ITodoItemModel
     {
         private readonly TodoItem _DomainModel;
 
         private readonly TodoUseCase _TodoUseCase;
 
+        private readonly IPublisher<TodoItemChangedEventArgs> _Publisher;
 
-        public TodoItemModel(TodoItem todoItem)
+
+        public TodoItemModel(TodoItem todoItem, IPublisher<TodoItemChangedEventArgs> publisher)
         {
             _DomainModel = todoItem;
-            _TodoUseCase = new TodoUseCase(ContainerHelper.Resolver.Resolve<ITodoRepository>());
+            _Publisher = publisher;
+            _TodoUseCase = ContainerHelper.GetRequiredService<TodoUseCase>();
         }
 
-        public async void UpdateAsync()
+
+        public async Task ToggleImportantAsync()
+        {
+            _DomainModel.IsImportant = !_DomainModel.IsImportant;
+            await UpdateAsync();
+        }
+
+        public async Task UpdateAsync()
         {
 
+            _Publisher.Publish(new TodoItemChangedEventArgs(_DomainModel.Id));
         }
 
         public async void DeleteAsync()

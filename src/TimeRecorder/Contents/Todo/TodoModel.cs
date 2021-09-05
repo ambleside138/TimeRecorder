@@ -1,4 +1,6 @@
-﻿using Reactive.Bindings;
+﻿using MessagePipe;
+using Microsoft.Extensions.DependencyInjection;
+using Reactive.Bindings;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -12,6 +14,7 @@ using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.Todo
 {
+
     internal class TodoModel : NotificationDomainModel
     {
         private readonly TodoList _TodayList = new(TodoListIdentity.Today) { Title = "今日の予定", IconKey = "WhiteBalanceSunny" };
@@ -38,16 +41,27 @@ namespace TimeRecorder.Contents.Todo
         }
         #endregion
 
+        private readonly ISubscriber<TodoItemChangedEventArgs> _Subscriber;
 
-        public TodoModel()
+
+        public TodoModel(ISubscriber<TodoItemChangedEventArgs> subscriber)
         {
-            _TodoUseCase = new TodoUseCase(ContainerHelper.Resolver.Resolve<ITodoRepository>());
-            _AuthenticationUseCase = new AuthenticationUseCase(ContainerHelper.Resolver.Resolve<IAccountRepository>());
+            _TodoUseCase = ContainerHelper.Provider.GetRequiredService<TodoUseCase>();
+            _AuthenticationUseCase = ContainerHelper.Provider.GetRequiredService<AuthenticationUseCase>();
 
             TodoListCollection.Add(_TodayList);
             TodoListCollection.Add(_ImportantList);
             TodoListCollection.Add(_FutureList);
             TodoListCollection.Add(_NoneList);
+            _Subscriber = subscriber;
+
+            // IDisposableの管理が必要
+            _Subscriber.Subscribe(s => Subscribe(s));
+        }
+
+        private void Subscribe(TodoItemChangedEventArgs args)
+        {
+
         }
 
         //private void LoadTodoList()

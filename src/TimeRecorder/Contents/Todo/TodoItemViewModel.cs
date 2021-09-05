@@ -1,4 +1,9 @@
-﻿using Reactive.Bindings;
+﻿using Livet;
+using MaterialDesignThemes.Wpf;
+using MessagePipe;
+using Microsoft.Extensions.DependencyInjection;
+using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,19 +13,38 @@ using TimeRecorder.Domain.Domain.Todo;
 
 namespace TimeRecorder.Contents.Todo
 {
-    public class TodoItemViewModel
+    public class TodoItemViewModel : ViewModel
     {
-        public TodoItem DomainModel { get; }
+
 
         public ReactivePropertySlim<string> TemporaryTitle { get; }
 
         public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
+        private readonly TodoItemModel _TodoItemModel;
+
+        public ReadOnlyReactivePropertySlim<bool> IsImportant { get; }
+
+        public ReactivePropertySlim<string> ImportantToggleDescription { get; } = new();
+
+        public ReactivePropertySlim<PackIconKind> ImportantToggleIcon { get; } = new();
+
         public TodoItemViewModel(TodoItem item)
         {
-            DomainModel = item;
+            _TodoItemModel = new TodoItemModel(item, ContainerHelper.Provider.GetRequiredService<IPublisher<TodoItemChangedEventArgs>>());
 
             TemporaryTitle = new ReactivePropertySlim<string>(item.Title);
+
+            IsImportant = item.ObserveProperty(i => i.IsImportant)
+                              .ToReadOnlyReactivePropertySlim();
+
+            IsImportant.Subscribe(important =>
+            {
+                ImportantToggleDescription.Value = important ? "重要度の削除" : "重要としてマークする";
+                ImportantToggleIcon.Value = important ? PackIconKind.Star : PackIconKind.StarOutline;
+            }).AddTo(CompositeDisposable);
         }
+
+        public async void ToggleImportantAsync() => await _TodoItemModel.ToggleImportantAsync();
     }
 }

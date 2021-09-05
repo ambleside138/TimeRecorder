@@ -27,7 +27,7 @@ namespace TimeRecorder.Contents.Archive
 
         public ArchiveManagerModel()
         {
-            _GetDailyWorkRecordHeadersUseCase = new GetDailyWorkRecordHeadersUseCase(ContainerHelper.Resolver.Resolve<IDailyWorkRecordQueryService>());
+            _GetDailyWorkRecordHeadersUseCase = new GetDailyWorkRecordHeadersUseCase(ContainerHelper.GetRequiredService<IDailyWorkRecordQueryService>());
 
             TargetDate = new ReactivePropertySlim<DateTime>(DateTime.Today);
             TargetDate.Subscribe(_ => Load()).AddTo(_Disposables);

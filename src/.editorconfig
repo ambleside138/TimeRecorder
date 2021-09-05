@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# IDE0022: メソッドにブロック本体を使用する
+csharp_style_expression_bodied_methods = when_on_single_line

@@ -17,7 +17,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Driver.CsvDriv
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Repository.GoogleAPI", "TimeRecorder.Repository.GoogleAPI\TimeRecorder.Repository.GoogleAPI.csproj", "{6BD0CE3E-75D1-4581-8C0A-19E51D37C718}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimeRecorder.Repository.Firebase", "TimeRecorder.Repository.Firebase\TimeRecorder.Repository.Firebase.csproj", "{3A63CB31-60BF-47AA-8E2C-286352DF9AB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TimeRecorder.Repository.Firebase", "TimeRecorder.Repository.Firebase\TimeRecorder.Repository.Firebase.csproj", "{3A63CB31-60BF-47AA-8E2C-286352DF9AB0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3180B650-F581-47E7-93EA-8FB8F1E2AD33}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

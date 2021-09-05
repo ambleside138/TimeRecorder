@@ -23,6 +23,14 @@ namespace TimeRecorder.Contents.Todo
         public TodoView()
         {
             InitializeComponent();
+
+            var t = new TextBox();
+            t.TextChanged += T_TextChanged;
+        }
+
+        private void T_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

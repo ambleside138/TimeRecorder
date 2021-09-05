@@ -34,14 +34,14 @@ namespace TimeRecorder.Contents.Exporter
         public ExporterModel()
         {
             _ExportMonthlyReportUseCase = new ExportMonthlyReportUseCase(
-                ContainerHelper.Resolver.Resolve<IDailyWorkRecordQueryService>(),
-                ContainerHelper.Resolver.Resolve<IReportDriver>());
+                ContainerHelper.GetRequiredService<IDailyWorkRecordQueryService>(),
+                ContainerHelper.GetRequiredService<IReportDriver>());
 
-            _WorkingHourUseCase = new WorkingHourUseCase(ContainerHelper.Resolver.Resolve<IWorkingHourRepository>());
+            _WorkingHourUseCase = new WorkingHourUseCase(ContainerHelper.GetRequiredService<IWorkingHourRepository>());
            
             _ImportWorkingHourUseCase = new ImportWorkingHourUseCase(
-                ContainerHelper.Resolver.Resolve<IWorkingHourRepository>(),
-                ContainerHelper.Resolver.Resolve<IWorkingHourImportDriver>());
+                ContainerHelper.GetRequiredService<IWorkingHourRepository>(),
+                ContainerHelper.GetRequiredService<IWorkingHourImportDriver>());
 
             WorkingHourImportUrl = UserConfigurationManager.Instance.GetConfiguration<WorkingHourImportApiUrlConfig>(ConfigKey.WorkingHourImportApiUrl)?.URL ?? "";
         }

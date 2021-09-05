@@ -107,13 +107,13 @@
                         Grid.Column="2"
                         Width="24"
                         Height="24"
-                        MethodName="ToggleImportStatus"
+                        MethodName="ToggleImportantAsync"
                         Style="{StaticResource MaterialDesignIconButton}"
-                        ToolTip="重要としてマークする">
+                        ToolTip="{Binding ImportantToggleDescription.Value}">
                         <materialDesign:PackIcon
                             Width="16"
                             Height="16"
-                            Kind="StarOutline" />
+                            Kind="{Binding ImportantToggleIcon.Value}" />
                     </c:CallMethodButton>
                 </Grid>
             </DataTemplate>

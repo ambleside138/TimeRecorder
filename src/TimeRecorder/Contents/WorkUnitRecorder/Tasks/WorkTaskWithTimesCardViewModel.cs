@@ -190,7 +190,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             if(now.Date == selectedDate)
             {
                 // もう少しお行儀のいい書き方はないものか...
-                var usecase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.Resolver.Resolve<IWorkingTimeQueryService>());
+                var usecase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.GetRequiredService<IWorkingTimeQueryService>());
                 var list = usecase.SelectByYmd(selectedDate.ToYmd());
                 var lastTime = list.Where(i => i.TimePeriod.IsFuture == false)
                                    .Where(i => i.TimePeriod.IsStopped)

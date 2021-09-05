@@ -60,13 +60,13 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
         public WorkUnitRecorderModel()
         {
             _WorkTaskUseCase = new WorkTaskUseCase(
-                                        ContainerHelper.Resolver.Resolve<IWorkTaskRepository>(), 
-                                        ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>());
+                                        ContainerHelper.GetRequiredService<IWorkTaskRepository>(), 
+                                        ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>());
             _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(
-                                            ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
-                                            ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());
-            _GetWorkingTimeForTimelineUseCase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.Resolver.Resolve<IWorkingTimeQueryService>());
-            _GetWorkTaskWithTimesUseCase = new GetWorkTaskWithTimesUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskWithTimesQueryService>());
+                                            ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>(),
+                                            ContainerHelper.GetRequiredService<IWorkTaskRepository>());
+            _GetWorkingTimeForTimelineUseCase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.GetRequiredService<IWorkingTimeQueryService>());
+            _GetWorkTaskWithTimesUseCase = new GetWorkTaskWithTimesUseCase(ContainerHelper.GetRequiredService<IWorkTaskWithTimesQueryService>());
 
             ObjectChangedNotificator.Instance.WorkTaskEdited += Load;
             MessageBroker.Default.Subscribe<WorkTaskRegistedEventArg>(_ => Load());
@@ -86,9 +86,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
             var maps = UserConfigurationManager.Instance.GetConfiguration<ScheduleTitleMapConfig>(ConfigKey.ScheduleTitleMap);
 
             return new ImportTaskFromCalendarUseCase(
-                ContainerHelper.Resolver.Resolve<IWorkTaskRepository>(),
-                ContainerHelper.Resolver.Resolve<IScheduledEventRepository>(),
-                ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
+                ContainerHelper.GetRequiredService<IWorkTaskRepository>(),
+                ContainerHelper.GetRequiredService<IScheduledEventRepository>(),
+                ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>(),
                 config.WorkTaskBuilderConfig,
                 maps?.ScheduleTitleMaps);
         }

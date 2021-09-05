@@ -4,6 +4,8 @@ using Livet.EventListeners;
 using Livet.Messaging;
 using Livet.Messaging.IO;
 using Livet.Messaging.Windows;
+using MessagePipe;
+using Microsoft.Extensions.DependencyInjection;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
@@ -26,7 +28,7 @@ namespace TimeRecorder.Contents.Todo
 
         //public List<INavigationItem> SideMenuItems { get; } = new() { new NavigationIconButtonViewModel { Title = "ほんじつ" }, new DividerNavigationItemViewModel(), new NavigationIconButtonViewModel { Title = "重要" }, };
 
-        private readonly TodoModel _Model = new();
+        private readonly TodoModel _Model = new(ContainerHelper.Provider.GetRequiredService<ISubscriber<TodoItemChangedEventArgs>>());
 
 
         public ReactivePropertySlim<string> NewTodoTitle { get; } = new();
@@ -141,7 +143,7 @@ namespace TimeRecorder.Contents.Todo
             if (selectedItem == null)
                 return;
 
-            _Model.DeleteTodoItem(CurrentTodoList.Id, selectedItem.DomainModel.Id);
+            //_Model.DeleteTodoItem(CurrentTodoList.Id, selectedItem.DomainModel.Id);
         }
 
         private void ClearTodoItemSelection()
