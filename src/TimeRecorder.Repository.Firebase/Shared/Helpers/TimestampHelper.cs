@@ -11,12 +11,13 @@ namespace TimeRecorder.Repository.Firebase.Shared.Helpers
     {
         public static Timestamp ToTimestamp(this DateTime value)
         {
-            return Timestamp.FromDateTime(value);
+            DateTime utc = TimeZoneInfo.ConvertTimeToUtc(value);
+            return Timestamp.FromDateTime(utc);
         }
 
         public static Timestamp? ToTimestamp(this DateTime? value)
         {
-            return value.HasValue ? Timestamp.FromDateTime(value.Value) : null;
+            return value.HasValue ? value.Value.ToTimestamp() : null;
         }
     }
 }

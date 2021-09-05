@@ -29,6 +29,20 @@ namespace TimeRecorder.Contents.Todo
             _TodoUseCase = ContainerHelper.GetRequiredService<TodoUseCase>();
         }
 
+        public async Task ToggleCompletedAsync(bool completed)
+        {
+            if(completed)
+            {
+                _DomainModel.Complete();
+            }
+            else
+            {
+                _DomainModel.RevertComplete();
+            }
+
+            await UpdateAsync();
+        }
+
 
         public async Task ToggleImportantAsync()
         {
@@ -38,6 +52,7 @@ namespace TimeRecorder.Contents.Todo
 
         public async Task UpdateAsync()
         {
+            await _TodoUseCase.EditAsync(_DomainModel);
 
             _Publisher.Publish(new TodoItemChangedEventArgs(_DomainModel.Id));
         }

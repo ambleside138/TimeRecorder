@@ -40,7 +40,7 @@ namespace TimeRecorder.Domain.Domain.Todo
         public DateTime? CompletedDateTime
         {
             get => _CompletedDateTime;
-            set => RaisePropertyChangedIfSet(ref _CompletedDateTime, value);
+            private set => RaisePropertyChangedIfSet(ref _CompletedDateTime, value);
         }
         #endregion
 
@@ -109,6 +109,16 @@ namespace TimeRecorder.Domain.Domain.Todo
             };
         }
 
+
+        public void Complete() => CompleteCore(true);
+
+        public void RevertComplete() => CompleteCore(false);
+
+
+        private void CompleteCore(bool isComplete)
+        {
+            CompletedDateTime = isComplete ? DateTime.Now : null;
+        }
 
         private string GetDebuggerDisplay()
         {

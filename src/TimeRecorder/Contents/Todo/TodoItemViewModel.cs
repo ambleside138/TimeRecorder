@@ -23,6 +23,8 @@ namespace TimeRecorder.Contents.Todo
 
         private readonly TodoItemModel _TodoItemModel;
 
+        public ReactiveProperty<bool> IsCompleted { get; }
+
         public ReadOnlyReactivePropertySlim<bool> IsImportant { get; }
 
         public ReactivePropertySlim<string> ImportantToggleDescription { get; } = new();
@@ -35,8 +37,16 @@ namespace TimeRecorder.Contents.Todo
 
             TemporaryTitle = new ReactivePropertySlim<string>(item.Title);
 
+            IsCompleted = item.ObserveProperty(i => i.IsCompleted)
+                              .ToReactiveProperty(initialValue: item.IsCompleted, mode: ReactivePropertyMode.DistinctUntilChanged)
+                              .AddTo(CompositeDisposable);
+
+            IsCompleted.Subscribe(_ => ToggleImportantAsync(IsCompleted.Value) )
+                       .AddTo(CompositeDisposable);
+
             IsImportant = item.ObserveProperty(i => i.IsImportant)
-                              .ToReadOnlyReactivePropertySlim();
+                              .ToReadOnlyReactivePropertySlim()
+                              .AddTo(CompositeDisposable);
 
             IsImportant.Subscribe(important =>
             {
@@ -45,6 +55,8 @@ namespace TimeRecorder.Contents.Todo
             }).AddTo(CompositeDisposable);
         }
 
-        public async void ToggleImportantAsync() => await _TodoItemModel.ToggleImportantAsync();
+        public async void ToggleCompletedAsync() => await _TodoItemModel.ToggleImportantAsync();
+
+        public async void ToggleImportantAsync(bool completed) => await _TodoItemModel.ToggleCompletedAsync(completed);
     }
 }

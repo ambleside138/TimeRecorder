@@ -26,6 +26,7 @@
                 <ResourceDictionary Source="../../NavigationRail/NavigationRailResource.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
+            <!-- タスクリストコントロール -->
             <DataTemplate DataType="{x:Type control:NavigationIconButtonViewModel}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -82,6 +83,7 @@
                 </Grid>
             </DataTemplate>
 
+            <!--TodoItemコントロール-->
             <DataTemplate DataType="{x:Type local:TodoItemViewModel}">
                 <Grid Height="48" Margin="16,0">
                     <Grid.ColumnDefinitions>
@@ -94,6 +96,7 @@
                         Width="24"
                         Height="24"
                         MinWidth="0"
+                        IsChecked="{Binding IsCompleted.Value}"
                         Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}" />
 
                     <TextBlock
@@ -432,7 +435,7 @@
 
         <!--  タブの上から無理やりアカウント情報を表示する  -->
         <Grid
-            Margin="0,4"
+            Margin="0,8"
             HorizontalAlignment="Left"
             VerticalAlignment="Top">
 
