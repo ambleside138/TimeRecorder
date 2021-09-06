@@ -62,10 +62,8 @@ namespace TimeRecorder.Repository.Firebase
 
 
             // Create a custom Firestore Client using custom credentials
-            var grpcChannel = new Channel("firestore.googleapis.com", channelCredentials);
-#pragma warning disable CS0618 // 型またはメンバーが旧型式です
+            ChannelBase grpcChannel = new Channel("firestore.googleapis.com", channelCredentials);
             Firestore.FirestoreClient grcpClient = new(grpcChannel);
-#pragma warning restore CS0618 // 型またはメンバーが旧型式です
             FirestoreClientImpl firestoreClient = new(grcpClient, FirestoreSettings.GetDefault());
 
             return await FirestoreDb.CreateAsync(_FirebaseProjectId, firestoreClient);
