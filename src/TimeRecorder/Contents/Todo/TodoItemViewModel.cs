@@ -15,7 +15,7 @@ namespace TimeRecorder.Contents.Todo
 {
     public class TodoItemViewModel : ViewModel
     {
-
+        public bool IsDoneFilter { get; init; }
 
         public ReactivePropertySlim<string> TemporaryTitle { get; }
 

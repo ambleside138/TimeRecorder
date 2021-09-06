@@ -24,9 +24,10 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../NavigationRail/NavigationRailResource.xaml" />
+                <ResourceDictionary Source="../../Styles/ExpanderStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- タスクリストコントロール -->
+            <!--  タスクリストコントロール  -->
             <DataTemplate DataType="{x:Type control:NavigationIconButtonViewModel}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -83,7 +84,7 @@
                 </Grid>
             </DataTemplate>
 
-            <!--TodoItemコントロール-->
+            <!--  TodoItemコントロール  -->
             <DataTemplate DataType="{x:Type local:TodoItemViewModel}">
                 <Grid Height="48" Margin="16,0">
                     <Grid.ColumnDefinitions>
@@ -122,10 +123,16 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type local:TodoItemDoneFilterViewModel}">
-                <Expander>
+                <Expander
+                    Width="128"
+                    Height="32"
+                    Margin="0,8"
+                    HorizontalAlignment="Left"
+                    materialDesign:ExpanderAssist.HorizontalHeaderPadding="4"
+                    Style="{StaticResource LeftyMaterialDesignExpander}">
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="完了済み" />
+                            <TextBlock Style="{StaticResource MaterialDesignHeadline6TextBlock}" Text="完了済み" />
                         </StackPanel>
                     </Expander.Header>
                 </Expander>
@@ -255,6 +262,14 @@
                                     <Setter Property="Padding" Value="0" />
                                     <Setter Property="style:ListBoxItemAssist.CornerRadius" Value="4" />
                                     <Setter Property="IsSelected" Value="{Binding IsSelected.Value, Mode=TwoWay}" />
+
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsDoneFilter}" Value="True">
+                                            <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="Width" Value="128" />
+                                            <Setter Property="HorizontalAlignment" Value="Left" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
                                 </Style>
                             </ListBox.ItemContainerStyle>
                         </ListBox>

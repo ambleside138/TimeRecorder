@@ -11,6 +11,7 @@ namespace TimeRecorder.Contents.Todo
     {
         public TodoItemDoneFilterViewModel(TodoItem item) : base(item)
         {
+            IsDoneFilter = true;
         }
     }
 }
