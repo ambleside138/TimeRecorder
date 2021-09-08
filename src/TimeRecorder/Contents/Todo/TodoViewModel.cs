@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeRecorder.Contents.Todo.TodoItems;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.NavigationRail;
@@ -57,10 +58,10 @@ namespace TimeRecorder.Contents.Todo
                               .ToReadOnlyReactiveCollection(i => {
                                   if (i.Id == TodoItemIdentity.DoneFilter)
                                   {
-                                      return new TodoItemDoneFilterViewModel(i);
+                                      return new TodoItemDoneFilterViewModel(i, ContainerHelper.Provider.GetRequiredService<IPublisher<TodoItemFilterEventArgs>>());
                                   }
                                   else
-                                      return new TodoItemViewModel(i);
+                                      return new TodoItemViewModel(i, ContainerHelper.Provider.GetRequiredService<ISubscriber<TodoItemFilterEventArgs>>());
                               })
                               .AddTo(CompositeDisposable);
 

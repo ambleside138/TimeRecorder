@@ -9,6 +9,7 @@
     xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:TimeRecorder.Contents.Todo"
+    xmlns:localItem="clr-namespace:TimeRecorder.Contents.Todo.TodoItems"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
@@ -85,8 +86,8 @@
             </DataTemplate>
 
             <!--  TodoItemコントロール  -->
-            <DataTemplate DataType="{x:Type local:TodoItemViewModel}">
-                <Grid Height="48" Margin="16,0">
+            <DataTemplate DataType="{x:Type localItem:TodoItemViewModel}">
+                <Grid Height="48" Margin="16,0" Visibility="{Binding IsVisible.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -122,11 +123,13 @@
                 </Grid>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type local:TodoItemDoneFilterViewModel}">
+            <!--完了済みフィルタ-->
+            <DataTemplate DataType="{x:Type localItem:TodoItemDoneFilterViewModel}">
                 <Expander
                     Width="128"
                     Height="32"
                     Margin="0,8"
+                    IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                     HorizontalAlignment="Left"
                     materialDesign:ExpanderAssist.HorizontalHeaderPadding="4"
                     Style="{StaticResource LeftyMaterialDesignExpander}">
@@ -266,6 +269,7 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding IsDoneFilter}" Value="True">
                                             <Setter Property="Background" Value="Transparent" />
+                                            <Setter Property="style:ListBoxItemAssist.ShowSelection" Value="False" />
                                             <Setter Property="Width" Value="128" />
                                             <Setter Property="HorizontalAlignment" Value="Left" />
                                         </DataTrigger>

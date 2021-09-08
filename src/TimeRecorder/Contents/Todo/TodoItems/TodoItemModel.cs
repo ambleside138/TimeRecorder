@@ -10,10 +10,9 @@ using TimeRecorder.Domain.UseCase.Todo;
 
 namespace TimeRecorder.Contents.Todo
 {
-    interface ITodoItemModel { }
 
 
-    class TodoItemModel : ITodoItemModel
+    class TodoItemModel
     {
         private readonly TodoItem _DomainModel;
 

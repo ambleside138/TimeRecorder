@@ -4,6 +4,45 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:style="clr-namespace:TimeRecorder.Styles">
 
+    <Style x:Key="FilterMaterialDesignExpanderToggleButton" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border Background="Transparent">
+                        <VisualStateManager.VisualStateGroups>
+                            <VisualStateGroup x:Name="CheckStates">
+                                <VisualState x:Name="Checked">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ExpandPathRotateTransform" Storyboard.TargetProperty="Angle">
+                                            <EasingDoubleKeyFrame KeyTime="{StaticResource ExpandKeyTime}" Value="90"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                                <VisualState x:Name="Unchecked">
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetName="ExpandPathRotateTransform" Storyboard.TargetProperty="Angle">
+                                            <EasingDoubleKeyFrame KeyTime="{StaticResource CollapseKeyTime}" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </VisualState>
+                            </VisualStateGroup>
+                        </VisualStateManager.VisualStateGroups>
+
+                        <materialDesign:PackIcon x:Name="ExpandPath" Kind="ChevronRight"
+                                      Opacity="0.38" Height="24" Width="24"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      RenderTransformOrigin="0.5 0.5">
+                            <materialDesign:PackIcon.RenderTransform>
+                                <RotateTransform x:Name="ExpandPathRotateTransform"/>
+                            </materialDesign:PackIcon.RenderTransform>
+                        </materialDesign:PackIcon>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <Style x:Key="MaterialDesignHorizontalHeaderStyle" TargetType="{x:Type ToggleButton}">
         <Setter Property="Background" Value="Transparent" />
 
@@ -34,7 +73,7 @@
                                 IsChecked="{Binding Path=IsChecked, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
                                 RenderTransformOrigin="0.5 0.5">
                                 <ToggleButton.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignExpanderToggleButton}" TargetType="{x:Type ToggleButton}">
+                                    <Style BasedOn="{StaticResource FilterMaterialDesignExpanderToggleButton}" TargetType="{x:Type ToggleButton}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ExpandDirection, RelativeSource={RelativeSource AncestorType=Expander, AncestorLevel=1}}" Value="Up">
                                                 <Setter Property="RenderTransform">
