@@ -14,7 +14,8 @@ namespace TimeRecorder.Contents.Todo
 
     class TodoItemModel
     {
-        private readonly TodoItem _DomainModel;
+        public TodoItem DomainModel { get; }
+
 
         private readonly TodoUseCase _TodoUseCase;
 
@@ -23,7 +24,7 @@ namespace TimeRecorder.Contents.Todo
 
         public TodoItemModel(TodoItem todoItem, IPublisher<TodoItemChangedEventArgs> publisher)
         {
-            _DomainModel = todoItem;
+            DomainModel = todoItem;
             _Publisher = publisher;
             _TodoUseCase = ContainerHelper.GetRequiredService<TodoUseCase>();
         }
@@ -32,11 +33,11 @@ namespace TimeRecorder.Contents.Todo
         {
             if(completed)
             {
-                _DomainModel.Complete();
+                DomainModel.Complete();
             }
             else
             {
-                _DomainModel.RevertComplete();
+                DomainModel.RevertComplete();
             }
 
             await UpdateAsync();
@@ -45,15 +46,15 @@ namespace TimeRecorder.Contents.Todo
 
         public async Task ToggleImportantAsync()
         {
-            _DomainModel.IsImportant = !_DomainModel.IsImportant;
+            DomainModel.IsImportant = !DomainModel.IsImportant;
             await UpdateAsync();
         }
 
         public async Task UpdateAsync()
         {
-            await _TodoUseCase.EditAsync(_DomainModel);
+            await _TodoUseCase.EditAsync(DomainModel);
 
-            _Publisher.Publish(new TodoItemChangedEventArgs(_DomainModel.Id));
+            _Publisher.Publish(new TodoItemChangedEventArgs(DomainModel.Id));
         }
 
         public async void DeleteAsync()

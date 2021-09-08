@@ -2,3 +2,6 @@
 
 # IDE0022: メソッドにブロック本体を使用する
 csharp_style_expression_bodied_methods = when_on_single_line
+
+# IDE0011: 波かっこを追加します
+csharp_prefer_braces = when_multiline

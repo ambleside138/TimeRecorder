@@ -87,7 +87,10 @@
 
             <!--  TodoItemコントロール  -->
             <DataTemplate DataType="{x:Type localItem:TodoItemViewModel}">
-                <Grid Height="48" Margin="16,0" Visibility="{Binding IsVisible.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid
+                    Height="48"
+                    Margin="16,0"
+                    Visibility="{Binding IsVisible.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -123,15 +126,15 @@
                 </Grid>
             </DataTemplate>
 
-            <!--完了済みフィルタ-->
+            <!--  完了済みフィルタ  -->
             <DataTemplate DataType="{x:Type localItem:TodoItemDoneFilterViewModel}">
                 <Expander
                     Width="128"
                     Height="32"
                     Margin="0,8"
-                    IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                     HorizontalAlignment="Left"
                     materialDesign:ExpanderAssist.HorizontalHeaderPadding="4"
+                    IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
                     Style="{StaticResource LeftyMaterialDesignExpander}">
                     <Expander.Header>
                         <StackPanel Orientation="Horizontal">
@@ -343,6 +346,7 @@
                                         Width="24"
                                         Height="24"
                                         MinWidth="0"
+                                        IsChecked="{Binding TodoItems/IsCompleted.Value}"
                                         Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}" />
 
                                     <TextBox
@@ -358,13 +362,14 @@
                                         Grid.Column="2"
                                         Width="24"
                                         Height="24"
-                                        MethodName="ToggleImportStatus"
+                                        MethodName="ToggleImportantAsync"
+                                        MethodTarget="{Binding TodoItems/}"
                                         Style="{StaticResource MaterialDesignIconButton}"
-                                        ToolTip="重要としてマークする">
+                                        ToolTip="{Binding TodoItems/ImportantToggleDescription.Value}">
                                         <materialDesign:PackIcon
                                             Width="16"
                                             Height="16"
-                                            Kind="StarOutline" />
+                                            Kind="{Binding TodoItems/ImportantToggleIcon.Value}" />
                                     </c:CallMethodButton>
                                 </Grid>
                             </Grid>

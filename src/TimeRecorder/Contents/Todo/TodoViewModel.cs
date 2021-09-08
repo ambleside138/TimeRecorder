@@ -14,6 +14,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Data;
 using TimeRecorder.Contents.Todo.TodoItems;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Todo;
@@ -31,6 +32,8 @@ namespace TimeRecorder.Contents.Todo
 
         private readonly TodoModel _Model = new(ContainerHelper.Provider.GetRequiredService<ISubscriber<TodoItemChangedEventArgs>>());
 
+
+        public ListCollectionView SortedTodoItems { get; }
 
         public ReactivePropertySlim<string> NewTodoTitle { get; } = new();
 
@@ -65,6 +68,8 @@ namespace TimeRecorder.Contents.Todo
                               })
                               .AddTo(CompositeDisposable);
 
+            SetLiveSorting();
+
             NavigationItems.First().IsSelected = true;
 
             LoginStatus = _Model.ToReactivePropertySlimAsSynchronized(m => m.LoginStatus)
@@ -72,6 +77,30 @@ namespace TimeRecorder.Contents.Todo
 
             IsSelected.Subscribe(i => Handler(i)).AddTo(CompositeDisposable);
             SelectedListIndex.Subscribe(i => Handler(IsSelected.Value)).AddTo(CompositeDisposable);
+        }
+
+        private void SetLiveSorting()
+        {
+            // Salaryプロパティでソート
+            var view = CollectionViewSource.GetDefaultView(TodoItems);
+            view.SortDescriptions.Add(new SortDescription(nameof(TodoItemViewModel.SortValue), ListSortDirection.Ascending));
+
+            // Salaryのソートをリアルタイムソートに設定する
+            var liveShaping = view as ICollectionViewLiveShaping;
+            if (liveShaping == null)
+            {
+                // ICollectionViewLiveShapingを実装していない場合は何もしない
+                return;
+            }
+
+            // リアルタイムソートをサポートしているか確認する
+            if (liveShaping.CanChangeLiveSorting)
+            {
+                // リアルタイムソートをサポートしている場合は対象のプロパティにSalaryを追加して
+                // リアルタイムソートを有効にする。
+                liveShaping.LiveSortingProperties.Add(nameof(TodoItemViewModel.SortValue));
+                liveShaping.IsLiveSorting = true;
+            }
         }
 
         private async void Handler(bool isselected)

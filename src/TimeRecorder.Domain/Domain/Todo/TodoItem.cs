@@ -134,5 +134,7 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
 
         public TodoItemIdentity GetIdentity() => Id;
+
+        public bool IsDoneFilter => Id == TodoItemIdentity.DoneFilter;
     }
 }

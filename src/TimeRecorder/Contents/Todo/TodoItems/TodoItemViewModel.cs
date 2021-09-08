@@ -39,6 +39,19 @@ namespace TimeRecorder.Contents.Todo.TodoItems
 
         public ReactivePropertySlim<bool> IsVisible { get; } = new ReactivePropertySlim<bool>(true);
 
+        private TodoItemFilterEventArgs _CurrentFilterCondition;
+
+        #region SortValue変更通知プロパティ
+        private string _SortValue;
+
+        public string SortValue
+        {
+            get => _SortValue;
+            set => RaisePropertyChangedIfSet(ref _SortValue, value);
+        }
+        #endregion
+
+
         public TodoItemViewModel(TodoItem item, ISubscriber<TodoItemFilterEventArgs> subscriber)
         {
             _TodoItemModel = new TodoItemModel(item, ContainerHelper.Provider.GetRequiredService<IPublisher<TodoItemChangedEventArgs>>());
@@ -49,7 +62,7 @@ namespace TimeRecorder.Contents.Todo.TodoItems
                               .ToReactiveProperty(initialValue: item.IsCompleted, mode: ReactivePropertyMode.DistinctUntilChanged)
                               .AddTo(CompositeDisposable);
 
-            IsCompleted.Subscribe(_ => ToggleImportantAsync(IsCompleted.Value) )
+            IsCompleted.Subscribe(_ => ToggleCompletedAsync(IsCompleted.Value) )
                        .AddTo(CompositeDisposable);
 
             IsImportant = item.ObserveProperty(i => i.IsImportant)
@@ -65,15 +78,57 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             _Subscriber = subscriber;
             _Subscriber?.Subscribe(args => Filter(args))
                        .AddTo(CompositeDisposable);
+
+            SetSortValue();
         }
 
-        public async void ToggleCompletedAsync() => await _TodoItemModel.ToggleImportantAsync();
+        public async void ToggleImportantAsync() => await _TodoItemModel.ToggleImportantAsync();
 
-        public async void ToggleImportantAsync(bool completed) => await _TodoItemModel.ToggleCompletedAsync(completed);
+        public async void ToggleCompletedAsync(bool completed)
+        {
+            SetSortValue();
+            Filter(_CurrentFilterCondition);
+            await _TodoItemModel.ToggleCompletedAsync(completed);
+        }
 
         private void Filter(TodoItemFilterEventArgs args)
         {
+            if (args == null)
+                return;
+
+            _CurrentFilterCondition = args;
             IsVisible.Value = args.NeedShowDoneItem ? true : IsCompleted.Value == false;
+        }
+
+        private void SetSortValue()
+        {
+            // 未完了
+            // 完了フィルタ
+            // 完了済み
+            // の順になるように調整
+
+            var ymd = "";
+
+            // type_yyyyMMddHHmmss
+            string type;
+
+            if (_TodoItemModel.DomainModel.IsDoneFilter)
+            {
+                type = "02";
+            }
+            else
+            {
+                if (IsCompleted.Value)
+                {
+                    type = "03";
+                }
+                else
+                {
+                    type = "01";
+                }
+            }
+
+            SortValue = $"{type}_{ymd}";
         }
     }
 }
