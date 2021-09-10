@@ -436,6 +436,7 @@
                                         Padding="0"
                                         HorizontalAlignment="Right"
                                         MethodName="Delete"
+                                        MethodTarget="{Binding TodoItems/}"
                                         Style="{StaticResource MaterialDesignFlatButton}"
                                         ToolTip="タスクの削除">
                                         <materialDesign:PackIcon

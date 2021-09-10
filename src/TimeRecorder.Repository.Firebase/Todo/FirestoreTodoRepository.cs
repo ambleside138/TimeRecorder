@@ -20,9 +20,10 @@ namespace TimeRecorder.Repository.Firebase.Todo
             return await new TodoDao(db, FirebaseAuthenticator.Current.UserId).SetAsync(item.Id, doc);
         }
 
-        public Task DeleteAsync(TodoItemIdentity id)
+        public async Task DeleteAsync(TodoItemIdentity id)
         {
-            throw new NotImplementedException();
+            FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
+            await new TodoDao(db, FirebaseAuthenticator.Current.UserId).DeleteAsync(id);
         }
 
         public async Task EditAsync(TodoItem item) =>  await AddAsync(item);

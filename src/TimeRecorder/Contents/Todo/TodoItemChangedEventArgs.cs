@@ -7,12 +7,22 @@ using TimeRecorder.Domain.Domain.Todo;
 
 namespace TimeRecorder.Contents.Todo
 {
+    enum ChangeType
+    {
+        Updated,
+        Deleted,
+    }
+
     class TodoItemChangedEventArgs
     {
         public TodoItemIdentity TodoItemIdentity { get; }
 
-        public TodoItemChangedEventArgs(TodoItemIdentity todoItemIdentity)
+        public ChangeType ChangeType { get; }
+
+
+        public TodoItemChangedEventArgs(ChangeType changeType, TodoItemIdentity todoItemIdentity)
         {
+            ChangeType = changeType;
             TodoItemIdentity = todoItemIdentity;
         }
     }

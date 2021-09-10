@@ -27,7 +27,6 @@ namespace TimeRecorder.Contents.Todo
 
         public ObservableCollection<TodoList> TodoListCollection { get; } = new();
 
-        public TodoItem[] TodoItems { get; private set; } = System.Array.Empty<TodoItem>();
 
         public ObservableCollection<TodoItem> FilteredTodoItems { get; } = new();
 
@@ -61,7 +60,20 @@ namespace TimeRecorder.Contents.Todo
 
         private void Subscribe(TodoItemChangedEventArgs args)
         {
-
+            switch (args.ChangeType)
+            {
+                case ChangeType.Updated:
+                    break;
+                case ChangeType.Deleted:
+                    var target = FilteredTodoItems.FirstOrDefault(i => i.Id == args.TodoItemIdentity);
+                    if(target != null)
+                    {
+                        _ = FilteredTodoItems.Remove(target);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         //private void LoadTodoList()
@@ -76,16 +88,16 @@ namespace TimeRecorder.Contents.Todo
                 LoginStatus = _AuthenticationUseCase.TrySignin();
             }
 
-            TodoItems = await _TodoUseCase.SelectAsync();
+            var todoItems = await _TodoUseCase.SelectAsync();
 
-            Filter(selectedListId);
+            Filter(todoItems, selectedListId);
         }
 
-        private void Filter(TodoListIdentity selectedListId)
+        private void Filter(TodoItem[] todoItems, TodoListIdentity selectedListId)
         {
             FilteredTodoItems.Clear();
 
-            var ownListItems = TodoItems.Where(i => i.TodoListId == selectedListId);
+            var ownListItems = todoItems.Where(i => i.TodoListId == selectedListId);
             FilteredTodoItems.AddRange(ownListItems.Where(i => i.IsCompleted == false));
 
             var doneItems = ownListItems.Where(i => i.IsCompleted).ToArray();
@@ -104,11 +116,7 @@ namespace TimeRecorder.Contents.Todo
             await LoadTodoItemsAsync(selectedListId);
         }
 
-        public void DeleteTodoItem(TodoListIdentity selectedListId, TodoItemIdentity itemIdentity)
-        {
-            _TodoUseCase.DeleteAsync(itemIdentity);
-            LoadTodoItemsAsync(selectedListId);
-        }
+
 
     }
 }

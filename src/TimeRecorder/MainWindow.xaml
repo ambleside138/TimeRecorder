@@ -87,7 +87,7 @@
     </behaviors:Interaction.Triggers>
 
 
-    <materialDesign:DialogHost x:Name="RootDialog" SnackbarMessageQueue="{Binding ElementName=Snackbar, Path=MessageQueue}">
+    <materialDesign:DialogHost x:Name="RootDialog" Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=Snackbar, Path=MessageQueue}">
         <Grid>
             <TabControl
                 Padding="16"

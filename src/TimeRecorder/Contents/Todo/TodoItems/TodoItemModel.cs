@@ -52,15 +52,14 @@ namespace TimeRecorder.Contents.Todo
 
         public async Task UpdateAsync()
         {
+            _Publisher.Publish(new TodoItemChangedEventArgs(ChangeType.Updated, DomainModel.Id));
             await _TodoUseCase.EditAsync(DomainModel);
-
-            _Publisher.Publish(new TodoItemChangedEventArgs(DomainModel.Id));
         }
 
-        public async void DeleteAsync()
+        public async Task DeleteAsync()
         {
-        // メッセージ機構でTodoModelに通知したい
-        // https://github.com/Cysharp/MessagePipe
+            _Publisher.Publish(new TodoItemChangedEventArgs(ChangeType.Deleted, DomainModel.Id));
+            await _TodoUseCase.DeleteAsync(DomainModel.Id);
         }
     }
 }

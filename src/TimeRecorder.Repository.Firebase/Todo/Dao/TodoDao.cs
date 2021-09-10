@@ -50,11 +50,12 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
         }
 
 
+        public async Task DeleteAsync(TodoItemIdentity docId) => await GetCollectionReference().Document(docId.Value).DeleteAsync();
 
-        private DocumentReference GetRootDocumentReference()
-        {
-            return _FirestoreDb.Collection(CollectionName).Document(_UserId);
-        }
+
+        private DocumentReference GetRootDocumentReference() => _FirestoreDb.Collection(CollectionName).Document(_UserId);
+
+        private CollectionReference GetCollectionReference() => _FirestoreDb.Collection($"{CollectionName}/{_UserId}/{SubCollectionName}");
 
 
         /// <summary>

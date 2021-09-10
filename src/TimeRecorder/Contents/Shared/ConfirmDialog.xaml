@@ -1,0 +1,67 @@
+﻿<UserControl
+    x:Class="TimeRecorder.Contents.Shared.ConfirmDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:TimeRecorder.Contents.Shared"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:system="clr-namespace:System;assembly=mscorlib"
+    MinWidth="320"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    Background="Transparent"
+    mc:Ignorable="d">
+
+
+    <Border Background="{StaticResource MaterialDesignPaper}" CornerRadius="8">
+        <Grid Margin="16">
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <TextBlock
+                FontWeight="Bold"
+                Style="{StaticResource MaterialDesignHeadline5TextBlock}"
+                Text="{Binding Title.Value}" />
+
+            <TextBlock
+                Grid.Row="1"
+                Margin="0,8"
+                Style="{StaticResource MaterialDesignBody1TextBlock}"
+                Text="{Binding Description.Value}" />
+
+            <StackPanel
+                Grid.Row="3"
+                Margin="0,16,0,0"
+                HorizontalAlignment="Right"
+                Orientation="Horizontal">
+                <Button
+                    Background="{DynamicResource MaterialDesignValidationErrorBrush}"
+                    BorderBrush="{DynamicResource MaterialDesignValidationErrorBrush}"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                    Content="{Binding YesButtonText.Value}"
+                    IsDefault="True"
+                    Style="{DynamicResource MaterialDesignRaisedButton}">
+                    <Button.CommandParameter>
+                        <system:Boolean>True</system:Boolean>
+                    </Button.CommandParameter>
+                </Button>
+                <Button
+                    Margin="8,0,0,0"
+                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                    Content="{Binding NoButtonText.Value}"
+                    IsCancel="True"
+                    Style="{DynamicResource MaterialDesignOutlinedButton}">
+                    <Button.CommandParameter>
+                        <system:Boolean>False</system:Boolean>
+                    </Button.CommandParameter>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Border>
+
+</UserControl>

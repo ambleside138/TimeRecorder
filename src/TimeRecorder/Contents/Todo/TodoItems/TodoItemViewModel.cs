@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeRecorder.Contents.Shared;
 using TimeRecorder.Domain.Domain.Todo;
 
 namespace TimeRecorder.Contents.Todo.TodoItems
@@ -89,6 +90,24 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             SetSortValue();
             Filter(_CurrentFilterCondition);
             await _TodoItemModel.ToggleCompletedAsync(completed);
+        }
+
+        public async void Delete()
+        {
+            // 確認してから削除する
+            var view = new ConfirmDialog
+            {
+                DataContext = new ConfirmDialogViewModel("タスクの削除", $"{_TodoItemModel.DomainModel.Title}は完全に削除されます。", "削除", "キャンセル")
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog");
+
+            if((bool)result)
+            {
+                IsSelected.Value = false;
+                await _TodoItemModel.DeleteAsync();
+            }
         }
 
         private void Filter(TodoItemFilterEventArgs args)
