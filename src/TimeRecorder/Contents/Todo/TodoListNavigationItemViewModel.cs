@@ -1,4 +1,5 @@
 ﻿using Reactive.Bindings;
+using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace TimeRecorder.Contents.Todo
     public class TodoListNavigationItemViewModel : NavigationIconButtonViewModel
     {
 
-        public ReactivePropertySlim<int> TaskCount { get; } = new();
+        public ReadOnlyReactivePropertySlim<int> TaskCount { get; }
 
         public TodoListNavigationItemViewModel(TodoList todoList)
         {
@@ -23,6 +24,10 @@ namespace TimeRecorder.Contents.Todo
 
             IconKey = todoList.IconKey;
             Title = todoList.Title;
+
+            TaskCount = todoList.ObserveProperty(i => i.FilteredCount)
+                                .ToReadOnlyReactivePropertySlim()
+                                .AddTo(CompositeDisposable);
         }
 
         public TodoList TodoList { get; }

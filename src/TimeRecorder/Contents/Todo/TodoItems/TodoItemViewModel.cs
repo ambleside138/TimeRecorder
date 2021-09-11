@@ -17,8 +17,10 @@ namespace TimeRecorder.Contents.Todo.TodoItems
     /// <summary>
     /// タスク項目のViewModelを表します
     /// </summary>
-    public class TodoItemViewModel : ViewModel
+    public class TodoItemViewModel : ViewModel, IEquatable<TodoItemViewModel>
     {
+        public TodoItemIdentity Identity => _TodoItemModel.DomainModel.Id;
+
         public bool IsDoneFilter { get; init; }
 
         public ReactivePropertySlim<string> TemporaryTitle { get; }
@@ -58,6 +60,15 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             _TodoItemModel = new TodoItemModel(item, ContainerHelper.Provider.GetRequiredService<IPublisher<TodoItemChangedEventArgs>>());
 
             TemporaryTitle = new ReactivePropertySlim<string>(item.Title);
+            TemporaryTitle.Subscribe(t =>
+            {
+                if (t == _TodoItemModel.DomainModel.Title)
+                    return;
+
+                _TodoItemModel.DomainModel.Title = TemporaryTitle.Value;
+                UpdateAsync();
+            }).AddTo(CompositeDisposable);
+
 
             IsCompleted = item.ObserveProperty(i => i.IsCompleted)
                               .ToReactiveProperty(initialValue: item.IsCompleted, mode: ReactivePropertyMode.DistinctUntilChanged)
@@ -92,6 +103,8 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             await _TodoItemModel.ToggleCompletedAsync(completed);
         }
 
+        public async void UpdateAsync() => await _TodoItemModel.UpdateAsync();
+
         public async void Delete()
         {
             // 確認してから削除する
@@ -118,6 +131,11 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             _CurrentFilterCondition = args;
             IsVisible.Value = args.NeedShowDoneItem ? true : IsCompleted.Value == false;
         }
+
+        public void Select() => IsSelected.Value = true;
+
+        public void ClearSelection() => IsSelected.Value = false;
+
 
         private void SetSortValue()
         {
@@ -149,5 +167,9 @@ namespace TimeRecorder.Contents.Todo.TodoItems
 
             SortValue = $"{type}_{ymd}";
         }
+
+        public override bool Equals(object obj) => obj is TodoItemViewModel model && EqualityComparer<TodoItemIdentity>.Default.Equals(Identity, model.Identity);
+        public override int GetHashCode() => HashCode.Combine(Identity);
+        bool IEquatable<TodoItemViewModel>.Equals(TodoItemViewModel other) => Equals(other);
     }
 }

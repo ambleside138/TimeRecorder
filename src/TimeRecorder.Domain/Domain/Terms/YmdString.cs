@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using TimeRecorder.Domain.Utility;
+using TimeRecorder.Domain.Utility.SystemClocks;
 
 namespace TimeRecorder.Domain.Domain
 {
@@ -13,9 +14,11 @@ namespace TimeRecorder.Domain.Domain
     /// </summary>
     public class YmdString : ValueObject<YmdString>, IComparable<YmdString>
     {
-        public static YmdString Empty => new YmdString("");
+        public static YmdString Empty => new("");
 
-        public static YmdString NoPlan => new YmdString("99991231");
+        public static YmdString NoPlan => new("99991231");
+
+        public static YmdString Today => new(SystemClockServiceLocator.Current.Now);
 
         public string Value { get; }
 

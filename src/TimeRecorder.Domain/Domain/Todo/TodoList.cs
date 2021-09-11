@@ -6,6 +6,47 @@ using System.Threading.Tasks;
 
 namespace TimeRecorder.Domain.Domain.Todo
 {
+    public class TodayTodoList : TodoList
+    {
+        public TodayTodoList()
+            : base(TodoListIdentity.Today) 
+        {
+            Title = "今日の予定";
+            IconKey = "WhiteBalanceSunny";
+        }
+
+        public override bool MatchTodoItem(TodoItem item) => item.PlanDate == YmdString.Today;
+    }
+
+    public class ImportantTodoList : TodoList
+    {
+        public ImportantTodoList()
+            :base(TodoListIdentity.Important) 
+        {
+            Title = "重要";
+            IconKey = "StarOutline";
+        }
+
+        public override bool MatchTodoItem(TodoItem item) => item.IsImportant;
+    }
+
+    public class FutureTodoList : TodoList
+    {
+        public FutureTodoList()
+            : base(TodoListIdentity.Future) 
+        {
+            Title = "今後の予定";
+            IconKey = "Calendar";
+        }
+
+        public override bool MatchTodoItem(TodoItem item)
+        {
+            return item.PlanDate.CompareTo(YmdString.Today) > 0;
+        }
+    }
+
+
+
     public class TodoList : Entity<TodoList>
     {
         public TodoListIdentity Id { get; private set; }
@@ -56,6 +97,18 @@ namespace TimeRecorder.Domain.Domain.Todo
         #endregion
 
 
+        #region FilteredCount変更通知プロパティ
+        private int _FilteredCount;
+
+        public int FilteredCount
+        {
+            get => _FilteredCount;
+            set => RaisePropertyChangedIfSet(ref _FilteredCount, value);
+        }
+        #endregion
+
+
+
         public TodoList(TodoListIdentity id)
         {
             Id = id;
@@ -65,6 +118,11 @@ namespace TimeRecorder.Domain.Domain.Todo
         protected override IEnumerable<object> GetIdentityValues()
         {
             yield return Id;
+        }
+
+        public virtual bool MatchTodoItem(TodoItem item)
+        {
+            return item.TodoListId == Id;
         }
     }
 }

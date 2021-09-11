@@ -103,6 +103,7 @@ namespace TimeRecorder.Contents.Todo
             }
         }
 
+
         private async void Handler(bool isselected)
         {
             if(isselected)
@@ -153,7 +154,10 @@ namespace TimeRecorder.Contents.Todo
                 
                 NewTodoTitle.Value = "";
 
-                await _Model.AddTodoItemAsync(CurrentTodoList.Id, item);
+                var id = await _Model.AddTodoItemAsync(CurrentTodoList.Id, item);
+
+                ClearTodoItemSelection();
+                TodoItems.FirstOrDefault(i => i.Identity == id)?.Select();
             }
             finally
             {
@@ -162,25 +166,20 @@ namespace TimeRecorder.Contents.Todo
 
         }
 
+        
+
         public void CloseDetailView()
         {
             ClearTodoItemSelection();   
         }
 
-        public void Delete()
-        {
-            var selectedItem = TodoItems.FirstOrDefault(i => i.IsSelected.Value);
-            if (selectedItem == null)
-                return;
 
-            //_Model.DeleteTodoItem(CurrentTodoList.Id, selectedItem.DomainModel.Id);
-        }
 
         private void ClearTodoItemSelection()
         {
             foreach(var item in TodoItems)
             {
-                item.IsSelected.Value = false;
+                item.ClearSelection();
             }
         }
 

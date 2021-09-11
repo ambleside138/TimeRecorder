@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Shared;
+using TimeRecorder.Domain.Utility.SystemClocks;
 
 namespace TimeRecorder.Domain.Domain.Todo
 {
@@ -55,6 +56,29 @@ namespace TimeRecorder.Domain.Domain.Todo
             set => RaisePropertyChangedIfSet(ref _Memo, value);
         }
         #endregion
+
+
+        #region PlanDate変更通知プロパティ
+        private YmdString _PlanDate = YmdString.Empty;
+
+        public YmdString PlanDate
+        {
+            get => _PlanDate;
+            set => RaisePropertyChangedIfSet(ref _PlanDate, value);
+        }
+        #endregion
+
+
+        #region LastUpdated変更通知プロパティ
+        private DateTime _LastUpdatedAt = DateTime.Now;
+
+        public DateTime LastUpdatedAt
+        {
+            get => _LastUpdatedAt;
+            set => RaisePropertyChangedIfSet(ref _LastUpdatedAt, value);
+        }
+        #endregion
+
 
 
         public TodoListIdentity TodoListId { get; set; } = TodoListIdentity.None;
@@ -118,6 +142,7 @@ namespace TimeRecorder.Domain.Domain.Todo
         private void CompleteCore(bool isComplete)
         {
             CompletedDateTime = isComplete ? DateTime.Now : null;
+            LastUpdatedAt = SystemClockServiceLocator.Current.Now;
         }
 
         private string GetDebuggerDisplay()

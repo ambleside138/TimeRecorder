@@ -10,6 +10,7 @@ using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Domain.UseCase.System;
 using TimeRecorder.Domain.UseCase.Todo;
+using TimeRecorder.Domain.Utility.SystemClocks;
 using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.Todo
@@ -17,9 +18,9 @@ namespace TimeRecorder.Contents.Todo
 
     internal class TodoModel : NotificationDomainModel
     {
-        private readonly TodoList _TodayList = new(TodoListIdentity.Today) { Title = "今日の予定", IconKey = "WhiteBalanceSunny" };
-        private readonly TodoList _ImportantList = new(TodoListIdentity.Important) { Title = "重要", IconKey = "Star" };
-        private readonly TodoList _FutureList = new(TodoListIdentity.Future) { Title = "今後の予定", IconKey = "Calendar" };
+        private readonly TodoList _TodayList = new TodayTodoList();
+        private readonly TodoList _ImportantList = new ImportantTodoList();
+        private readonly TodoList _FutureList = new FutureTodoList();
         private readonly TodoList _NoneList = new(TodoListIdentity.None) { Title = "タスク", IconKey = "Home" };
 
         private readonly TodoUseCase _TodoUseCase;
@@ -28,7 +29,11 @@ namespace TimeRecorder.Contents.Todo
         public ObservableCollection<TodoList> TodoListCollection { get; } = new();
 
 
+        private List<TodoItem> _AllTodoItems;
+
         public ObservableCollection<TodoItem> FilteredTodoItems { get; } = new();
+
+        private TodoListIdentity _CurrentTodoList;
 
         #region LoginStatus変更通知プロパティ
         private LoginStatus _LoginStatus;
@@ -42,6 +47,7 @@ namespace TimeRecorder.Contents.Todo
 
         private readonly ISubscriber<TodoItemChangedEventArgs> _Subscriber;
 
+        private readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
 
         public TodoModel(ISubscriber<TodoItemChangedEventArgs> subscriber)
         {
@@ -63,13 +69,18 @@ namespace TimeRecorder.Contents.Todo
             switch (args.ChangeType)
             {
                 case ChangeType.Updated:
+                    Filter(_AllTodoItems, _CurrentTodoList);
                     break;
+
                 case ChangeType.Deleted:
                     var target = FilteredTodoItems.FirstOrDefault(i => i.Id == args.TodoItemIdentity);
                     if(target != null)
                     {
                         _ = FilteredTodoItems.Remove(target);
+                        _ = _AllTodoItems.Remove(target);
                     }
+                    Filter(_AllTodoItems, _CurrentTodoList);
+
                     break;
                 default:
                     break;
@@ -88,32 +99,53 @@ namespace TimeRecorder.Contents.Todo
                 LoginStatus = _AuthenticationUseCase.TrySignin();
             }
 
+            _CurrentTodoList = selectedListId;
+
             var todoItems = await _TodoUseCase.SelectAsync();
+            _AllTodoItems = new List<TodoItem>(todoItems);
 
             Filter(todoItems, selectedListId);
         }
 
-        private void Filter(TodoItem[] todoItems, TodoListIdentity selectedListId)
+        private void Filter(IEnumerable<TodoItem> todoItems, TodoListIdentity selectedListId)
         {
-            FilteredTodoItems.Clear();
-
-            var ownListItems = todoItems.Where(i => i.TodoListId == selectedListId);
-            FilteredTodoItems.AddRange(ownListItems.Where(i => i.IsCompleted == false));
-
-            var doneItems = ownListItems.Where(i => i.IsCompleted).ToArray();
-            if(doneItems.Any())
+            foreach (var todolist in TodoListCollection)
             {
-                FilteredTodoItems.Add(TodoItem.ForDoneFilter());
-                FilteredTodoItems.AddRange(doneItems);
+
+                TodoItem[] ownListItems = todoItems.Where(i => todolist.MatchTodoItem(i))
+                                                   .ToArray();
+
+                todolist.FilteredCount = ownListItems.Length;
+
+                if (todolist.Id == selectedListId)
+                {
+                    var tmpTodoItems = new List<TodoItem>(ownListItems.Where(i => i.IsCompleted == false));
+
+                    var doneItems = ownListItems.Where(i => i.IsCompleted).ToArray();
+                    if (doneItems.Any())
+                    {
+                        tmpTodoItems.Add(TodoItem.ForDoneFilter());
+                        tmpTodoItems.AddRange(doneItems);
+                    }
+
+                    if(tmpTodoItems.SequenceEqual(FilteredTodoItems) == false)
+                    {
+                        FilteredTodoItems.Clear();
+                        FilteredTodoItems.AddRange(tmpTodoItems);
+                    }
+
+                }
+
             }
 
         }
 
-        public async Task AddTodoItemAsync(TodoListIdentity selectedListId, TodoItem item)
+        public async Task<TodoItemIdentity> AddTodoItemAsync(TodoListIdentity selectedListId, TodoItem item)
         {
             item.TodoListId = selectedListId;
-            _ = await _TodoUseCase.AddAsync(item);
+            TodoItemIdentity id = await _TodoUseCase.AddAsync(item);
             await LoadTodoItemsAsync(selectedListId);
+            return id;
         }
 
 

@@ -65,9 +65,9 @@
 
                     <TextBlock
                         Grid.Column="3"
-                        Margin="0,0,16,0"
+                        Margin="0,0,24,0"
                         VerticalAlignment="Center"
-                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                        Style="{StaticResource MaterialDesignSubtitle2TextBlock}"
                         Text="{Binding TaskCount.Value}"
                         Visibility="{Binding TaskCount.Value, Converter={StaticResource IntToVisibilityConverter}}" />
                 </Grid>
