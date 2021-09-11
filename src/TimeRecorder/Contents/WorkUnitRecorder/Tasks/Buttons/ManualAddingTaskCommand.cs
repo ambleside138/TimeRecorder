@@ -11,7 +11,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Buttons
     /// </summary>
     class ManualAddingTaskCommand : IAddingTaskCommand
     {
-        private readonly WorkTaskRegistor _WorkTaskRegistor = new WorkTaskRegistor();
+        private readonly WorkTaskRegistor _WorkTaskRegistor = new();
 
         public void Invoke()
         {

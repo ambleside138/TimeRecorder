@@ -65,8 +65,8 @@ namespace TimeRecorder.Domain
 
         public bool IsEmpty => Value == 0;
 
-        public static Identity<T> Temporary => new Identity<T>(TemporaryIdValue) { TempValue = Guid.NewGuid() };
-        public static Identity<T> Empty => new Identity<T>(0);
+        public static Identity<T> Temporary => new(TemporaryIdValue) { TempValue = Guid.NewGuid() };
+        public static Identity<T> Empty => new(0);
 
        
     }

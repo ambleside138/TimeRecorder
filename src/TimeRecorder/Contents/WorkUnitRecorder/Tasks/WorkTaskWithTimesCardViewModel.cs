@@ -29,7 +29,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
     /// </summary>
     public class WorkTaskWithTimesCardViewModel : ViewModel
     {
-        private readonly WorkTaskModel _Model = new WorkTaskModel();
+        private readonly WorkTaskModel _Model = new();
 
         public ReactivePropertySlim<bool> IsIndeterminate { get; } = new ReactivePropertySlim<bool>(false);
 

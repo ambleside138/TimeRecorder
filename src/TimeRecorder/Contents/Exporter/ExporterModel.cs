@@ -27,7 +27,7 @@ namespace TimeRecorder.Contents.Exporter
 
         private readonly ImportWorkingHourUseCase _ImportWorkingHourUseCase;
 
-        private static HttpClient client = new HttpClient();
+        private static HttpClient client = new();
 
         public string WorkingHourImportUrl { get; private set; }
 

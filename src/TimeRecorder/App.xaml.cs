@@ -16,7 +16,7 @@ namespace TimeRecorder
     {
         private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
-        private Mutex _Mutex = new Mutex(false, "TimeRecorder");
+        private Mutex _Mutex = new(false, "TimeRecorder");
 
         protected override void OnStartup(StartupEventArgs e)
         {

@@ -32,7 +32,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactivePropertySlim<DateTime> TargetDate { get; }
 
-        public YmdString TargetYmd => new YmdString(TargetDate.Value.ToString("yyyyMMdd"));
+        public YmdString TargetYmd => new(TargetDate.Value.ToString("yyyyMMdd"));
 
         public ObservableCollection<WorkTaskWithTimesDto> PlanedTaskModels { get; } = new ObservableCollection<WorkTaskWithTimesDto>();
 
@@ -43,7 +43,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         public ReactivePropertySlim<bool> ContainsCompleted { get; } = new ReactivePropertySlim<bool>(false, ReactivePropertyMode.DistinctUntilChanged);
 
-        private LivetCompositeDisposable _Disposables = new LivetCompositeDisposable();
+        private LivetCompositeDisposable _Disposables = new();
 
         private DateTime? _LatestBackupTime = null;
 

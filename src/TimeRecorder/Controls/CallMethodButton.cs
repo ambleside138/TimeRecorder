@@ -22,8 +22,8 @@ namespace TimeRecorder.Controls
             DefaultStyleKeyProperty.OverrideMetadata(typeof(CallMethodButton), new FrameworkPropertyMetadata(typeof(Button)));
         }
 
-        private readonly MethodBinder _binder = new MethodBinder();
-        private readonly MethodBinderWithArgument _binderWithArgument = new MethodBinderWithArgument();
+        private readonly MethodBinder _binder = new();
+        private readonly MethodBinderWithArgument _binderWithArgument = new();
         private bool _hasParameter;
 
         #region MethodTarget 依存関係プロパティ

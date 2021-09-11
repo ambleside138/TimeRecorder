@@ -31,7 +31,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
     {
         public NavigationIconButtonViewModel NavigationIcon => new() { Title = "入力", IconKey = "CalendarClock" };
 
-        private readonly WorkUnitRecorderModel _Model = new WorkUnitRecorderModel();
+        private readonly WorkUnitRecorderModel _Model = new();
 
         public ReadOnlyReactiveCollection<WorkTaskWithTimesCardViewModel> PlanedTaskCards { get; }
 

@@ -19,10 +19,10 @@ namespace TimeRecorder.Contents.Archive
 {
     public class ArchiveManagerViewModel : ViewModel, IContentViewModel
     {
-        public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "アーカイブ", IconKey = "Archive" };
+        public NavigationIconButtonViewModel NavigationIcon => new() { Title = "アーカイブ", IconKey = "Archive" };
 
-        private readonly ArchiveManagerModel _Model = new ArchiveManagerModel();
-        private readonly WorkTaskModel _WorkTaskModel = new WorkTaskModel();
+        private readonly ArchiveManagerModel _Model = new();
+        private readonly WorkTaskModel _WorkTaskModel = new();
 
         public ReactiveProperty<DateTime> TargetDateTime { get; }
 

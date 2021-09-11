@@ -20,7 +20,7 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
 
         public WorkingHour WorkingHour { get; set; }
 
-        private readonly List<DailyWorkTaskUnit> _DailyWorkTaskUnits = new List<DailyWorkTaskUnit>();
+        private readonly List<DailyWorkTaskUnit> _DailyWorkTaskUnits = new();
 
         public IReadOnlyList<DailyWorkTaskUnit> DailyWorkTaskUnits => _DailyWorkTaskUnits;
 

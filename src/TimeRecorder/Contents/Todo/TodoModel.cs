@@ -18,6 +18,9 @@ namespace TimeRecorder.Contents.Todo
 
     internal class TodoModel : NotificationDomainModel
     {
+
+        // FilterClassとListクラスにわける
+        // ListクラスはFilterClassを保持
         private readonly TodoList _TodayList = new TodayTodoList();
         private readonly TodoList _ImportantList = new ImportantTodoList();
         private readonly TodoList _FutureList = new FutureTodoList();
@@ -87,10 +90,7 @@ namespace TimeRecorder.Contents.Todo
             }
         }
 
-        //private void LoadTodoList()
-        //{
 
-        //}
 
         public async Task LoadTodoItemsAsync(TodoListIdentity selectedListId)
         {

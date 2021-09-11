@@ -21,7 +21,7 @@ namespace TimeRecorder.Contents.Configuration
     {
         private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "設定", IconKey = "Cog" };
+        public NavigationIconButtonViewModel NavigationIcon => new() { Title = "設定", IconKey = "Cog" };
 
         public Swatch[] Swatches { get; } = new SwatchesProvider().Swatches.ToArray();
 

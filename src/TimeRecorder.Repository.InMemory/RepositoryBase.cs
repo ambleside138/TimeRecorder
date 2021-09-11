@@ -10,7 +10,7 @@ namespace TimeRecorder.Repository.InMemory
 {
     public abstract class RepositoryBase<T, I> where T : Entity<T>, IIdentifiable<I>
     {
-        private readonly List<T> _Collection = new List<T>();
+        private readonly List<T> _Collection = new();
 
         public void Add(T item)
         {

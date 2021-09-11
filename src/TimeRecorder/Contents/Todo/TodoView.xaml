@@ -389,6 +389,63 @@
 
                                 <StackPanel Margin="8">
 
+                                    <c:CallMethodButton
+                                        Height="48"
+                                        Margin="0,0,0,8"
+                                        HorizontalAlignment="Stretch"
+                                        HorizontalContentAlignment="Left"
+                                        Background="{DynamicResource MaterialDesignPaper}"
+                                        Style="{StaticResource MaterialDesignFlatButton}">
+                                        <StackPanel Orientation="Horizontal">
+                                            <materialDesign:PackIcon
+                                                Width="16"
+                                                Height="16"
+                                                Kind="WhiteBalanceSunny" />
+                                            <TextBlock Margin="16,0,0,0" Text="今日の予定に追加" />
+                                        </StackPanel>
+                                    </c:CallMethodButton>
+
+                                    <Border
+                                        Height="48"
+                                        Margin="0,0,0,8"
+                                        Background="{DynamicResource MaterialDesignPaper}">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <materialDesign:PackIcon
+                                                Width="16"
+                                                Height="16"
+                                                Margin="16"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource MahApps.Brushes.Gray2}"
+                                                Kind="WhiteBalanceSunny" />
+
+                                            <TextBlock
+                                                Grid.Column="1"
+                                                VerticalAlignment="Center"
+                                                Foreground="{StaticResource MahApps.Brushes.Gray2}"
+                                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                                Text="今日の予定に追加されました" />
+                                            <c:CallMethodButton
+                                                Grid.Column="2"
+                                                Width="48"
+                                                Height="48"
+                                                MethodName="AddWorkingTime"
+                                                Style="{StaticResource MaterialDesignFlatButton}"
+                                                ToolTip="タスクを[今日の予定]から削除">
+                                                <materialDesign:PackIcon
+                                                    Width="20"
+                                                    Height="20"
+                                                    Kind="Close" />
+                                            </c:CallMethodButton>
+                                        </Grid>
+
+                                    </Border>
+
                                     <TextBox
                                         MinHeight="72"
                                         materialDesign:HintAssist.Hint="メモの追加"

@@ -16,7 +16,7 @@ namespace TimeRecorder.Contents.Archive
     public class ArchiveManagerModel : NotificationObject, IDisposable
     {
         public ReactivePropertySlim<DateTime> TargetDate { get; }
-        private LivetCompositeDisposable _Disposables = new LivetCompositeDisposable();
+        private LivetCompositeDisposable _Disposables = new();
         private bool _DisposedValue;
 
         private readonly GetDailyWorkRecordHeadersUseCase _GetDailyWorkRecordHeadersUseCase;
