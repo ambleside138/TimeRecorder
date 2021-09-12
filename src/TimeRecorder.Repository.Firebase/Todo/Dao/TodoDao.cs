@@ -43,7 +43,10 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                 // get auto-generated-id
                 DocumentReference documentReference = subCollectionRef.Document();
                 docId = new TodoItemIdentity(documentReference.Id);
+                todoDocument.SetCreateDateTime();
             }
+
+            todoDocument.SetUpdateDateTime();
 
             _ = await subCollectionRef.Document(docId.Value).SetAsync(todoDocument);
             return docId;

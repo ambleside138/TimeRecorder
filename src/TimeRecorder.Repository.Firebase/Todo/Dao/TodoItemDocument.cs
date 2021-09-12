@@ -46,7 +46,8 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                              IsImportant,
                              CompletedDateTime?.ToDateTime(),
                              Memo,
-                             TodoListId);
+                             TodoListId,
+                             UpdatedAt.ToDateTime());
         }
     }
 }

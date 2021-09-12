@@ -7,10 +7,12 @@ using Reactive.Bindings.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Contents.Shared;
 using TimeRecorder.Domain.Domain.Todo;
+using TimeRecorder.Domain.Utility.SystemClocks;
 
 namespace TimeRecorder.Contents.Todo.TodoItems
 {
@@ -19,6 +21,12 @@ namespace TimeRecorder.Contents.Todo.TodoItems
     /// </summary>
     public class TodoItemViewModel : ViewModel, IEquatable<TodoItemViewModel>
     {
+        private readonly TodoItemModel _TodoItemModel;
+
+        private readonly ISubscriber<TodoItemFilterEventArgs> _Subscriber;
+
+        private readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
+
         public TodoItemIdentity Identity => _TodoItemModel.DomainModel.Id;
 
         public bool IsDoneFilter { get; init; }
@@ -27,8 +35,6 @@ namespace TimeRecorder.Contents.Todo.TodoItems
 
         public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
-        private readonly TodoItemModel _TodoItemModel;
-
         public ReactiveProperty<bool> IsCompleted { get; }
 
         public ReadOnlyReactivePropertySlim<bool> IsImportant { get; }
@@ -36,9 +42,6 @@ namespace TimeRecorder.Contents.Todo.TodoItems
         public ReactivePropertySlim<string> ImportantToggleDescription { get; } = new();
 
         public ReactivePropertySlim<PackIconKind> ImportantToggleIcon { get; } = new();
-
-        private readonly ISubscriber<TodoItemFilterEventArgs> _Subscriber;
-
 
         public ReactivePropertySlim<bool> IsVisible { get; } = new ReactivePropertySlim<bool>(true);
 
@@ -54,6 +57,7 @@ namespace TimeRecorder.Contents.Todo.TodoItems
         }
         #endregion
 
+        public ReadOnlyReactivePropertySlim<string> CreateTimeText { get; }
 
         public TodoItemViewModel(TodoItem item, ISubscriber<TodoItemFilterEventArgs> subscriber)
         {
@@ -86,6 +90,14 @@ namespace TimeRecorder.Contents.Todo.TodoItems
                 ImportantToggleDescription.Value = important ? "重要度の削除" : "重要としてマークする";
                 ImportantToggleIcon.Value = important ? PackIconKind.Star : PackIconKind.StarOutline;
             }).AddTo(CompositeDisposable);
+
+
+            // ★DateTimeの変更を検知してstring に変換する
+            CreateTimeText = item.ObserveProperty(i => i.IsCompleted)
+                                 .ToReactiveProperty()
+                                 .Select(i => i ? "に完了済み" : "作成: ")
+                                 .ToReadOnlyReactivePropertySlim()
+                                 .AddTo(CompositeDisposable);
 
             _Subscriber = subscriber;
             _Subscriber?.Subscribe(args => Filter(args))
@@ -120,6 +132,20 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             {
                 IsSelected.Value = false;
                 await _TodoItemModel.DeleteAsync();
+            }
+        }
+
+        private string ConvertToText()
+        {
+            TimeSpan diff = _SystemClock.Now - _TodoItemModel.DomainModel.UpdatedAt;
+
+            if(diff.TotalMinutes < 5)
+            {
+                return "数分前";
+            }
+            else
+            {
+                return _TodoItemModel.DomainModel.UpdatedAt.ToString("M月d日（ddd）");
             }
         }
 

@@ -11,5 +11,15 @@ namespace TimeRecorder.Repository.Firebase.Shared
 
         [FirestoreProperty]
         public Timestamp UpdatedAt { get; set; }
+
+        public void SetCreateDateTime()
+        {
+            CreatedAt = Timestamp.GetCurrentTimestamp();
+        }
+
+        public void SetUpdateDateTime()
+        {
+            UpdatedAt = Timestamp.GetCurrentTimestamp();
+        }
     }
 }

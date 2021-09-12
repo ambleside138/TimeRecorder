@@ -430,6 +430,7 @@
                                                 Foreground="{StaticResource MahApps.Brushes.Gray2}"
                                                 Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                                 Text="今日の予定に追加されました" />
+                                            
                                             <c:CallMethodButton
                                                 Grid.Column="2"
                                                 Width="48"

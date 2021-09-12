@@ -34,7 +34,6 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
-
         #region CompletedDateTime変更通知プロパティ
         private DateTime? _CompletedDateTime;
 
@@ -57,7 +56,6 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
-
         #region PlanDate変更通知プロパティ
         private YmdString _PlanDate = YmdString.Empty;
 
@@ -68,21 +66,18 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
-
         #region LastUpdated変更通知プロパティ
-        private DateTime _LastUpdatedAt = DateTime.Now;
+        private DateTime _UpdatedAt = DateTime.Now;
 
-        public DateTime LastUpdatedAt
+        public DateTime UpdatedAt
         {
-            get => _LastUpdatedAt;
-            set => RaisePropertyChangedIfSet(ref _LastUpdatedAt, value);
+            get => _UpdatedAt;
+            set => RaisePropertyChangedIfSet(ref _UpdatedAt, value);
         }
         #endregion
 
 
-
         public TodoListIdentity TodoListId { get; set; } = TodoListIdentity.None;
-
 
         public static TodoItem ForNew()
         {
@@ -120,7 +115,8 @@ namespace TimeRecorder.Domain.Domain.Todo
             bool isImportant, 
             DateTime? completedDateTime, 
             string memo, 
-            string todoListId)
+            string todoListId,
+            DateTime updatedAt)
         {
             return new TodoItem
             {
@@ -130,6 +126,7 @@ namespace TimeRecorder.Domain.Domain.Todo
                 CompletedDateTime = completedDateTime,
                 Memo = memo,
                 TodoListId = new TodoListIdentity(todoListId),
+                UpdatedAt = updatedAt,
             };
         }
 
@@ -142,7 +139,7 @@ namespace TimeRecorder.Domain.Domain.Todo
         private void CompleteCore(bool isComplete)
         {
             CompletedDateTime = isComplete ? DateTime.Now : null;
-            LastUpdatedAt = SystemClockServiceLocator.Current.Now;
+            UpdatedAt = SystemClockServiceLocator.Current.Now;
         }
 
         private string GetDebuggerDisplay()
