@@ -35,6 +35,7 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                 CompletedDateTime = todoItem.CompletedDateTime.ToTimestamp(),
                 Memo = todoItem.Memo,
                 TodoListId = todoItem.TodoListId.Value,
+                CreatedAt = todoItem.CreatedAt.ToTimestamp(),
             };
         }
 
@@ -44,10 +45,11 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                              Id,
                              Title,
                              IsImportant,
-                             CompletedDateTime?.ToDateTime(),
+                             CompletedDateTime?.ToLocalDateTime(),
                              Memo,
                              TodoListId,
-                             UpdatedAt.ToDateTime());
+                             CreatedAt.ToLocalDateTime(),
+                             UpdatedAt.ToLocalDateTime());
         }
     }
 }

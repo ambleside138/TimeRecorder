@@ -19,5 +19,11 @@ namespace TimeRecorder.Repository.Firebase.Shared.Helpers
         {
             return value.HasValue ? value.Value.ToTimestamp() : null;
         }
+
+        public static DateTime ToLocalDateTime(this Timestamp timestamp)
+        {
+            var utc = timestamp.ToDateTime();
+            return TimeZoneInfo.ConvertTimeFromUtc(utc, TimeZoneInfo.Local);
+        }
     }
 }

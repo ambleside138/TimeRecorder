@@ -92,10 +92,10 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             }).AddTo(CompositeDisposable);
 
 
-            // ★DateTimeの変更を検知してstring に変換する
+            // ★IsCompletedの変更を検知してstring に変換する
             CreateTimeText = item.ObserveProperty(i => i.IsCompleted)
                                  .ToReactiveProperty()
-                                 .Select(i => i ? "に完了済み" : "作成: ")
+                                 .Select(i => IsCompleted.Value ? $"{ConvertToString(_TodoItemModel.DomainModel.CompletedDateTime.Value)} に完了済み" : $"作成: {ConvertToString(_TodoItemModel.DomainModel.CreatedAt)}")
                                  .ToReadOnlyReactivePropertySlim()
                                  .AddTo(CompositeDisposable);
 
@@ -104,6 +104,31 @@ namespace TimeRecorder.Contents.Todo.TodoItems
                        .AddTo(CompositeDisposable);
 
             SetSortValue();
+        }
+
+        private string ConvertToString(DateTime dt)
+        {
+            var diff = _SystemClock.Now - dt;
+            if (diff.TotalMinutes < 5)
+            {
+                return "数分前";
+            }
+            else if (diff.TotalMinutes < 60)
+            {
+                return (int)diff.TotalMinutes + "分前";
+            }
+            else if(diff.TotalHours < 24)
+            {
+                return (int)diff.TotalHours + "時間前";
+            }
+            else if(diff.TotalDays < 4)
+            {
+                return (int)diff.TotalDays + "日前";
+            }
+            else
+            {
+                return $"{dt:MM月dd日(ddd)}";
+            }
         }
 
         public async void ToggleImportantAsync() => await _TodoItemModel.ToggleImportantAsync();

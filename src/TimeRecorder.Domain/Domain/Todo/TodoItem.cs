@@ -66,7 +66,19 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
-        #region LastUpdated変更通知プロパティ
+
+        #region CreatedAt変更通知プロパティ
+        private DateTime _CreatedAt;
+
+        public DateTime CreatedAt
+        {
+            get => _CreatedAt;
+            set => RaisePropertyChangedIfSet(ref _CreatedAt, value);
+        }
+        #endregion
+
+
+        #region UpdatedAt変更通知プロパティ
         private DateTime _UpdatedAt = DateTime.Now;
 
         public DateTime UpdatedAt
@@ -116,6 +128,7 @@ namespace TimeRecorder.Domain.Domain.Todo
             DateTime? completedDateTime, 
             string memo, 
             string todoListId,
+            DateTime createdAt,
             DateTime updatedAt)
         {
             return new TodoItem
@@ -126,6 +139,7 @@ namespace TimeRecorder.Domain.Domain.Todo
                 CompletedDateTime = completedDateTime,
                 Memo = memo,
                 TodoListId = new TodoListIdentity(todoListId),
+                CreatedAt = createdAt,
                 UpdatedAt = updatedAt,
             };
         }
