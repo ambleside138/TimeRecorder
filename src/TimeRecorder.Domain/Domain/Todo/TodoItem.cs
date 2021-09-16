@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -66,7 +67,6 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
-
         #region CreatedAt変更通知プロパティ
         private DateTime _CreatedAt;
 
@@ -76,7 +76,6 @@ namespace TimeRecorder.Domain.Domain.Todo
             set => RaisePropertyChangedIfSet(ref _CreatedAt, value);
         }
         #endregion
-
 
         #region UpdatedAt変更通知プロパティ
         private DateTime _UpdatedAt = DateTime.Now;
@@ -89,7 +88,16 @@ namespace TimeRecorder.Domain.Domain.Todo
         #endregion
 
 
+        public ObservableCollection<YmdString> TodayTaskDates { get; init; } = new();
+
+        //public ReadOnlyObservableCollection<YmdString> TodayTaskDates => _TodayTaskDates;
+
+        public bool IsTodayTask => TodayTaskDates.Contains(YmdString.Today);
+
+
         public TodoListIdentity TodoListId { get; set; } = TodoListIdentity.None;
+
+
 
         public static TodoItem ForNew()
         {
@@ -101,7 +109,9 @@ namespace TimeRecorder.Domain.Domain.Todo
             return new TodoItem { Id = TodoItemIdentity.DoneFilter };
         }
 
-        private TodoItem() { }
+        private TodoItem() { 
+           // TodayTaskDates = new ReadOnlyObservableCollection<YmdString>(_TodayTaskDates);
+        }
 
 
 
@@ -129,7 +139,8 @@ namespace TimeRecorder.Domain.Domain.Todo
             string memo, 
             string todoListId,
             DateTime createdAt,
-            DateTime updatedAt)
+            DateTime updatedAt,
+            string[] todayTaskDates)
         {
             return new TodoItem
             {
@@ -141,9 +152,24 @@ namespace TimeRecorder.Domain.Domain.Todo
                 TodoListId = new TodoListIdentity(todoListId),
                 CreatedAt = createdAt,
                 UpdatedAt = updatedAt,
+                TodayTaskDates = new ObservableCollection<YmdString>(todayTaskDates?.Select(d => new YmdString(d))),
             };
         }
 
+
+        public void AddAsTodayTask()
+        {
+            var today = YmdString.Today;
+            if (TodayTaskDates.Contains(today))
+                return;
+
+            TodayTaskDates.Add(today);
+        }
+
+        public void ClearAsTodayTask()
+        {
+            TodayTaskDates.Remove(YmdString.Today);
+        }
 
         public void Complete() => CompleteCore(true);
 

@@ -50,6 +50,20 @@ namespace TimeRecorder.Contents.Todo
             await UpdateAsync();
         }
 
+        public async Task ToggleTodayTask()
+        {
+            if(DomainModel.IsTodayTask)
+            {
+                DomainModel.ClearAsTodayTask();
+            }
+            else
+            {
+                DomainModel.AddAsTodayTask();
+            }
+
+            await UpdateAsync();
+        }
+
         public async Task UpdateAsync()
         {
             _Publisher.Publish(new TodoItemChangedEventArgs(ChangeType.Updated, DomainModel.Id));

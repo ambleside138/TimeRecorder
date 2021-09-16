@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Google.Cloud.Firestore;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Repository.Firebase.Shared;
@@ -26,6 +27,9 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
         [FirestoreProperty]
         public string TodoListId { get; set; }
 
+        [FirestoreProperty]
+        public string[] TodayTaskDates { get; set; }
+
         public static TodoItemDocument FromDomainObject(TodoItem todoItem)
         {
             return new TodoItemDocument
@@ -36,6 +40,7 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                 Memo = todoItem.Memo,
                 TodoListId = todoItem.TodoListId.Value,
                 CreatedAt = todoItem.CreatedAt.ToTimestamp(),
+                TodayTaskDates = todoItem.TodayTaskDates.Select(d => d.Value).ToArray(),
             };
         }
 
@@ -49,7 +54,8 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                              Memo,
                              TodoListId,
                              CreatedAt.ToLocalDateTime(),
-                             UpdatedAt.ToLocalDateTime());
+                             UpdatedAt.ToLocalDateTime(),
+                             TodayTaskDates  ?? Array.Empty<string>());
         }
     }
 }

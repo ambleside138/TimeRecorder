@@ -395,7 +395,10 @@
                                         HorizontalAlignment="Stretch"
                                         HorizontalContentAlignment="Left"
                                         Background="{DynamicResource MaterialDesignPaper}"
-                                        Style="{StaticResource MaterialDesignFlatButton}">
+                                        MethodName="ToggleTodayTaskAsync"
+                                        MethodTarget="{Binding TodoItems/}"
+                                        Style="{StaticResource MaterialDesignFlatButton}"
+                                        Visibility="{Binding TodoItems/IsTodayTask.Value, Converter={StaticResource InverseBoolToVisConverter}}">
                                         <StackPanel Orientation="Horizontal">
                                             <materialDesign:PackIcon
                                                 Width="16"
@@ -408,7 +411,8 @@
                                     <Border
                                         Height="48"
                                         Margin="0,0,0,8"
-                                        Background="{DynamicResource MaterialDesignPaper}">
+                                        Background="{DynamicResource MaterialDesignPaper}"
+                                        Visibility="{Binding TodoItems/IsTodayTask.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="Auto" />
@@ -430,12 +434,13 @@
                                                 Foreground="{StaticResource MahApps.Brushes.Gray2}"
                                                 Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                                 Text="今日の予定に追加されました" />
-                                            
+
                                             <c:CallMethodButton
                                                 Grid.Column="2"
                                                 Width="48"
                                                 Height="48"
-                                                MethodName="AddWorkingTime"
+                                                MethodName="ToggleTodayTaskAsync"
+                                                MethodTarget="{Binding TodoItems/}"
                                                 Style="{StaticResource MaterialDesignFlatButton}"
                                                 ToolTip="タスクを[今日の予定]から削除">
                                                 <materialDesign:PackIcon
@@ -485,6 +490,7 @@
                                         Grid.Row="2"
                                         HorizontalAlignment="Center"
                                         VerticalAlignment="Center"
+                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                                         Text="{Binding TodoItems/CreateTimeText.Value}" />
 
                                     <c:CallMethodButton

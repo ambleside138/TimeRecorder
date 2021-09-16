@@ -59,6 +59,8 @@ namespace TimeRecorder.Contents.Todo.TodoItems
 
         public ReadOnlyReactivePropertySlim<string> CreateTimeText { get; }
 
+        public ReadOnlyReactivePropertySlim<bool> IsTodayTask { get; }
+
         public TodoItemViewModel(TodoItem item, ISubscriber<TodoItemFilterEventArgs> subscriber)
         {
             _TodoItemModel = new TodoItemModel(item, ContainerHelper.Provider.GetRequiredService<IPublisher<TodoItemChangedEventArgs>>());
@@ -98,6 +100,12 @@ namespace TimeRecorder.Contents.Todo.TodoItems
                                  .Select(i => IsCompleted.Value ? $"{ConvertToString(_TodoItemModel.DomainModel.CompletedDateTime.Value)} に完了済み" : $"作成: {ConvertToString(_TodoItemModel.DomainModel.CreatedAt)}")
                                  .ToReadOnlyReactivePropertySlim()
                                  .AddTo(CompositeDisposable);
+
+            IsTodayTask = item.TodayTaskDates
+                              .CollectionChangedAsObservable()
+                              .Select(i => item.IsTodayTask)
+                              .ToReadOnlyReactivePropertySlim()
+                              .AddTo(CompositeDisposable);
 
             _Subscriber = subscriber;
             _Subscriber?.Subscribe(args => Filter(args))
@@ -141,6 +149,8 @@ namespace TimeRecorder.Contents.Todo.TodoItems
         }
 
         public async void UpdateAsync() => await _TodoItemModel.UpdateAsync();
+
+        public async void ToggleTodayTaskAsync() => await _TodoItemModel.ToggleTodayTask();
 
         public async void Delete()
         {
