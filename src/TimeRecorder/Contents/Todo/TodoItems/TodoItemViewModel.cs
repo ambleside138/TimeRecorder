@@ -11,6 +11,7 @@ using System.Reactive.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Contents.Shared;
+using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Domain.Utility.SystemClocks;
 
@@ -57,9 +58,18 @@ namespace TimeRecorder.Contents.Todo.TodoItems
         }
         #endregion
 
+        public ReactiveCommand<string> PlanDateCommand { get; } = new();
+
+        public ReactiveCommand ManualPlanDateCommand { get; } = new();
+
         public ReadOnlyReactivePropertySlim<string> CreateTimeText { get; }
 
         public ReadOnlyReactivePropertySlim<bool> IsTodayTask { get; }
+
+        public ReadOnlyReactivePropertySlim<string> PlanDateText { get; }
+
+        public ReadOnlyReactivePropertySlim<bool> IsPastPlanDate { get; }
+
 
         public TodoItemViewModel(TodoItem item, ISubscriber<TodoItemFilterEventArgs> subscriber)
         {
@@ -104,14 +114,59 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             IsTodayTask = item.TodayTaskDates
                               .CollectionChangedAsObservable()
                               .Select(i => item.IsTodayTask)
-                              .ToReadOnlyReactivePropertySlim()
+                              .ToReadOnlyReactivePropertySlim(initialValue:item.IsTodayTask)
                               .AddTo(CompositeDisposable);
+
+            PlanDateText = item.ObserveProperty(i => i.PlanDate)
+                               .ToReactiveProperty()
+                               .Select(i => ConvertToPlanDateString(i))
+                               .ToReadOnlyReactivePropertySlim(initialValue: ConvertToPlanDateString(item.PlanDate))
+                               .AddTo(CompositeDisposable);
+
+            PlanDateCommand.Subscribe(day => PlanToDateAsync(int.Parse(day)))
+                           .AddTo(CompositeDisposable);
+
+            ManualPlanDateCommand.Subscribe(() => ManualPlanToDateAsync())
+                                 .AddTo(CompositeDisposable);
+
+            IsPastPlanDate = item.ObserveProperty(i => i.PlanDate)
+                                 .ToReactiveProperty()
+                                 .Select(i => i.IsPastDate)
+                                 .ToReadOnlyReactivePropertySlim(initialValue: item.PlanDate.IsPastDate)
+                                 .AddTo(CompositeDisposable);
 
             _Subscriber = subscriber;
             _Subscriber?.Subscribe(args => Filter(args))
                        .AddTo(CompositeDisposable);
 
             SetSortValue();
+        }
+
+        private async void PlanToDateAsync(int day)
+        {
+            var targetDate = _SystemClock.Now.Date.AddDays(day);
+
+            _TodoItemModel.DomainModel.PlanDate = new YmdString(targetDate);
+            await _TodoItemModel.UpdateAsync();
+        }
+
+        private async void ManualPlanToDateAsync()
+        {
+            var vm = new DateTimePickerViewModel(_TodoItemModel.DomainModel.PlanDate.ToDateTime());
+            // 確認してから削除する
+            var view = new DateTimePickerView
+            {
+                DataContext = vm
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog");
+
+            if (result?.ToString() == "1")
+            {
+                _TodoItemModel.DomainModel.PlanDate = new YmdString(vm.SelectedDate.Value);
+                await _TodoItemModel.UpdateAsync();
+            }
         }
 
         private string ConvertToString(DateTime dt)
@@ -139,6 +194,25 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             }
         }
 
+        private string ConvertToPlanDateString(YmdString planYmd)
+        {
+            DateTime? planDate = planYmd.ToDateTime();
+            if (planDate.HasValue == false)
+            {
+                return "期限日の追加";
+            }
+
+            var diffDays = (int)(planDate.Value.Date - _SystemClock.Now.Date).TotalDays;
+
+            return diffDays switch
+            {
+                -1 => "期限 昨日",
+                 0 => "期限 今日",
+                 1 => "期限 明日",
+                 _ => planDate.Value.ToString("期限 yyyy/MM/dd (ddd)"),
+            };
+        }
+
         public async void ToggleImportantAsync() => await _TodoItemModel.ToggleImportantAsync();
 
         public async void ToggleCompletedAsync(bool completed)
@@ -151,6 +225,12 @@ namespace TimeRecorder.Contents.Todo.TodoItems
         public async void UpdateAsync() => await _TodoItemModel.UpdateAsync();
 
         public async void ToggleTodayTaskAsync() => await _TodoItemModel.ToggleTodayTask();
+
+        public async void ClearPlandateAsync()
+        {
+            _TodoItemModel.DomainModel.PlanDate = YmdString.Empty;
+            await _TodoItemModel.UpdateAsync();
+        }
 
         public async void Delete()
         {
@@ -170,18 +250,9 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             }
         }
 
-        private string ConvertToText()
+        public void CloseDetailView()
         {
-            TimeSpan diff = _SystemClock.Now - _TodoItemModel.DomainModel.UpdatedAt;
-
-            if(diff.TotalMinutes < 5)
-            {
-                return "数分前";
-            }
-            else
-            {
-                return _TodoItemModel.DomainModel.UpdatedAt.ToString("M月d日（ddd）");
-            }
+            IsSelected.Value = false;
         }
 
         private void Filter(TodoItemFilterEventArgs args)
@@ -190,7 +261,7 @@ namespace TimeRecorder.Contents.Todo.TodoItems
                 return;
 
             _CurrentFilterCondition = args;
-            IsVisible.Value = args.NeedShowDoneItem ? true : IsCompleted.Value == false;
+            IsVisible.Value = args.NeedShowDoneItem || IsCompleted.Value == false;
         }
 
         public void Select() => IsSelected.Value = true;

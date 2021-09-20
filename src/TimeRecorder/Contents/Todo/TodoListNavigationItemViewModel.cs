@@ -26,7 +26,7 @@ namespace TimeRecorder.Contents.Todo
             Title = todoList.Title;
 
             TaskCount = todoList.ObserveProperty(i => i.FilteredCount)
-                                .ToReadOnlyReactivePropertySlim()
+                                .ToReadOnlyReactivePropertySlim(initialValue:todoList.FilteredCount)
                                 .AddTo(CompositeDisposable);
         }
 

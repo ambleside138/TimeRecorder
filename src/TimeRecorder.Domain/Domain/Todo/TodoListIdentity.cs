@@ -12,6 +12,8 @@ namespace TimeRecorder.Domain.Domain.Todo
 
         public static TodoListIdentity None => new("define_none");
 
+        public static TodoListIdentity Divider => new("divider");
+
         public TodoListIdentity(string id) : base(id)
         {
 

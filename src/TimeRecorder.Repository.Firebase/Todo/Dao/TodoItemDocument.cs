@@ -8,7 +8,7 @@ using TimeRecorder.Repository.Firebase.Shared.Helpers;
 namespace TimeRecorder.Repository.Firebase.Todo.Dao
 {
     [FirestoreData]
-    class TodoItemDocument : DocumentBase
+    internal class TodoItemDocument : DocumentBase
     {
         public string Id { get; set; }
 
@@ -30,6 +30,9 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
         [FirestoreProperty]
         public string[] TodayTaskDates { get; set; }
 
+        [FirestoreProperty]
+        public string PlanDate { get; set; }
+
         public static TodoItemDocument FromDomainObject(TodoItem todoItem)
         {
             return new TodoItemDocument
@@ -41,6 +44,7 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                 TodoListId = todoItem.TodoListId.Value,
                 CreatedAt = todoItem.CreatedAt.ToTimestamp(),
                 TodayTaskDates = todoItem.TodayTaskDates.Select(d => d.Value).ToArray(),
+                PlanDate = todoItem.PlanDate.Value,
             };
         }
 
@@ -55,7 +59,8 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
                              TodoListId,
                              CreatedAt.ToLocalDateTime(),
                              UpdatedAt.ToLocalDateTime(),
-                             TodayTaskDates  ?? Array.Empty<string>());
+                             TodayTaskDates  ?? Array.Empty<string>(),
+                             PlanDate);
         }
     }
 }

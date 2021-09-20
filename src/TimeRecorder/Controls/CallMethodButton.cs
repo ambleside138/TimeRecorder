@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 
 namespace TimeRecorder.Controls
 {
@@ -30,8 +31,8 @@ namespace TimeRecorder.Controls
 
         public object MethodTarget
         {
-            get { return this.GetValue(MethodTargetProperty); }
-            set { this.SetValue(MethodTargetProperty, value); }
+            get => GetValue(MethodTargetProperty);
+            set => SetValue(MethodTargetProperty, value);
         }
         public static readonly DependencyProperty MethodTargetProperty =
             DependencyProperty.Register(nameof(MethodTarget), typeof(object), typeof(CallMethodButton), new UIPropertyMetadata(null));
@@ -42,8 +43,8 @@ namespace TimeRecorder.Controls
 
         public string MethodName
         {
-            get { return (string)this.GetValue(MethodNameProperty); }
-            set { this.SetValue(MethodNameProperty, value); }
+            get => (string)GetValue(MethodNameProperty);
+            set => SetValue(MethodNameProperty, value);
         }
         public static readonly DependencyProperty MethodNameProperty =
             DependencyProperty.Register(nameof(MethodName), typeof(string), typeof(CallMethodButton), new UIPropertyMetadata(null));
@@ -54,8 +55,8 @@ namespace TimeRecorder.Controls
 
         public object MethodParameter
         {
-            get { return this.GetValue(MethodParameterProperty); }
-            set { this.SetValue(MethodParameterProperty, value); }
+            get => GetValue(MethodParameterProperty);
+            set => SetValue(MethodParameterProperty, value);
         }
         public static readonly DependencyProperty MethodParameterProperty =
             DependencyProperty.Register(nameof(MethodParameter), typeof(object), typeof(CallMethodButton), new UIPropertyMetadata(null, MethodParameterPropertyChangedCallback));
@@ -68,23 +69,52 @@ namespace TimeRecorder.Controls
 
         #endregion
 
+
+
+        public bool ShowContextMenuOnClick
+        {
+            get => (bool)GetValue(ShowContextMenuOnClickProperty);
+            set => SetValue(ShowContextMenuOnClickProperty, value);
+        }
+
+        // Using a DependencyProperty as the backing store for ShowContextMenuOnClick.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ShowContextMenuOnClickProperty =
+            DependencyProperty.Register("ShowContextMenuOnClick", typeof(bool), typeof(CallMethodButton), new PropertyMetadata(false));
+
+
+
         protected override void OnClick()
         {
             base.OnClick();
 
-            var target = this.MethodTarget ?? this.DataContext;
+            var target = MethodTarget ?? DataContext;
             if (target == null) return;
 
-            var contentName = "";
-            var icon = Content as PackIcon;
-            if (icon != null)
+            if (ShowContextMenuOnClick
+                 && ContextMenu != null)
+            {
+                // https://stackoverflow.com/questions/555252/show-contextmenu-on-left-click-using-only-xaml/
+                // If we use binding in our context menu, then it's DataContext won't be set when we show the menu on left click. It
+                // seems setting DataContext for ContextMenu is hardcoded in WPF when user right clicks on a control? So we have to set
+                // up ContextMenu.DataContext manually here.
+                if (ContextMenu.DataContext == null)
+                {
+                    ContextMenu.SetBinding(DataContextProperty, new Binding { Source = DataContext });
+                }
+                ContextMenu.IsOpen = true;
+                return;
+            }
+
+
+            string contentName;
+            if (Content is PackIcon icon)
                 contentName = icon.Kind.ToString();
             else
                 contentName = Content?.ToString() ?? "";
 
             contentName += " @" + DataContext.GetType().FullName;
 
-            if (string.IsNullOrEmpty(this.MethodName))
+            if (string.IsNullOrEmpty(MethodName))
             {
                 _Logger.Warn("[ButtonClicked] no methodName " + contentName);
                 return;
@@ -92,13 +122,15 @@ namespace TimeRecorder.Controls
 
             _Logger.Info($"[ButtonClicked] {MethodName} | {contentName}");
 
-            if (this._hasParameter)
+
+
+            if (_hasParameter)
             {
-                this._binderWithArgument.Invoke(target, this.MethodName, this.MethodParameter);
+                _binderWithArgument.Invoke(target, MethodName, MethodParameter);
             }
             else
             {
-                this._binder.Invoke(target, this.MethodName);
+                _binder.Invoke(target, MethodName);
             }
         }
     }

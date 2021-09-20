@@ -15,7 +15,7 @@ namespace TimeRecorder.Domain.Domain.Todo
             IconKey = "WhiteBalanceSunny";
         }
 
-        public override bool MatchTodoItem(TodoItem item) => item.PlanDate == YmdString.Today;
+        public override bool MatchTodoItem(TodoItem item) => item.IsTodayTask;
     }
 
     public class ImportantTodoList : TodoList
@@ -25,6 +25,7 @@ namespace TimeRecorder.Domain.Domain.Todo
         {
             Title = "重要";
             IconKey = "StarOutline";
+            DoneItemVisilble = false;
         }
 
         public override bool MatchTodoItem(TodoItem item) => item.IsImportant;
@@ -104,6 +105,17 @@ namespace TimeRecorder.Domain.Domain.Todo
         {
             get => _FilteredCount;
             set => RaisePropertyChangedIfSet(ref _FilteredCount, value);
+        }
+        #endregion
+
+
+        #region DoneItemVisilble変更通知プロパティ
+        private bool _DoneItemVisilble = true;
+
+        public bool DoneItemVisilble
+        {
+            get => _DoneItemVisilble;
+            protected set => RaisePropertyChangedIfSet(ref _DoneItemVisilble, value);
         }
         #endregion
 

@@ -140,7 +140,8 @@ namespace TimeRecorder.Domain.Domain.Todo
             string todoListId,
             DateTime createdAt,
             DateTime updatedAt,
-            string[] todayTaskDates)
+            string[] todayTaskDates,
+            string planDate)
         {
             return new TodoItem
             {
@@ -153,6 +154,7 @@ namespace TimeRecorder.Domain.Domain.Todo
                 CreatedAt = createdAt,
                 UpdatedAt = updatedAt,
                 TodayTaskDates = new ObservableCollection<YmdString>(todayTaskDates?.Select(d => new YmdString(d))),
+                PlanDate = new YmdString(planDate)
             };
         }
 

@@ -26,6 +26,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../NavigationRail/NavigationRailResource.xaml" />
                 <ResourceDictionary Source="../../Styles/ExpanderStyle.xaml" />
+                <ResourceDictionary Source="TodoItemDetailView.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <!--  タスクリストコントロール  -->
@@ -143,11 +144,47 @@
                     </Expander.Header>
                 </Expander>
             </DataTemplate>
+
+            <DataTemplate x:Key="TodoListAddButton">
+                <c:CallMethodButton
+                    Height="48"
+                    Padding="0"
+                    HorizontalContentAlignment="Stretch"
+                    MethodName="AddTodoList"
+                    Style="{StaticResource MaterialDesignFlatButton}"
+                    ToolTip="リストを追加">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="28" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <materialDesign:PackIcon
+                            Grid.Column="1"
+                            Width="18"
+                            Height="18"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Kind="Plus" />
+
+                        <TextBlock
+                            Grid.Column="2"
+                            Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                            Text="新しいリスト" />
+
+                    </Grid>
+                </c:CallMethodButton>
+
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <Grid>
-        <TabControl ItemsSource="{Binding NavigationItems}" SelectedIndex="{Binding SelectedListIndex.Value}">
+        <TabControl
+            style:TabControlAssist.OptionalControl="{StaticResource TodoListAddButton}"
+            ItemsSource="{Binding NavigationItems}"
+            SelectedIndex="{Binding SelectedListIndex.Value}">
             <TabControl.Style>
                 <Style BasedOn="{StaticResource SplitableNavigationRailControlStyleKey}" TargetType="TabControl">
                     <Setter Property="Background">
@@ -157,6 +194,8 @@
                     </Setter>
                 </Style>
             </TabControl.Style>
+
+
 
             <TabControl.ContentTemplate>
                 <DataTemplate>
@@ -184,9 +223,11 @@
                                 Width="40"
                                 Height="40"
                                 Padding="0"
+                                IsEnabled="False"
                                 MethodName="EditWorkTask"
                                 Style="{StaticResource MaterialDesignFlatButton}"
-                                ToolTip="タイトルアイコンの編集">
+                                ToolTip="タイトルアイコンの編集"
+                                Visibility="Collapsed">
                                 <materialDesign:PackIcon
                                     Width="32"
                                     Height="32"
@@ -204,6 +245,23 @@
                                     </materialDesign:PackIcon.Style>
                                 </materialDesign:PackIcon>
                             </c:CallMethodButton>
+
+                            <materialDesign:PackIcon
+                                Width="32"
+                                Height="32"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="{Binding IconKey}">
+                                <materialDesign:PackIcon.Style>
+                                    <Style TargetType="materialDesign:PackIcon">
+                                        <Setter Property="Foreground">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="{DynamicResource Primary300Foreground}" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </materialDesign:PackIcon.Style>
+                            </materialDesign:PackIcon>
 
                             <TextBlock
                                 Grid.Column="2"
@@ -281,6 +339,7 @@
                             </ListBox.ItemContainerStyle>
                         </ListBox>
 
+                        <!--  Task Adding Area  -->
                         <Grid Grid.Row="2" Margin="24,8">
                             <TextBox
                                 Height="48"
@@ -316,206 +375,16 @@
 
                             <!--  あとでボタンを配置する  -->
                         </Grid>
-                        <!--  END: Task Collection View  -->
 
                         <!--  DetailView  -->
-                        <Grid
+                        <ContentPresenter
                             Grid.RowSpan="3"
                             Grid.Column="2"
                             Width="360"
                             Margin="0,-2,-2,-2"
-                            Background="{StaticResource MaterialDesignPaper}"
-                            DataContext="{Binding DataContext, ElementName=TodoHostElement}"
-                            Visibility="{Binding SelectedItem, ElementName=TodoItemListBox, Converter={StaticResource NullableToVisibilityConverter}}">
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="Auto" />
-                            </Grid.RowDefinitions>
-
-                            <Grid Margin="0,16,0,16">
-                                <Grid Height="48" Margin="16,0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="Auto" />
-                                    </Grid.ColumnDefinitions>
-
-                                    <CheckBox
-                                        Width="24"
-                                        Height="24"
-                                        MinWidth="0"
-                                        IsChecked="{Binding TodoItems/IsCompleted.Value}"
-                                        Style="{StaticResource MaterialDesignFilterChipPrimaryOutlineCheckBox}" />
-
-                                    <TextBox
-                                        Grid.Column="1"
-                                        Margin="12,0"
-                                        Padding="4,4"
-                                        VerticalAlignment="Center"
-                                        BorderThickness="0"
-                                        FontSize="14"
-                                        Text="{Binding TodoItems/TemporaryTitle.Value}" />
-
-                                    <c:CallMethodButton
-                                        Grid.Column="2"
-                                        Width="24"
-                                        Height="24"
-                                        MethodName="ToggleImportantAsync"
-                                        MethodTarget="{Binding TodoItems/}"
-                                        Style="{StaticResource MaterialDesignIconButton}"
-                                        ToolTip="{Binding TodoItems/ImportantToggleDescription.Value}">
-                                        <materialDesign:PackIcon
-                                            Width="16"
-                                            Height="16"
-                                            Kind="{Binding TodoItems/ImportantToggleIcon.Value}" />
-                                    </c:CallMethodButton>
-                                </Grid>
-                            </Grid>
-
-                            <!--  menus  -->
-                            <Border Grid.Row="1">
-                                <Border.Style>
-                                    <Style TargetType="Border">
-                                        <Setter Property="Background">
-                                            <Setter.Value>
-                                                <SolidColorBrush Color="{StaticResource Blue GreyPrimary50}" />
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </Border.Style>
-
-
-                                <StackPanel Margin="8">
-
-                                    <c:CallMethodButton
-                                        Height="48"
-                                        Margin="0,0,0,8"
-                                        HorizontalAlignment="Stretch"
-                                        HorizontalContentAlignment="Left"
-                                        Background="{DynamicResource MaterialDesignPaper}"
-                                        MethodName="ToggleTodayTaskAsync"
-                                        MethodTarget="{Binding TodoItems/}"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        Visibility="{Binding TodoItems/IsTodayTask.Value, Converter={StaticResource InverseBoolToVisConverter}}">
-                                        <StackPanel Orientation="Horizontal">
-                                            <materialDesign:PackIcon
-                                                Width="16"
-                                                Height="16"
-                                                Kind="WhiteBalanceSunny" />
-                                            <TextBlock Margin="16,0,0,0" Text="今日の予定に追加" />
-                                        </StackPanel>
-                                    </c:CallMethodButton>
-
-                                    <Border
-                                        Height="48"
-                                        Margin="0,0,0,8"
-                                        Background="{DynamicResource MaterialDesignPaper}"
-                                        Visibility="{Binding TodoItems/IsTodayTask.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto" />
-                                                <ColumnDefinition />
-                                                <ColumnDefinition Width="Auto" />
-                                            </Grid.ColumnDefinitions>
-                                            <materialDesign:PackIcon
-                                                Width="16"
-                                                Height="16"
-                                                Margin="16"
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                Foreground="{StaticResource MahApps.Brushes.Gray2}"
-                                                Kind="WhiteBalanceSunny" />
-
-                                            <TextBlock
-                                                Grid.Column="1"
-                                                VerticalAlignment="Center"
-                                                Foreground="{StaticResource MahApps.Brushes.Gray2}"
-                                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                                Text="今日の予定に追加されました" />
-
-                                            <c:CallMethodButton
-                                                Grid.Column="2"
-                                                Width="48"
-                                                Height="48"
-                                                MethodName="ToggleTodayTaskAsync"
-                                                MethodTarget="{Binding TodoItems/}"
-                                                Style="{StaticResource MaterialDesignFlatButton}"
-                                                ToolTip="タスクを[今日の予定]から削除">
-                                                <materialDesign:PackIcon
-                                                    Width="20"
-                                                    Height="20"
-                                                    Kind="Close" />
-                                            </c:CallMethodButton>
-                                        </Grid>
-
-                                    </Border>
-
-                                    <TextBox
-                                        MinHeight="72"
-                                        materialDesign:HintAssist.Hint="メモの追加"
-                                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                                        materialDesign:TextFieldAssist.HasFilledTextField="true"
-                                        AcceptsReturn="True"
-                                        Background="{StaticResource MaterialDesignBackground}"
-                                        BorderBrush="{StaticResource MaterialDesignDivider}"
-                                        BorderThickness="1"
-                                        Text=""
-                                        TextWrapping="Wrap" />
-                                </StackPanel>
-                            </Border>
-
-                            <Border
-                                Grid.Row="2"
-                                BorderBrush="{StaticResource MaterialDesignDivider}"
-                                BorderThickness="0,1,0,0">
-                                <Grid>
-                                    <c:CallMethodButton
-                                        Width="48"
-                                        Height="48"
-                                        Padding="0"
-                                        HorizontalAlignment="Left"
-                                        MethodName="CloseDetailView"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        ToolTip="詳細ビューを閉じる">
-                                        <materialDesign:PackIcon
-                                            Width="24"
-                                            Height="24"
-                                            HorizontalAlignment="Center"
-                                            Kind="ChevronRight" />
-                                    </c:CallMethodButton>
-
-                                    <TextBlock
-                                        Grid.Row="2"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                        Text="{Binding TodoItems/CreateTimeText.Value}" />
-
-                                    <c:CallMethodButton
-                                        Grid.Row="2"
-                                        Width="48"
-                                        Height="48"
-                                        Padding="0"
-                                        HorizontalAlignment="Right"
-                                        MethodName="Delete"
-                                        MethodTarget="{Binding TodoItems/}"
-                                        Style="{StaticResource MaterialDesignFlatButton}"
-                                        ToolTip="タスクの削除">
-                                        <materialDesign:PackIcon
-                                            Width="24"
-                                            Height="24"
-                                            HorizontalAlignment="Center"
-                                            Kind="TrashCanOutline" />
-                                    </c:CallMethodButton>
-                                </Grid>
-
-                            </Border>
-
-                        </Grid>
-                        <!--  END: DetailView  -->
-
+                            Content="{Binding DataContext.TodoItems/, ElementName=TodoHostElement}"
+                            ContentTemplate="{StaticResource TodoItemDetailViewKey}"
+                            Visibility="{Binding SelectedItem, ElementName=TodoItemListBox, Converter={StaticResource NullableToVisibilityConverter}}" />
 
                     </Grid>
                 </DataTemplate>

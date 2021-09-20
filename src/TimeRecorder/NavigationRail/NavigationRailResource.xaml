@@ -298,12 +298,20 @@
                             <ColumnDefinition Width="*" MinWidth="64" />
                         </Grid.ColumnDefinitions>
 
-                        <StackPanel Margin="0,56,0,8">
+                        <Grid Margin="0,56,0,8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            
                             <StackPanel
                                 x:Name="HeaderPanel"
                                 Background="{DynamicResource BackgroundBrushKey}"
                                 IsItemsHost="True" />
-                        </StackPanel>
+
+                            <ContentPresenter Grid.Row="1"
+                                              ContentTemplate="{Binding Path=(style:TabControlAssist.OptionalControl), RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Grid>
 
 
                         <GridSplitter

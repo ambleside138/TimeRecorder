@@ -20,7 +20,13 @@ namespace TimeRecorder.Domain.Domain
 
         public static YmdString Today => new(SystemClockServiceLocator.Current.Now);
 
+        public static YmdString Tomorrow => new(SystemClockServiceLocator.Current.Now.AddDays(1));
+
+
         public string Value { get; }
+
+
+        public bool IsPastDate => ToDateTime().HasValue && CompareTo(Today) < 0;
 
         public YmdString(DateTime dateTime)
         {
@@ -29,7 +35,7 @@ namespace TimeRecorder.Domain.Domain
 
         public YmdString(string ymd)
         {
-            Value = ymd;
+            Value = ymd ?? "";
         }
 
 

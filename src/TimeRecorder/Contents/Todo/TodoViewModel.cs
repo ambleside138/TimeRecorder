@@ -1,19 +1,11 @@
 ﻿using Livet;
-using Livet.Commands;
-using Livet.EventListeners;
-using Livet.Messaging;
-using Livet.Messaging.IO;
-using Livet.Messaging.Windows;
 using MessagePipe;
 using Microsoft.Extensions.DependencyInjection;
 using Reactive.Bindings;
 using Reactive.Bindings.Extensions;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Data;
 using TimeRecorder.Contents.Todo.TodoItems;
 using TimeRecorder.Domain.Domain.System;
@@ -26,9 +18,8 @@ namespace TimeRecorder.Contents.Todo
     {
         public NavigationIconButtonViewModel NavigationIcon => new() { Title = "Todo", IconKey = "CheckAll" };
 
-        public ReadOnlyReactiveCollection<TodoListNavigationItemViewModel> NavigationItems { get; }
+        public ReadOnlyReactiveCollection<NavigationIconButtonViewModel> NavigationItems { get; }
 
-        //public List<INavigationItem> SideMenuItems { get; } = new() { new NavigationIconButtonViewModel { Title = "ほんじつ" }, new DividerNavigationItemViewModel(), new NavigationIconButtonViewModel { Title = "重要" }, };
 
         private readonly TodoModel _Model = new(ContainerHelper.Provider.GetRequiredService<ISubscriber<TodoItemChangedEventArgs>>());
 
@@ -40,7 +31,7 @@ namespace TimeRecorder.Contents.Todo
         public ReadOnlyReactiveCollection<TodoItemViewModel> TodoItems { get; }
 
         public TodoList CurrentTodoList 
-            => NavigationItems.FirstOrDefault(i => i.IsSelected)?.TodoList;
+            => NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected)?.TodoList;
 
         public ReactivePropertySlim<LoginStatus> LoginStatus { get; }
 
@@ -54,7 +45,16 @@ namespace TimeRecorder.Contents.Todo
         public TodoViewModel()
         {
             NavigationItems = _Model.TodoListCollection
-                                    .ToReadOnlyReactiveCollection(i => new TodoListNavigationItemViewModel(i))
+                                    .ToReadOnlyReactiveCollection(i => {
+                                        if (i.Id == TodoListIdentity.Divider)
+                                        {
+                                            return (NavigationIconButtonViewModel)new DividerNavigationItemViewModel();
+                                        }
+                                        else
+                                        {
+                                            return (NavigationIconButtonViewModel)new TodoListNavigationItemViewModel(i);
+                                        }
+                                      })
                                     .AddTo(CompositeDisposable);
 
             TodoItems = _Model.FilteredTodoItems
@@ -86,8 +86,7 @@ namespace TimeRecorder.Contents.Todo
             view.SortDescriptions.Add(new SortDescription(nameof(TodoItemViewModel.SortValue), ListSortDirection.Ascending));
 
             // Salaryのソートをリアルタイムソートに設定する
-            var liveShaping = view as ICollectionViewLiveShaping;
-            if (liveShaping == null)
+            if (view is not ICollectionViewLiveShaping liveShaping)
             {
                 // ICollectionViewLiveShapingを実装していない場合は何もしない
                 return;
@@ -118,26 +117,11 @@ namespace TimeRecorder.Contents.Todo
                 {
                     IsProcessing.Value = false;
                 }
-                //await ActionAsync(() =>
-                //{
-                //    _Model.LoadTodoItemsAsync(CurrentTodoList.Id);
-                //});
             }
         }
 
 
-        private async void ActionAsync(Func<Task> action)
-        {
-            try
-            {
-                IsProcessing.Value = true;
-                await action();
-            }
-            finally
-            {
-                IsProcessing.Value = false;
-            }
-        }
+
 
         // ViewからのEnterキー押下で呼び出し
         public async void AddTodoItemAsync()
@@ -166,14 +150,10 @@ namespace TimeRecorder.Contents.Todo
 
         }
 
-        
-
-        public void CloseDetailView()
+        public void AddTodoList()
         {
-            ClearTodoItemSelection();   
+
         }
-
-
 
         private void ClearTodoItemSelection()
         {
