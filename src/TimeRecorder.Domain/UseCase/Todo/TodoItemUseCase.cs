@@ -7,23 +7,23 @@ using TimeRecorder.Domain.Domain.Todo;
 
 namespace TimeRecorder.Domain.UseCase.Todo
 {
-    public class TodoUseCase
+    public class TodoItemUseCase
     {
-        private readonly ITodoRepository _TodoRepository;
+        private readonly ITodoItemRepository _TodoRepository;
 
-        public TodoUseCase(ITodoRepository todoRepository)
+        public TodoItemUseCase(ITodoItemRepository todoRepository)
         {
             _TodoRepository = todoRepository;
         }
 
-        public async Task<TodoItemIdentity> AddAsync(TodoItem workTask)
+        public async Task<TodoItemIdentity> AddAsync(TodoItem todoItem)
         {
-            return await _TodoRepository.AddAsync(workTask);
+            return await _TodoRepository.AddAsync(todoItem);
         }
 
-        public async Task EditAsync(TodoItem workTask)
+        public async Task EditAsync(TodoItem todoItem)
         {
-            await _TodoRepository.EditAsync(workTask);
+            await _TodoRepository.EditAsync(todoItem);
         }
 
         public async Task DeleteAsync(TodoItemIdentity todoId)

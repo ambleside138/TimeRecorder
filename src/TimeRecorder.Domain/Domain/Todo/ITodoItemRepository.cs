@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimeRecorder.Domain.Domain.Todo
 {
-    public interface ITodoRepository : IRepository
+    public interface ITodoItemRepository : IRepository
     {
         Task<TodoItem[]> SelectAsync();
 

@@ -9,7 +9,7 @@ using TimeRecorder.Repository.Firebase.Shared.Helpers;
 
 namespace TimeRecorder.Repository.Firebase.Todo.Dao
 {
-    class TodoDao
+    internal class TodoItemDao
     {
         private readonly FirestoreDb _FirestoreDb;
         private readonly string _UserId;
@@ -18,7 +18,7 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
         private readonly string SubCollectionName = "todoItems";
 
 
-        public TodoDao(FirestoreDb firestoreDb, string userId)
+        public TodoItemDao(FirestoreDb firestoreDb, string userId)
         {
             _FirestoreDb = firestoreDb;
             _UserId = userId;

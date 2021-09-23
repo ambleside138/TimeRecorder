@@ -26,7 +26,7 @@ namespace TimeRecorder.Contents.Todo
         private readonly TodoList _FutureList = new FutureTodoList();
         private readonly TodoList _NoneList = new(TodoListIdentity.None) { Title = "タスク", IconKey = "Home" };
 
-        private readonly TodoUseCase _TodoUseCase;
+        private readonly TodoItemUseCase _TodoUseCase;
         private readonly AuthenticationUseCase _AuthenticationUseCase;
 
         public ObservableCollection<TodoList> TodoListCollection { get; } = new();
@@ -54,7 +54,7 @@ namespace TimeRecorder.Contents.Todo
 
         public TodoModel(ISubscriber<TodoItemChangedEventArgs> subscriber)
         {
-            _TodoUseCase = ContainerHelper.Provider.GetRequiredService<TodoUseCase>();
+            _TodoUseCase = ContainerHelper.Provider.GetRequiredService<TodoItemUseCase>();
             _AuthenticationUseCase = ContainerHelper.Provider.GetRequiredService<AuthenticationUseCase>();
 
             TodoListCollection.Add(_TodayList);

@@ -7,7 +7,7 @@ using TimeRecorder.Domain.Domain.Todo;
 
 namespace TimeRecorder.Repository.InMemory
 {
-    public class InMemoryTodoRepository :  RepositoryBase<TodoItem, TodoItemIdentity>, ITodoRepository
+    public class InMemoryTodoRepository :  RepositoryBase<TodoItem, TodoItemIdentity>, ITodoItemRepository
     {
         public TodoItem[] SelectByListId(TodoListIdentity id)
         {
@@ -19,7 +19,7 @@ namespace TimeRecorder.Repository.InMemory
             throw new NotImplementedException();
         }
 
-        async Task<TodoItemIdentity> ITodoRepository.AddAsync(TodoItem item)
+        async Task<TodoItemIdentity> ITodoItemRepository.AddAsync(TodoItem item)
         {
             var clone = TodoItem.Rebuild(new TodoItemIdentity(Guid.NewGuid().ToString()), item);
             Add(clone);
@@ -27,17 +27,17 @@ namespace TimeRecorder.Repository.InMemory
             return clone.Id;
         }
 
-        Task ITodoRepository.DeleteAsync(TodoItemIdentity id)
+        Task ITodoItemRepository.DeleteAsync(TodoItemIdentity id)
         {
             throw new NotImplementedException();
         }
 
-        Task ITodoRepository.EditAsync(TodoItem item)
+        Task ITodoItemRepository.EditAsync(TodoItem item)
         {
             throw new NotImplementedException();
         }
 
-        Task<TodoItem[]> ITodoRepository.SelectAsync()
+        Task<TodoItem[]> ITodoItemRepository.SelectAsync()
         {
             throw new NotImplementedException();
         }

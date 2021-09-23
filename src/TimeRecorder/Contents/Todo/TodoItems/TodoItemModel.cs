@@ -17,7 +17,7 @@ namespace TimeRecorder.Contents.Todo
         public TodoItem DomainModel { get; }
 
 
-        private readonly TodoUseCase _TodoUseCase;
+        private readonly TodoItemUseCase _TodoUseCase;
 
         private readonly IPublisher<TodoItemChangedEventArgs> _Publisher;
 
@@ -26,7 +26,7 @@ namespace TimeRecorder.Contents.Todo
         {
             DomainModel = todoItem;
             _Publisher = publisher;
-            _TodoUseCase = ContainerHelper.GetRequiredService<TodoUseCase>();
+            _TodoUseCase = ContainerHelper.GetRequiredService<TodoItemUseCase>();
         }
 
         public async Task ToggleCompletedAsync(bool completed)

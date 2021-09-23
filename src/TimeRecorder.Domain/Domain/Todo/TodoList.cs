@@ -120,6 +120,17 @@ namespace TimeRecorder.Domain.Domain.Todo
         #endregion
 
 
+        #region DisplayOrder変更通知プロパティ
+        private int _DisplayOrder;
+
+        public int DisplayOrder
+        {
+            get => _DisplayOrder;
+            set => RaisePropertyChangedIfSet(ref _DisplayOrder, value);
+        }
+        #endregion
+
+
 
         public TodoList(TodoListIdentity id)
         {
