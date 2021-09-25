@@ -34,7 +34,7 @@ namespace TimeRecorder.Contents.Todo
         public ReadOnlyReactiveCollection<TodoItemViewModel> TodoItems { get; }
 
         public TodoList CurrentTodoList 
-            => NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected)?.TodoList ?? _Model.DefaultList;
+            => NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected)?.TodoList;
 
         public ReactivePropertySlim<LoginStatus> LoginStatus { get; }
 
@@ -147,6 +147,7 @@ namespace TimeRecorder.Contents.Todo
         {
             var item = TodoItem.ForNew();
             item.Title = NewTodoTitle.Value;
+            CurrentTodoList.SetDefaultItemProperties(item);
 
             if (string.IsNullOrEmpty(item.Title))
                 return;
@@ -160,7 +161,7 @@ namespace TimeRecorder.Contents.Todo
                 var id = await _Model.AddTodoItemAsync(CurrentTodoList.Id, item);
 
                 ClearTodoItemSelection();
-                TodoItems.FirstOrDefault(i => i.Identity == id)?.Select();
+                NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected)?.FocusToAdditionTextbox();
             }
             finally
             {

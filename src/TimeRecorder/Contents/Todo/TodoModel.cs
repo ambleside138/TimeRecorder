@@ -19,12 +19,6 @@ namespace TimeRecorder.Contents.Todo
     internal class TodoModel : NotificationDomainModel
     {
 
-        // FilterClassとListクラスにわける
-        // ListクラスはFilterClassを保持
-        private readonly TodoList _TodayList = new TodayTodoList();
-        private readonly TodoList _ImportantList = new ImportantTodoList();
-        private readonly TodoList _FutureList = new FutureTodoList();
-        public TodoList DefaultList { get; } = new(TodoListIdentity.None) { Title = "タスク", IconKey = "Home" };
 
         private readonly TodoItemUseCase _TodoUseCase;
         private readonly TodoListUseCase _TodoListUseCase;
@@ -61,7 +55,7 @@ namespace TimeRecorder.Contents.Todo
             _AuthenticationUseCase = ContainerHelper.Provider.GetRequiredService<AuthenticationUseCase>();
 
             _Subscriber = subscriber;
-            LoadFixedTodoList();
+            TodoListCollection.AddRange(TodoListFactory.CreateDefaultCollections());
 
             // IDisposableの管理が必要
             _Subscriber.Subscribe(s => Subscribe(s));
@@ -90,13 +84,6 @@ namespace TimeRecorder.Contents.Todo
             }
         }
 
-        private void LoadFixedTodoList()
-        {
-            TodoListCollection.Add(_TodayList);
-            TodoListCollection.Add(_ImportantList);
-            TodoListCollection.Add(_FutureList);
-            TodoListCollection.Add(DefaultList);
-        }
 
         private async Task LoadTodoListAsync()
         {
@@ -170,7 +157,6 @@ namespace TimeRecorder.Contents.Todo
 
         public async Task<TodoItemIdentity> AddTodoItemAsync(TodoListIdentity selectedListId, TodoItem item)
         {
-            item.TodoListId = selectedListId;
             TodoItemIdentity id = await _TodoUseCase.AddAsync(item);
             await LoadTodoItemsAsync(selectedListId);
             return id;

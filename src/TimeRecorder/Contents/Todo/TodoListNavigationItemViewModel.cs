@@ -31,5 +31,8 @@ namespace TimeRecorder.Contents.Todo
         }
 
         public TodoList TodoList { get; }
+
+               
+        public void FocusToAdditionTextbox() => Messenger.Raise(new Livet.Messaging.InteractionMessage("FocusToTextBox"));
     }
 }

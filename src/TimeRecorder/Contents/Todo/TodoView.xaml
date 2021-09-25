@@ -450,6 +450,10 @@
                                     <behaviors:KeyTrigger Key="Enter">
                                         <l:LivetCallMethodAction MethodName="AddTodoItemAsync" MethodTarget="{Binding DataContext, ElementName=TodoHostElement}" />
                                     </behaviors:KeyTrigger>
+
+                                    <l:InteractionMessageTrigger MessageKey="FocusToTextBox" Messenger="{Binding Messenger}">
+                                        <l:SetFocusAction />
+                                    </l:InteractionMessageTrigger>
                                 </behaviors:Interaction.Triggers>
 
                             </TextBox>

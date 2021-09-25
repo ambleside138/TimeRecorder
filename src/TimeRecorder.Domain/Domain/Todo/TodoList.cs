@@ -7,52 +7,10 @@ using TimeRecorder.Domain.Domain.Shared;
 
 namespace TimeRecorder.Domain.Domain.Todo
 {
-    public class TodayTodoList : TodoList
-    {
-        public TodayTodoList()
-            : base(TodoListIdentity.Today) 
-        {
-            Title = "今日の予定";
-            IconKey = "WhiteBalanceSunny";
-        }
-
-        public override bool MatchTodoItem(TodoItem item) => item.IsTodayTask;
-    }
-
-    public class ImportantTodoList : TodoList
-    {
-        public ImportantTodoList()
-            :base(TodoListIdentity.Important) 
-        {
-            Title = "重要";
-            IconKey = "StarOutline";
-            DoneItemVisilble = false;
-        }
-
-        public override bool MatchTodoItem(TodoItem item) => item.IsImportant;
-    }
-
-    public class FutureTodoList : TodoList
-    {
-        public FutureTodoList()
-            : base(TodoListIdentity.Future) 
-        {
-            Title = "今後の予定";
-            IconKey = "Calendar";
-        }
-
-        public override bool MatchTodoItem(TodoItem item)
-        {
-            return item.PlanDate.CompareTo(YmdString.Today) > 0;
-        }
-    }
-
-
-
+    
     public class TodoList : Entity<TodoList>
     {
         public TodoListIdentity Id { get; private set; }
-
 
 
         #region IconCharacter変更通知プロパティ
@@ -65,7 +23,6 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
-
         #region IconKey変更通知プロパティ
         private string _IconKey;
 
@@ -75,7 +32,6 @@ namespace TimeRecorder.Domain.Domain.Todo
             set => RaisePropertyChangedIfSet(ref _IconKey, value);
         }
         #endregion
-
 
         #region Title変更通知プロパティ
         private string _Title;
@@ -87,7 +43,6 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
-
         #region Background変更通知プロパティ
         private string _Background;
 
@@ -97,7 +52,6 @@ namespace TimeRecorder.Domain.Domain.Todo
             set => RaisePropertyChangedIfSet(ref _Background, value);
         }
         #endregion
-
 
         #region FilteredCount変更通知プロパティ
         private int _FilteredCount;
@@ -109,7 +63,6 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
-
         #region DoneItemVisilble変更通知プロパティ
         private bool _DoneItemVisilble = true;
 
@@ -119,7 +72,6 @@ namespace TimeRecorder.Domain.Domain.Todo
             protected set => RaisePropertyChangedIfSet(ref _DoneItemVisilble, value);
         }
         #endregion
-
 
         #region DisplayOrder変更通知プロパティ
         private int _DisplayOrder;
@@ -160,7 +112,6 @@ namespace TimeRecorder.Domain.Domain.Todo
             };
         }
 
-        //private TodoList() { }
 
         public TodoList(TodoListIdentity id)
         {
@@ -176,6 +127,11 @@ namespace TimeRecorder.Domain.Domain.Todo
         public virtual bool MatchTodoItem(TodoItem item)
         {
             return item.TodoListId == Id;
+        }
+
+        public virtual void SetDefaultItemProperties(TodoItem todoItem) 
+        {
+            todoItem.TodoListId = Id.IsFixed ? TodoListIdentity.None : Id;
         }
     }
 }

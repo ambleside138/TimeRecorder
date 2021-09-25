@@ -28,6 +28,8 @@ namespace TimeRecorder.Domain.Domain
 
         public bool IsPastDate => ToDateTime().HasValue && CompareTo(Today) < 0;
 
+        public bool IsEmpty => string.IsNullOrEmpty(Value);
+
         public YmdString(DateTime dateTime)
         {
             Value = dateTime.ToString("yyyyMMdd");

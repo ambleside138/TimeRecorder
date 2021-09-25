@@ -59,90 +59,94 @@
             </Grid>
 
             <!--  menus  -->
-            <Border Grid.Row="1">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Background">
-                            <Setter.Value>
-                                <SolidColorBrush Color="{StaticResource Blue GreyPrimary50}" />
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </Border.Style>
+            <ScrollViewer Grid.Row="1">
+                <ScrollViewer.Background>
+                    <SolidColorBrush Color="{StaticResource Blue GreyPrimary50}" />
+                </ScrollViewer.Background>
+                <Border>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <SolidColorBrush Color="{StaticResource Blue GreyPrimary50}" />
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Border.Style>
 
 
-                <StackPanel Margin="8">
+                    <StackPanel Margin="12,8,0,8">
 
-                    <!--  今日の予定  -->
-                    <c:CallMethodButton
-                        Height="48"
-                        Margin="0,0,0,8"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Left"
-                        Background="{DynamicResource MaterialDesignPaper}"
-                        BorderBrush="{DynamicResource MaterialDesignDivider}"
-                        BorderThickness="1"
-                        MethodName="ToggleTodayTaskAsync"
-                        Style="{StaticResource MaterialDesignFlatButton}"
-                        Visibility="{Binding IsTodayTask.Value, Converter={StaticResource InverseBoolToVisConverter}}">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon
-                                Width="16"
-                                Height="16"
-                                Kind="WhiteBalanceSunny" />
-                            <TextBlock Margin="16,0,0,0" Text="今日の予定に追加" />
-                        </StackPanel>
-                    </c:CallMethodButton>
-
-                    <Border
-                        Height="48"
-                        Margin="0,0,0,8"
-                        Background="{DynamicResource MaterialDesignPaper}"
-                        BorderBrush="{DynamicResource MaterialDesignDivider}"
-                        BorderThickness="1"
-                        Visibility="{Binding IsTodayTask.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" />
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <materialDesign:PackIcon
-                                Width="16"
-                                Height="16"
-                                Margin="16"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Foreground="{StaticResource MahApps.Brushes.Gray2}"
-                                Kind="WhiteBalanceSunny" />
-
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Foreground="{StaticResource MahApps.Brushes.Gray2}"
-                                Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                                Text="今日の予定に追加されました" />
-
-                            <c:CallMethodButton
-                                Grid.Column="2"
-                                Width="48"
-                                Height="48"
-                                MethodName="ToggleTodayTaskAsync"
-                                Style="{StaticResource MaterialDesignFlatButton}"
-                                ToolTip="タスクを[今日の予定]から削除">
+                        <!--  今日の予定  -->
+                        <c:CallMethodButton
+                            Height="48"
+                            Margin="0,0,0,8"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            Background="{DynamicResource MaterialDesignPaper}"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"
+                            BorderThickness="1"
+                            MethodName="ToggleTodayTaskAsync"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                            Visibility="{Binding IsTodayTask.Value, Converter={StaticResource InverseBoolToVisConverter}}">
+                            <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon
-                                    Width="20"
-                                    Height="20"
-                                    Kind="Close" />
-                            </c:CallMethodButton>
-                        </Grid>
+                                    Width="16"
+                                    Height="16"
+                                    Kind="WhiteBalanceSunny" />
+                                <TextBlock Margin="16,0,0,0" Text="今日の予定に追加" />
+                            </StackPanel>
+                        </c:CallMethodButton>
 
-                    </Border>
-                    <!--  今日の予定 END  -->
+                        <Border
+                            Height="48"
+                            Margin="0,0,0,8"
+                            Background="{DynamicResource MaterialDesignPaper}"
+                            BorderBrush="{DynamicResource MaterialDesignDivider}"
+                            BorderThickness="1"
+                            Visibility="{Binding IsTodayTask.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <materialDesign:PackIcon
+                                    Width="16"
+                                    Height="16"
+                                    Margin="16"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource MahApps.Brushes.Gray2}"
+                                    Kind="WhiteBalanceSunny" />
+
+                                <TextBlock
+                                    Grid.Column="1"
+                                    VerticalAlignment="Center"
+                                    Foreground="{StaticResource MahApps.Brushes.Gray2}"
+                                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                                    Text="今日の予定に追加されました" />
+
+                                <c:CallMethodButton
+                                    Grid.Column="2"
+                                    Width="48"
+                                    Height="48"
+                                    MethodName="ToggleTodayTaskAsync"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    ToolTip="タスクを[今日の予定]から削除">
+                                    <materialDesign:PackIcon
+                                        Width="20"
+                                        Height="20"
+                                        Kind="Close" />
+                                </c:CallMethodButton>
+                            </Grid>
+
+                        </Border>
+                        <!--  今日の予定 END  -->
 
 
-                    <StackPanel Margin="0,0,0,8" Background="{DynamicResource MaterialDesignPaper}">
-                        <!--<c:CallMethodButton
+                        <StackPanel Margin="0,0,0,8" Background="{DynamicResource MaterialDesignPaper}">
+                            <!--<c:CallMethodButton
                             Height="48"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
@@ -170,120 +174,122 @@
                             Background="{DynamicResource MaterialDesignDivider}"
                             BorderThickness="0" />-->
 
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
 
-                            <c:CallMethodButton
-                                x:Name="dueDateButton"
-                                Height="48"
-                                HorizontalAlignment="Stretch"
-                                HorizontalContentAlignment="Left"
-                                Background="{DynamicResource MaterialDesignPaper}"
-                                ContextMenuService.HorizontalOffset="80"
-                                ContextMenuService.Placement="Relative"
-                                ContextMenuService.VerticalOffset="48"
-                                ShowContextMenuOnClick="True">
-                                <c:CallMethodButton.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="c:CallMethodButton">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsPastPlanDate.Value}" Value="True">
-                                                <Setter Property="Foreground">
-                                                    <Setter.Value>
-                                                        <SolidColorBrush Color="{StaticResource RedAccent700}" />
-                                                    </Setter.Value>
-                                                </Setter>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </c:CallMethodButton.Style>
+                                <c:CallMethodButton
+                                    x:Name="dueDateButton"
+                                    Height="48"
+                                    HorizontalAlignment="Stretch"
+                                    HorizontalContentAlignment="Left"
+                                    Background="{DynamicResource MaterialDesignPaper}"
+                                    ContextMenuService.HorizontalOffset="80"
+                                    ContextMenuService.Placement="Relative"
+                                    ContextMenuService.VerticalOffset="48"
+                                    ShowContextMenuOnClick="True">
+                                    <c:CallMethodButton.Style>
+                                        <Style BasedOn="{StaticResource MaterialDesignFlatButton}" TargetType="c:CallMethodButton">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsPastPlanDate.Value}" Value="True">
+                                                    <Setter Property="Foreground">
+                                                        <Setter.Value>
+                                                            <SolidColorBrush Color="{StaticResource RedAccent700}" />
+                                                        </Setter.Value>
+                                                    </Setter>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </c:CallMethodButton.Style>
 
-                                <c:CallMethodButton.ContextMenu>
-                                    <ContextMenu Width="156" PlacementTarget="{Binding ElementName=dueDateButton}">
-                                        <MenuItem
-                                            Command="{Binding PlanDateCommand}"
-                                            CommandParameter="0"
-                                            Header="今日">
-                                            <MenuItem.Icon>
-                                                <materialDesign:PackIcon Kind="Calendar" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem
-                                            Command="{Binding PlanDateCommand}"
-                                            CommandParameter="1"
-                                            Header="明日">
-                                            <MenuItem.Icon>
-                                                <materialDesign:PackIcon Kind="CalendarArrowRight" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <MenuItem
-                                            Command="{Binding PlanDateCommand}"
-                                            CommandParameter="7"
-                                            Header="来週">
-                                            <MenuItem.Icon>
-                                                <materialDesign:PackIcon Kind="CalendarEnd" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                        <Separator />
-                                        <MenuItem Command="{Binding ManualPlanDateCommand}" Header="指定">
-                                            <MenuItem.Icon>
-                                                <materialDesign:PackIcon Kind="CalendarMonth" />
-                                            </MenuItem.Icon>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </c:CallMethodButton.ContextMenu>
+                                    <c:CallMethodButton.ContextMenu>
+                                        <ContextMenu Width="156" PlacementTarget="{Binding ElementName=dueDateButton}">
+                                            <MenuItem
+                                                Command="{Binding PlanDateCommand}"
+                                                CommandParameter="0"
+                                                Header="今日">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="Calendar" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem
+                                                Command="{Binding PlanDateCommand}"
+                                                CommandParameter="1"
+                                                Header="明日">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="CalendarArrowRight" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <MenuItem
+                                                Command="{Binding PlanDateCommand}"
+                                                CommandParameter="7"
+                                                Header="来週">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="CalendarEnd" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                            <Separator />
+                                            <MenuItem Command="{Binding ManualPlanDateCommand}" Header="指定">
+                                                <MenuItem.Icon>
+                                                    <materialDesign:PackIcon Kind="CalendarMonth" />
+                                                </MenuItem.Icon>
+                                            </MenuItem>
+                                        </ContextMenu>
+                                    </c:CallMethodButton.ContextMenu>
 
-                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal">
+                                        <materialDesign:PackIcon
+                                            Width="18"
+                                            Height="18"
+                                            Kind="CalendarMonthOutline" />
+                                        <TextBlock
+                                            Margin="16,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{Binding PlanDateText.Value}" />
+                                    </StackPanel>
+                                </c:CallMethodButton>
+
+                                <c:CallMethodButton
+                                    Grid.Column="1"
+                                    Width="48"
+                                    Height="48"
+                                    MethodName="ClearPlandateAsync"
+                                    Style="{StaticResource MaterialDesignFlatButton}"
+                                    ToolTip="期限の削除">
                                     <materialDesign:PackIcon
-                                        Width="18"
-                                        Height="18"
-                                        Kind="CalendarMonthOutline" />
-                                    <TextBlock
-                                        Margin="16,0,0,0"
-                                        VerticalAlignment="Center"
-                                        Text="{Binding PlanDateText.Value}" />
-                                </StackPanel>
-                            </c:CallMethodButton>
+                                        Width="20"
+                                        Height="20"
+                                        Kind="Close" />
+                                </c:CallMethodButton>
 
-                            <c:CallMethodButton
-                                Grid.Column="1"
-                                Width="48"
-                                Height="48"
-                                MethodName="ClearPlandateAsync"
-                                Style="{StaticResource MaterialDesignFlatButton}"
-                                ToolTip="期限の削除">
-                                <materialDesign:PackIcon
-                                    Width="20"
-                                    Height="20"
-                                    Kind="Close" />
-                            </c:CallMethodButton>
+                                <Border
+                                    Grid.ColumnSpan="2"
+                                    BorderBrush="{DynamicResource MaterialDesignDivider}"
+                                    BorderThickness="1" />
+                            </Grid>
 
-                            <Border
-                                Grid.ColumnSpan="2"
-                                BorderBrush="{DynamicResource MaterialDesignDivider}"
-                                BorderThickness="1" />
-                        </Grid>
+                        </StackPanel>
 
+
+
+                        <TextBox
+                            MinHeight="72"
+                            materialDesign:HintAssist.Hint="メモの追加"
+                            materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
+                            materialDesign:TextFieldAssist.HasFilledTextField="true"
+                            AcceptsReturn="True"
+                            Background="{StaticResource MaterialDesignBackground}"
+                            BorderBrush="{StaticResource MaterialDesignDivider}"
+                            BorderThickness="1"
+                            Text=""
+                            TextWrapping="Wrap" />
                     </StackPanel>
+                </Border>
+            </ScrollViewer>
 
-
-
-                    <TextBox
-                        MinHeight="72"
-                        materialDesign:HintAssist.Hint="メモの追加"
-                        materialDesign:TextFieldAssist.DecorationVisibility="Collapsed"
-                        materialDesign:TextFieldAssist.HasFilledTextField="true"
-                        AcceptsReturn="True"
-                        Background="{StaticResource MaterialDesignBackground}"
-                        BorderBrush="{StaticResource MaterialDesignDivider}"
-                        BorderThickness="1"
-                        Text=""
-                        TextWrapping="Wrap" />
-                </StackPanel>
-            </Border>
 
             <Border
                 Grid.Row="2"

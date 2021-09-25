@@ -15,7 +15,7 @@
 
 
     <Border Background="{StaticResource MaterialDesignPaper}" CornerRadius="8">
-        <Grid Margin="16">
+        <Grid Margin="32,16">
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
