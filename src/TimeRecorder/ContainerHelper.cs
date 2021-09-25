@@ -42,6 +42,7 @@ namespace TimeRecorder
 
             // フォームのインスタンスをDIで生成する場合はアプリケーションのフォームを登録する
             services.AddTransient<Domain.UseCase.Todo.TodoItemUseCase>()
+                    .AddTransient<Domain.UseCase.Todo.TodoListUseCase>()
                     .AddTransient<Domain.UseCase.System.AuthenticationUseCase>();
 
             // サービスプロバイダーを生成する
@@ -83,6 +84,7 @@ namespace TimeRecorder
                            .AddSingleton<IConfigurationRepository, SQLiteConfigurationRepository>()
                            .AddSingleton<IWorkingHourRepository, SQLiteWorkingHoursRepository>()
                            .AddSingleton<ITodoItemRepository, FirestoreTodoItemRepository>()
+                           .AddSingleton<ITodoListRepository, FirestoreTodoListRepository>()
                            .AddSingleton<IAccountRepository, FirebaseAccountRepository>()
                            .AddSingleton<IReportDriver, CsvReportDriver>()
                            .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>();

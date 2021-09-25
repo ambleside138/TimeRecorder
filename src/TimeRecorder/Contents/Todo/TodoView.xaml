@@ -79,7 +79,7 @@
                 <Grid>
                     <Border
                         Height="1"
-                        Margin="2,2,2,2"
+                        Margin="16,-16"
                         HorizontalAlignment="Stretch"
                         Background="{DynamicResource MaterialDesignDivider}"
                         BorderThickness="0" />
@@ -151,6 +151,7 @@
                     Padding="0"
                     HorizontalContentAlignment="Stretch"
                     MethodName="AddTodoList"
+                    MethodTarget="{Binding DataContext, ElementName=TodoHostElement}"
                     Style="{StaticResource MaterialDesignFlatButton}"
                     ToolTip="リストを追加">
                     <Grid>
@@ -199,7 +200,7 @@
 
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <Grid Margin="0">
+                    <Grid Margin="0" FocusManager.FocusedElement="{Binding ElementName=listOptionButton}">
                         <Grid.ColumnDefinitions>
                             <!--  tasklist  -->
                             <ColumnDefinition Width="*" />
@@ -263,32 +264,88 @@
                                 </materialDesign:PackIcon.Style>
                             </materialDesign:PackIcon>
 
-                            <TextBlock
+                            <!--  タイトル  -->
+                            <TextBox
+                                x:Name="TitleTextBox"
                                 Grid.Column="2"
                                 Margin="8,0,0,0"
+                                Padding="8,2"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
+                                FontSize="20"
                                 Text="{Binding Title}">
-                                <TextBlock.Style>
-                                    <Style BasedOn="{StaticResource MaterialDesignHeadline4TextBlock}" TargetType="TextBlock">
+
+                                <behaviors:Interaction.Triggers>
+                                    <behaviors:KeyTrigger Key="Enter">
+                                        <l:LivetCallMethodAction MethodName="SetTodoListTitleAsync" MethodTarget="{Binding DataContext, ElementName=TodoHostElement}" />
+                                    </behaviors:KeyTrigger>
+                                </behaviors:Interaction.Triggers>
+
+                                <TextBox.Style>
+                                    <Style BasedOn="{StaticResource MaterialDesignTextBox}" TargetType="TextBox">
+                                        <Setter Property="materialDesign:TextFieldAssist.RippleOnFocusEnabled" Value="True" />
+                                        <Setter Property="materialDesign:TextFieldAssist.TextFieldCornerRadius" Value="2" />
+                                        <!--<Setter Property="materialDesign:TextFieldAssist.UnderlineCornerRadius" Value="2" />-->
+                                        <Setter Property="materialDesign:TextFieldAssist.DecorationVisibility" Value="Collapsed" />
+                                        <Setter Property="IsReadOnly" Value="True" />
+                                        <Setter Property="Background" Value="Transparent" />
+                                        <Setter Property="BorderThickness" Value="0" />
+
                                         <Setter Property="Foreground">
                                             <Setter.Value>
                                                 <SolidColorBrush Color="{DynamicResource Primary300Foreground}" />
                                             </Setter.Value>
                                         </Setter>
+
+                                        <Style.Triggers>
+
+                                            <Trigger Property="IsReadOnly" Value="False">
+                                                <Setter Property="Background" Value="{DynamicResource MaterialDesignPaper}" />
+                                                <Setter Property="BorderThickness" Value="1" />
+                                                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+                                            </Trigger>
+
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsReadOnly, RelativeSource={RelativeSource Self}}" Value="True" />
+                                                    <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="True" />
+                                                    <Condition Binding="{Binding CanEditTitle}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+
+                                                <Setter Property="Background" Value="{DynamicResource MaterialDesignTextFieldBoxHoverBackground}" />
+                                            </MultiDataTrigger>
+
+                                            <MultiDataTrigger>
+                                                <MultiDataTrigger.Conditions>
+                                                    <Condition Binding="{Binding IsFocused, RelativeSource={RelativeSource Self}}" Value="True" />
+                                                    <Condition Binding="{Binding CanEditTitle}" Value="True" />
+                                                </MultiDataTrigger.Conditions>
+
+                                                <Setter Property="IsReadOnly" Value="False" />
+                                            </MultiDataTrigger>
+                                        </Style.Triggers>
+
+
                                     </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                </TextBox.Style>
+                            </TextBox>
+
                         </StackPanel>
 
                         <c:CallMethodButton
+                            x:Name="listOptionButton"
                             Width="32"
                             Height="32"
                             Margin="0,0,16,0"
                             Padding="0"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
+                            ContextMenuService.HorizontalOffset="0"
+                            ContextMenuService.Placement="Relative"
+                            ContextMenuService.VerticalOffset="0"
                             MethodName="EditWorkTask"
+                            MethodTarget="{Binding DataContext, ElementName=TodoHostElement}"
+                            ShowContextMenuOnClick="True"
                             Style="{StaticResource MaterialDesignFlatButton}"
                             ToolTip="タスクリストのオプション">
                             <materialDesign:PackIcon
@@ -307,6 +364,29 @@
                                     </Style>
                                 </materialDesign:PackIcon.Style>
                             </materialDesign:PackIcon>
+
+                            <c:CallMethodButton.ContextMenu>
+                                <ContextMenu Width="220" PlacementTarget="{Binding ElementName=listOptionButton}">
+                                    <MenuItem
+                                        Command="{Binding PlanDateCommand}"
+                                        CommandParameter="0"
+                                        Header="リスト名を変更">
+                                        <MenuItem.Icon>
+                                            <materialDesign:PackIcon Kind="FormTextbox" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+
+                                    <Separator />
+                                    <MenuItem
+                                        Command="{Binding DeleteTaskListCommand}"
+                                        Foreground="{DynamicResource WarningBrush}"
+                                        Header="リストを削除">
+                                        <MenuItem.Icon>
+                                            <materialDesign:PackIcon Kind="Delete" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </c:CallMethodButton.ContextMenu>
                         </c:CallMethodButton>
 
 

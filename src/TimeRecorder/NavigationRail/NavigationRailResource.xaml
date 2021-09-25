@@ -303,14 +303,13 @@
                                 <RowDefinition />
                                 <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
-                            
+
                             <StackPanel
                                 x:Name="HeaderPanel"
                                 Background="{DynamicResource BackgroundBrushKey}"
                                 IsItemsHost="True" />
 
-                            <ContentPresenter Grid.Row="1"
-                                              ContentTemplate="{Binding Path=(style:TabControlAssist.OptionalControl), RelativeSource={RelativeSource TemplatedParent}}" />
+                            <ContentPresenter Grid.Row="1" ContentTemplate="{Binding Path=(style:TabControlAssist.OptionalControl), RelativeSource={RelativeSource TemplatedParent}}" />
                         </Grid>
 
 

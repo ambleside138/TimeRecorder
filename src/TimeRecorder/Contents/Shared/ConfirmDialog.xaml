@@ -40,10 +40,11 @@
                 HorizontalAlignment="Right"
                 Orientation="Horizontal">
                 <Button
-                    Background="{DynamicResource MaterialDesignValidationErrorBrush}"
-                    BorderBrush="{DynamicResource MaterialDesignValidationErrorBrush}"
+                    Background="{DynamicResource WarningBrush}"
+                    BorderBrush="{DynamicResource WarningBrush}"
                     Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                     Content="{Binding YesButtonText.Value}"
+                    Foreground="{DynamicResource WarningForegroundBrush}"
                     IsDefault="True"
                     Style="{DynamicResource MaterialDesignRaisedButton}">
                     <Button.CommandParameter>

@@ -36,12 +36,14 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
 
         public TodoList ConvertToDomainObject()
         {
-            return new TodoList(null)
+            return new TodoList(new TodoListIdentity(Id))
             {
                 IconKey = IconKey,
                 Title = Title,
                 Background = Background,
                 DisplayOrder = DisplayOrder,
+                CreatedAt = CreatedAt.ToLocalDateTime(),
+                UpdatedAt = UpdatedAt.ToLocalDateTime(),
             };
         }
 

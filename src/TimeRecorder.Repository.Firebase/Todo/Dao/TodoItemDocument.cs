@@ -3,7 +3,6 @@ using System.Linq;
 using Google.Cloud.Firestore;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Repository.Firebase.Shared;
-using TimeRecorder.Repository.Firebase.Shared.Helpers;
 
 namespace TimeRecorder.Repository.Firebase.Todo.Dao
 {

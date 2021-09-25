@@ -5,3 +5,6 @@ csharp_style_expression_bodied_methods = when_on_single_line
 
 # IDE0011: 波かっこを追加します
 csharp_prefer_braces = when_multiline
+
+# Default severity for all analyzer diagnostics
+dotnet_analyzer_diagnostic.severity = silent

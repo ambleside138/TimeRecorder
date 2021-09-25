@@ -70,6 +70,9 @@
 
             <!--  Original  -->
             <SolidColorBrush x:Key="NavigationRailBorderBrush" Color="{StaticResource BlueGreyPrimary50}" />
+            
+            <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource Deep OrangeAccent700}" />
+            <SolidColorBrush x:Key="WarningForegroundBrush" Color="{StaticResource Deep OrangeAccent700Foreground}" />
 
             <Style
                 x:Key="HorizontalMarginStyleKey"

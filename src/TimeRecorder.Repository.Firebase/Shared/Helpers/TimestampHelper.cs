@@ -1,11 +1,6 @@
-﻿using Google.Cloud.Firestore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
-namespace TimeRecorder.Repository.Firebase.Shared.Helpers
+namespace Google.Cloud.Firestore
 {
     internal static class TimestampHelper
     {

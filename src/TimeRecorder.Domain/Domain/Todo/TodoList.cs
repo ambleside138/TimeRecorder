@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeRecorder.Domain.Domain.Shared;
 
 namespace TimeRecorder.Domain.Domain.Todo
 {
@@ -130,7 +131,36 @@ namespace TimeRecorder.Domain.Domain.Todo
         }
         #endregion
 
+        #region CreatedAt変更通知プロパティ
+        private DateTime _CreatedAt;
 
+        public DateTime CreatedAt
+        {
+            get => _CreatedAt;
+            set => RaisePropertyChangedIfSet(ref _CreatedAt, value);
+        }
+        #endregion
+
+        #region UpdatedAt変更通知プロパティ
+        private DateTime _UpdatedAt = DateTime.Now;
+
+        public DateTime UpdatedAt
+        {
+            get => _UpdatedAt;
+            set => RaisePropertyChangedIfSet(ref _UpdatedAt, value);
+        }
+        #endregion
+
+        public static TodoList ForNew(int dispOrder)
+        {
+            return new TodoList(IdentityHelper.CreateTempId<TodoListIdentity>())
+            {
+                Title = $"無題のリスト{dispOrder}",
+                DisplayOrder = dispOrder
+            };
+        }
+
+        //private TodoList() { }
 
         public TodoList(TodoListIdentity id)
         {

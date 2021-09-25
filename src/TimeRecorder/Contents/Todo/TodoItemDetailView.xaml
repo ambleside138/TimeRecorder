@@ -202,9 +202,7 @@
                                 </c:CallMethodButton.Style>
 
                                 <c:CallMethodButton.ContextMenu>
-                                    <ContextMenu
-                                        Width="156"
-                                        PlacementTarget="{Binding ElementName=dueDateButton}">
+                                    <ContextMenu Width="156" PlacementTarget="{Binding ElementName=dueDateButton}">
                                         <MenuItem
                                             Command="{Binding PlanDateCommand}"
                                             CommandParameter="0"

@@ -1,4 +1,5 @@
 ﻿using Livet;
+using MaterialDesignThemes.Wpf;
 using MessagePipe;
 using Microsoft.Extensions.DependencyInjection;
 using Reactive.Bindings;
@@ -7,6 +8,8 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Input;
+using TimeRecorder.Contents.Shared;
 using TimeRecorder.Contents.Todo.TodoItems;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Todo;
@@ -31,7 +34,7 @@ namespace TimeRecorder.Contents.Todo
         public ReadOnlyReactiveCollection<TodoItemViewModel> TodoItems { get; }
 
         public TodoList CurrentTodoList 
-            => NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected)?.TodoList;
+            => NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected)?.TodoList ?? _Model.DefaultList;
 
         public ReactivePropertySlim<LoginStatus> LoginStatus { get; }
 
@@ -41,6 +44,9 @@ namespace TimeRecorder.Contents.Todo
 
         public ReactivePropertySlim<int> SelectedListIndex { get; } = new();
 
+        private bool _IsInitialized = false;
+
+        public ReactiveCommand DeleteTaskListCommand { get; } = new();
 
         public TodoViewModel()
         {
@@ -77,6 +83,9 @@ namespace TimeRecorder.Contents.Todo
 
             IsSelected.Subscribe(i => Handler(i)).AddTo(CompositeDisposable);
             SelectedListIndex.Subscribe(i => Handler(IsSelected.Value)).AddTo(CompositeDisposable);
+
+            DeleteTaskListCommand.Subscribe(() => DeleteTodoListAsync())
+                                 .AddTo(CompositeDisposable);
         }
 
         private void SetLiveSorting()
@@ -111,6 +120,16 @@ namespace TimeRecorder.Contents.Todo
                 try
                 {
                     IsProcessing.Value = true;
+
+                    if(_IsInitialized == false)
+                    {
+                        await _Model.InitializeAsync();
+
+                        _IsInitialized = true;
+                    }
+
+                    Keyboard.ClearFocus();
+
                     await _Model.LoadTodoItemsAsync(CurrentTodoList.Id);
                 }
                 finally
@@ -152,7 +171,7 @@ namespace TimeRecorder.Contents.Todo
 
         public void AddTodoList()
         {
-
+            _ = _Model.AddTodoListAsync();
         }
 
         private void ClearTodoItemSelection()
@@ -160,6 +179,43 @@ namespace TimeRecorder.Contents.Todo
             foreach(var item in TodoItems)
             {
                 item.ClearSelection();
+            }
+        }
+
+        public async void SetTodoListTitleAsync()
+        {
+            var current = NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected);
+
+            if (current.TodoList.Id.IsFixed)
+                return;
+
+            current.TodoList.Title = current.Title;
+
+            await _Model.SetTodoListTitleAsync(current.TodoList);
+
+            Keyboard.ClearFocus();
+
+        }
+
+        private async void DeleteTodoListAsync()
+        {
+            var current = CurrentTodoList;
+            if (current.Id.IsFixed)
+                return;
+
+            // 確認してから削除する
+            var view = new ConfirmDialog
+            {
+                DataContext = new ConfirmDialogViewModel("リストを削除", $"{current.Title}は完全に削除されます。", "削除", "キャンセル")
+            };
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog");
+
+            if ((bool)result)
+            {
+                NavigationItems.First().IsSelected = true;
+                await _Model.DeleteTodoListAsync(current);
             }
         }
 

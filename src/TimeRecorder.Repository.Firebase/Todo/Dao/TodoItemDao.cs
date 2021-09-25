@@ -65,7 +65,7 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
         /// 指定したUserIdのTodoを取得します
         /// </summary>
         /// <returns></returns>
-        public async Task<TodoRootDocument> SelectAsync()
+        public async Task<IEnumerable<TodoItemDocument>> SelectAsync()
         {
             var docRef = await GetRootDocumentReference().GetSnapshotAsync();
 
@@ -77,15 +77,9 @@ namespace TimeRecorder.Repository.Firebase.Todo.Dao
             // さらにサブコレクションを取得する
             var todoCollection = await docRef.Reference.Collection(SubCollectionName).GetSnapshotAsync();
 
-            var list = todoCollection.Documents
+            return todoCollection.Documents
                                      .Select(d => d.ConvertToWithId<TodoItemDocument>((obj,id) => obj.Id = id))
                                      .ToList();
-
-
-            var rootDoc = docRef.ConvertTo<TodoRootDocument>();
-            rootDoc.TodoItems = list.ToArray();
-
-            return rootDoc;
         }
     }
 }

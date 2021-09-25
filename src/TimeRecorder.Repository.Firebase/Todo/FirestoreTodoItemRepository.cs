@@ -32,9 +32,9 @@ namespace TimeRecorder.Repository.Firebase.Todo
         {
             FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
 
-            TodoRootDocument doc = await new TodoItemDao(db, FirebaseAuthenticator.Current.UserId).SelectAsync();
+            var todoItems = await new TodoItemDao(db, FirebaseAuthenticator.Current.UserId).SelectAsync();
 
-            return doc?.TodoItems
+            return todoItems?
                       .Select(i => i.ConvertToDomainObject())
                       .ToArray() ?? Array.Empty<TodoItem>();
         }

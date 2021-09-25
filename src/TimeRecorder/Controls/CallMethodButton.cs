@@ -99,7 +99,7 @@ namespace TimeRecorder.Controls
                 // up ContextMenu.DataContext manually here.
                 if (ContextMenu.DataContext == null)
                 {
-                    ContextMenu.SetBinding(DataContextProperty, new Binding { Source = DataContext });
+                    ContextMenu.SetBinding(DataContextProperty, new Binding { Source = target });
                 }
                 ContextMenu.IsOpen = true;
                 return;
@@ -112,7 +112,7 @@ namespace TimeRecorder.Controls
             else
                 contentName = Content?.ToString() ?? "";
 
-            contentName += " @" + DataContext.GetType().FullName;
+            contentName += " @" + target.GetType().FullName;
 
             if (string.IsNullOrEmpty(MethodName))
             {

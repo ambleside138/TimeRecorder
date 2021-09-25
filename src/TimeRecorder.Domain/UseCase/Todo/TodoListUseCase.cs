@@ -33,7 +33,8 @@ namespace TimeRecorder.Domain.UseCase.Todo
 
         public async Task<TodoList[]> SelectAsync()
         {
-            return await _TodoRepository.SelectAsync();
+            var list = await _TodoRepository.SelectAsync();
+            return list.OrderBy(i => i.DisplayOrder).ToArray();
         }
     }
 }

@@ -24,9 +24,10 @@ namespace TimeRecorder.Contents.Todo
         private readonly TodoList _TodayList = new TodayTodoList();
         private readonly TodoList _ImportantList = new ImportantTodoList();
         private readonly TodoList _FutureList = new FutureTodoList();
-        private readonly TodoList _NoneList = new(TodoListIdentity.None) { Title = "タスク", IconKey = "Home" };
+        public TodoList DefaultList { get; } = new(TodoListIdentity.None) { Title = "タスク", IconKey = "Home" };
 
         private readonly TodoItemUseCase _TodoUseCase;
+        private readonly TodoListUseCase _TodoListUseCase;
         private readonly AuthenticationUseCase _AuthenticationUseCase;
 
         public ObservableCollection<TodoList> TodoListCollection { get; } = new();
@@ -55,13 +56,12 @@ namespace TimeRecorder.Contents.Todo
         public TodoModel(ISubscriber<TodoItemChangedEventArgs> subscriber)
         {
             _TodoUseCase = ContainerHelper.Provider.GetRequiredService<TodoItemUseCase>();
+            _TodoListUseCase = ContainerHelper.Provider.GetRequiredService<TodoListUseCase>();
+
             _AuthenticationUseCase = ContainerHelper.Provider.GetRequiredService<AuthenticationUseCase>();
 
-            TodoListCollection.Add(_TodayList);
-            TodoListCollection.Add(_ImportantList);
-            TodoListCollection.Add(_FutureList);
-            TodoListCollection.Add(_NoneList);
             _Subscriber = subscriber;
+            LoadFixedTodoList();
 
             // IDisposableの管理が必要
             _Subscriber.Subscribe(s => Subscribe(s));
@@ -90,15 +90,42 @@ namespace TimeRecorder.Contents.Todo
             }
         }
 
+        private void LoadFixedTodoList()
+        {
+            TodoListCollection.Add(_TodayList);
+            TodoListCollection.Add(_ImportantList);
+            TodoListCollection.Add(_FutureList);
+            TodoListCollection.Add(DefaultList);
+        }
+
+        private async Task LoadTodoListAsync()
+        {
+            for (int i = TodoListCollection.Count - 1; i >= 0; i--)
+            {
+                if(TodoListCollection[i].Id.IsFixed == false
+                    || TodoListCollection[i].Id == TodoListIdentity.Divider)
+                {
+                    TodoListCollection.RemoveAt(i);
+                }
+            }
+
+            var list = await _TodoListUseCase.SelectAsync();
+            if(list?.Length > 0)
+            {
+                TodoListCollection.Add(new TodoList(TodoListIdentity.Divider));
+                TodoListCollection.AddRange(list);
+            }
+        }
+
+        public async Task InitializeAsync()
+        {
+            LoginStatus = _AuthenticationUseCase.TrySignin();
+            await LoadTodoListAsync();
+        }
 
 
         public async Task LoadTodoItemsAsync(TodoListIdentity selectedListId)
         {
-            if(LoginStatus == null)
-            {
-                LoginStatus = _AuthenticationUseCase.TrySignin();
-            }
-
             _CurrentTodoList = selectedListId;
 
             var todoItems = await _TodoUseCase.SelectAsync();
@@ -149,7 +176,26 @@ namespace TimeRecorder.Contents.Todo
             return id;
         }
 
+        public async Task<TodoListIdentity> AddTodoListAsync()
+        {
+            var list = TodoList.ForNew(TodoListCollection.Count(i => i.Id.IsFixed == false) + 1);
 
+            TodoListIdentity id = await _TodoListUseCase.AddAsync(list);
 
+            await LoadTodoListAsync();
+
+            return id;
+        }
+
+        public async Task SetTodoListTitleAsync(TodoList todoList)
+        {
+            await _TodoListUseCase.EditAsync(todoList);
+        }
+
+        public async Task DeleteTodoListAsync(TodoList todoList)
+        {
+            TodoListCollection.Remove(todoList);
+            await _TodoListUseCase.DeleteAsync(todoList.Id);
+        }
     }
 }
