@@ -176,7 +176,7 @@ namespace TimeRecorder.Contents.Todo
 
         private void ClearTodoItemSelection()
         {
-            foreach(var item in TodoItems)
+            foreach (var item in TodoItems)
             {
                 item.ClearSelection();
             }

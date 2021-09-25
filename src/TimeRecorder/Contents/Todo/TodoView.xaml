@@ -347,7 +347,8 @@
                             MethodTarget="{Binding DataContext, ElementName=TodoHostElement}"
                             ShowContextMenuOnClick="True"
                             Style="{StaticResource MaterialDesignFlatButton}"
-                            ToolTip="タスクリストのオプション">
+                            ToolTip="タスクリストのオプション"
+                            Visibility="{Binding CanEditTitle, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <materialDesign:PackIcon
                                 Width="24"
                                 Height="24"

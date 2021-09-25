@@ -52,7 +52,11 @@ namespace TimeRecorder.Host
 
         public void Initialize()
         {
-            Contents.Add(new TodoViewModel());
+            if(UserConfigurationManager.Instance.GetConfiguration<UseTodoConfig>(ConfigKey.UseTodo)?.UseTodo ?? true)
+            {
+                Contents.Add(new TodoViewModel());
+            }
+
             Contents.Add(new WorkUnitRecorderViewModel());
             Contents.Add(new ArchiveManagerViewModel());
             Contents.Add(new ExporterViewModel());

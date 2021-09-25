@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using TimeRecorder.Contents.Configuration.TaskConfigEditor;
@@ -41,6 +42,9 @@ namespace TimeRecorder.Contents.Configuration
         public ReactivePropertySlim<string> LunchEndTimeHHmm { get; }
         public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
+        public ReactivePropertySlim<bool> UseTodo { get; }
+        public ReadOnlyReactivePropertySlim<string> UseTodoText { get; }
+
         public ConfigurationViewModel()
         {
             // ComboBoxの初期値を設定するにはItemsSourceで利用しているインスタンスの中から指定する必要がある
@@ -71,6 +75,16 @@ namespace TimeRecorder.Contents.Configuration
 
             var url = UserConfigurationManager.Instance.GetConfiguration<WorkingHourImportApiUrlConfig>(ConfigKey.WorkingHourImportApiUrl);
             WorkingHourImportUrl = new ReactivePropertySlim<string>(url?.URL);
+
+            var useTodo = UserConfigurationManager.Instance.GetConfiguration<UseTodoConfig>(ConfigKey.UseTodo);
+            UseTodo = new ReactivePropertySlim<bool>(useTodo?.UseTodo ?? true);
+            UseTodo.Subscribe(u => UserConfigurationManager.Instance.SetConfiguration(new UseTodoConfig { UseTodo = u }))
+                   .AddTo(CompositeDisposable);
+
+            UseTodoText = UseTodo.ToReactiveProperty()
+                                 .Select(u => u ? "オン" : "オフ")
+                                 .ToReadOnlyReactivePropertySlim()
+                                 .AddTo(CompositeDisposable);
         }
 
         private void ChangeTheme(Swatch swatch)
