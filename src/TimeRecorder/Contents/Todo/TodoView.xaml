@@ -19,6 +19,7 @@
     d:DesignHeight="450"
     d:DesignWidth="800"
     Background="{DynamicResource MaterialDesignPaper}"
+    Focusable="True"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -58,11 +59,12 @@
 
                     <TextBlock
                         Grid.Column="2"
-                        Margin="8,0,0,0"
+                        Margin="4,0,2,0"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                        Text="{Binding Title}" />
+                        Text="{Binding Title}"
+                        TextTrimming="CharacterEllipsis" />
 
                     <TextBlock
                         Grid.Column="3"
@@ -200,7 +202,10 @@
 
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <Grid Margin="0" FocusManager.FocusedElement="{Binding ElementName=listOptionButton}">
+                    <Grid
+                        Margin="0"
+                        Background="Transparent"
+                        Focusable="True">
                         <Grid.ColumnDefinitions>
                             <!--  tasklist  -->
                             <ColumnDefinition Width="*" />
@@ -279,6 +284,10 @@
                                     <behaviors:KeyTrigger Key="Enter">
                                         <l:LivetCallMethodAction MethodName="SetTodoListTitleAsync" MethodTarget="{Binding DataContext, ElementName=TodoHostElement}" />
                                     </behaviors:KeyTrigger>
+
+                                    <l:InteractionMessageTrigger MessageKey="FocusToTitleTextBox" Messenger="{Binding Messenger}">
+                                        <l:SetFocusAction />
+                                    </l:InteractionMessageTrigger>
                                 </behaviors:Interaction.Triggers>
 
                                 <TextBox.Style>
@@ -367,15 +376,38 @@
                             </materialDesign:PackIcon>
 
                             <c:CallMethodButton.ContextMenu>
-                                <ContextMenu Width="220" PlacementTarget="{Binding ElementName=listOptionButton}">
+                                <ContextMenu Width="220">
                                     <MenuItem
-                                        Command="{Binding PlanDateCommand}"
+                                        Command="{Binding EditTaskListTitleCommand}"
                                         CommandParameter="0"
                                         Header="リスト名を変更">
                                         <MenuItem.Icon>
                                             <materialDesign:PackIcon Kind="FormTextbox" />
                                         </MenuItem.Icon>
                                     </MenuItem>
+
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+
+                                        <TextBlock Text="テーマ" />
+
+                                        <ItemsControl ItemsSource="{Binding Themes}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <UniformGrid Columns="5" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Button />
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Grid>
 
                                     <Separator />
                                     <MenuItem
@@ -395,7 +427,7 @@
                         <ListBox
                             x:Name="TodoItemListBox"
                             Grid.Row="1"
-                            Margin="24,8"
+                            Margin="20,8"
                             HorizontalContentAlignment="Stretch"
                             IsSynchronizedWithCurrentItem="True"
                             ItemsSource="{Binding DataContext.TodoItems, ElementName=TodoHostElement}">

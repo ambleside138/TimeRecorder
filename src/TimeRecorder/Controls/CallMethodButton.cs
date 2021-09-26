@@ -101,6 +101,12 @@ namespace TimeRecorder.Controls
                 {
                     ContextMenu.SetBinding(DataContextProperty, new Binding { Source = target });
                 }
+                if(ContextMenu.PlacementTarget == null)
+                {
+                    ContextMenu.PlacementTarget = this;
+                }
+                ContextMenu.Placement = System.Windows.Controls.Primitives.PlacementMode.Bottom;
+                ContextMenu.HorizontalOffset = ContextMenu.Width - ActualWidth;
                 ContextMenu.IsOpen = true;
                 return;
             }

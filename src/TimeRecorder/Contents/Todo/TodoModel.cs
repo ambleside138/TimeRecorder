@@ -129,10 +129,11 @@ namespace TimeRecorder.Contents.Todo
                 TodoItem[] ownListItems = todoItems.Where(i => todolist.MatchTodoItem(i))
                                                    .ToArray();
 
+                var tmpTodoItems = new List<TodoItem>(ownListItems.Where(i => i.IsCompleted == false));
+                todolist.FilteredCount = tmpTodoItems.Count(i => i.IsDoneFilter == false && i.IsCompleted == false);
 
                 if (todolist.Id == selectedListId)
                 {
-                    var tmpTodoItems = new List<TodoItem>(ownListItems.Where(i => i.IsCompleted == false));
 
                     var doneItems = ownListItems.Where(i => i.IsCompleted).ToArray();
                     if (doneItems.Any()
@@ -141,7 +142,6 @@ namespace TimeRecorder.Contents.Todo
                         tmpTodoItems.Add(TodoItem.ForDoneFilter());
                         tmpTodoItems.AddRange(doneItems);
                     }
-                    todolist.FilteredCount = tmpTodoItems.Count(i => i.IsDoneFilter == false);
 
                     if (tmpTodoItems.SequenceEqual(FilteredTodoItems) == false)
                     {

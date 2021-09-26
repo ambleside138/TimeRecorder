@@ -44,7 +44,7 @@ namespace TimeRecorder.Contents.Todo.TodoItems
 
         public ReactivePropertySlim<PackIconKind> ImportantToggleIcon { get; } = new();
 
-        public ReactivePropertySlim<bool> IsVisible { get; } = new ReactivePropertySlim<bool>(true);
+        public ReactivePropertySlim<bool> IsVisible { get; }
 
         private TodoItemFilterEventArgs _CurrentFilterCondition;
 
@@ -63,6 +63,8 @@ namespace TimeRecorder.Contents.Todo.TodoItems
         public ReactiveCommand ManualPlanDateCommand { get; } = new();
 
         public ReadOnlyReactivePropertySlim<string> CreateTimeText { get; }
+
+        public string CreateTime { get; }
 
         public ReadOnlyReactivePropertySlim<bool> IsTodayTask { get; }
 
@@ -93,6 +95,8 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             IsCompleted.Subscribe(_ => ToggleCompletedAsync(IsCompleted.Value) )
                        .AddTo(CompositeDisposable);
 
+            IsVisible = new ReactivePropertySlim<bool>(item.IsCompleted == false);
+
             IsImportant = item.ObserveProperty(i => i.IsImportant)
                               .ToReadOnlyReactivePropertySlim()
                               .AddTo(CompositeDisposable);
@@ -110,6 +114,8 @@ namespace TimeRecorder.Contents.Todo.TodoItems
                                  .Select(i => IsCompleted.Value ? $"{ConvertToString(_TodoItemModel.DomainModel.CompletedDateTime.Value)} に完了済み" : $"作成: {ConvertToString(_TodoItemModel.DomainModel.CreatedAt)}")
                                  .ToReadOnlyReactivePropertySlim()
                                  .AddTo(CompositeDisposable);
+
+            CreateTime = item.CreatedAt.ToString("作成: yyyy/MM/dd(ddd) HH:mm");
 
             IsTodayTask = item.TodayTaskDates
                               .CollectionChangedAsObservable()
@@ -217,9 +223,9 @@ namespace TimeRecorder.Contents.Todo.TodoItems
 
         public async void ToggleCompletedAsync(bool completed)
         {
-            SetSortValue();
-            Filter(_CurrentFilterCondition);
             await _TodoItemModel.ToggleCompletedAsync(completed);
+            Filter(_CurrentFilterCondition);
+            SetSortValue();
         }
 
         public async void UpdateAsync() => await _TodoItemModel.UpdateAsync();
@@ -276,28 +282,27 @@ namespace TimeRecorder.Contents.Todo.TodoItems
             // 完了済み
             // の順になるように調整
 
-            var ymd = "";
-
             // type_yyyyMMddHHmmss
+
             string type;
 
             if (_TodoItemModel.DomainModel.IsDoneFilter)
             {
-                type = "02";
+                type = $"02_yyyyMMddHHmmss";
             }
             else
             {
-                if (IsCompleted.Value)
+                if (_TodoItemModel.DomainModel.IsCompleted)
                 {
-                    type = "03";
+                    type = $"03_{_TodoItemModel.DomainModel.CompletedDateTime.Value:yyyyMMddHHmmss}";
                 }
                 else
                 {
-                    type = "01";
+                    type = $"01_{_TodoItemModel.DomainModel.CreatedAt:yyyyMMddHHmmss}";
                 }
             }
 
-            SortValue = $"{type}_{ymd}";
+            SortValue = type;
         }
 
         public override bool Equals(object obj) => obj is TodoItemViewModel model && EqualityComparer<TodoItemIdentity>.Default.Equals(Identity, model.Identity);

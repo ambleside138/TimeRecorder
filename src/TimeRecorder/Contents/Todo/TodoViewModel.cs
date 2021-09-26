@@ -34,7 +34,10 @@ namespace TimeRecorder.Contents.Todo
         public ReadOnlyReactiveCollection<TodoItemViewModel> TodoItems { get; }
 
         public TodoList CurrentTodoList 
-            => NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected)?.TodoList;
+            => CurrentTodoListViewModel?.TodoList;
+
+        public TodoListNavigationItemViewModel CurrentTodoListViewModel
+            => NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected);
 
         public ReactivePropertySlim<LoginStatus> LoginStatus { get; }
 
@@ -47,6 +50,7 @@ namespace TimeRecorder.Contents.Todo
         private bool _IsInitialized = false;
 
         public ReactiveCommand DeleteTaskListCommand { get; } = new();
+        public ReactiveCommand EditTaskListTitleCommand { get; } = new();
 
         public TodoViewModel()
         {
@@ -86,6 +90,9 @@ namespace TimeRecorder.Contents.Todo
 
             DeleteTaskListCommand.Subscribe(() => DeleteTodoListAsync())
                                  .AddTo(CompositeDisposable);
+
+            EditTaskListTitleCommand.Subscribe(() => CurrentTodoListViewModel.FocusToTitleTextbox())
+                                    .AddTo(CompositeDisposable);
         }
 
         private void SetLiveSorting()
@@ -195,7 +202,7 @@ namespace TimeRecorder.Contents.Todo
             await _Model.SetTodoListTitleAsync(current.TodoList);
 
             Keyboard.ClearFocus();
-
+            current.FocusToAdditionTextbox();
         }
 
         private async void DeleteTodoListAsync()

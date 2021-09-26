@@ -25,7 +25,7 @@ namespace TimeRecorder.Contents.Todo
             Title = todoList.Title;
             CanEditTitle = todoList.Id.IsFixed == false;
 
-            TaskCount = todoList.ObserveProperty(i => i.FilteredCount)
+            TaskCount = TodoList.ObserveProperty(i => i.FilteredCount)
                                 .ToReadOnlyReactivePropertySlim(initialValue:todoList.FilteredCount)
                                 .AddTo(CompositeDisposable);
         }
@@ -34,5 +34,8 @@ namespace TimeRecorder.Contents.Todo
 
                
         public void FocusToAdditionTextbox() => Messenger.Raise(new Livet.Messaging.InteractionMessage("FocusToTextBox"));
+
+        public void FocusToTitleTextbox() => Messenger.Raise(new Livet.Messaging.InteractionMessage("FocusToTitleTextBox"));
+
     }
 }
