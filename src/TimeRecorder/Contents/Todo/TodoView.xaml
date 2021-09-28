@@ -184,10 +184,37 @@
     </UserControl.Resources>
 
     <Grid>
+
+        <StackPanel VerticalAlignment="Center" Visibility="{Binding IsSignined.Value, Converter={StaticResource InverseBoolToVisConverter}}">
+
+            <TextBlock
+                HorizontalAlignment="Center"
+                Foreground="{StaticResource MahApps.Brushes.Gray1}"
+                Style="{StaticResource MaterialDesignHeadline3TextBlock}"
+                Text="Todoへようこそ" />
+
+            <materialDesign:PackIcon
+                Width="210"
+                Height="210"
+                HorizontalAlignment="Center"
+                Foreground="{StaticResource MahApps.Brushes.Gray1}"
+                Kind="CheckAll" />
+
+
+            <c:CallMethodButton
+                Width="256"
+                Margin="32"
+                HorizontalAlignment="Center"
+                Content="サインイン"
+                MethodName="Login"
+                Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+        </StackPanel>
+
         <TabControl
             style:TabControlAssist.OptionalControl="{StaticResource TodoListAddButton}"
             ItemsSource="{Binding NavigationItems}"
-            SelectedIndex="{Binding SelectedListIndex.Value}">
+            SelectedIndex="{Binding SelectedListIndex.Value}"
+            Visibility="{Binding IsSignined.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
             <TabControl.Style>
                 <Style BasedOn="{StaticResource SplitableNavigationRailControlStyleKey}" TargetType="TabControl">
                     <Setter Property="Background">
@@ -197,7 +224,6 @@
                     </Setter>
                 </Style>
             </TabControl.Style>
-
 
 
             <TabControl.ContentTemplate>
@@ -386,7 +412,7 @@
                                         </MenuItem.Icon>
                                     </MenuItem>
 
-                                    <Grid>
+                                    <!--<Grid>
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto" />
                                             <RowDefinition />
@@ -407,7 +433,7 @@
                                                 </DataTemplate>
                                             </ItemsControl.ItemTemplate>
                                         </ItemsControl>
-                                    </Grid>
+                                    </Grid>-->
 
                                     <Separator />
                                     <MenuItem
@@ -512,7 +538,21 @@
         <Grid
             Margin="0,8"
             HorizontalAlignment="Left"
-            VerticalAlignment="Top">
+            VerticalAlignment="Top"
+            Background="Transparent">
+
+            <Grid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem
+                        Command="{Binding LogoutCommand}"
+                        CommandParameter="0"
+                        Header="ログアウト">
+                        <MenuItem.Icon>
+                            <materialDesign:PackIcon Kind="Logout" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </Grid.ContextMenu>
 
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />

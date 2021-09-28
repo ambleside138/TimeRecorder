@@ -23,7 +23,7 @@ namespace TimeRecorder.Repository.Firebase
 
         public static async Task<FirestoreDb> CreateDbClientAsync()
         {
-            FirebaseAuthLink firebaseAuthLink = await FirebaseAuthenticator.Current
+            FirebaseAuthLink firebaseAuthLink = FirebaseAuthenticator.Current
                                                                      .SignInWithGoogleOAuthAsyncCached();
 
             string projectId = FirebaseCredentialConfigLoader.Value.ProjectId;

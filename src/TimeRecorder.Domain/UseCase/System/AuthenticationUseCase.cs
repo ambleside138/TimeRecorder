@@ -18,7 +18,17 @@ namespace TimeRecorder.Domain.UseCase.System
 
         public LoginStatus TrySignin()
         {
-            return _AccountRepository.GetLoginStatus();
+            return _AccountRepository.Signin();
+        }
+
+        public void Signout()
+        {
+            _AccountRepository.Signout();
+        }
+
+        public bool IsSignined()
+        {
+            return _AccountRepository.IsSignined();
         }
     }
 }

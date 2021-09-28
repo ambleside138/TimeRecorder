@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using TimeRecorder.Repository.Firebase.System;
 
 namespace TimeRecorder.Repository.Firebase.Shared
 {
@@ -26,7 +27,9 @@ namespace TimeRecorder.Repository.Firebase.Shared
 
         }
 
-        public async Task<FirebaseAuthLink> SignInWithGoogleOAuthAsyncCached()
+        public bool ExistsLoginCache() => LoginCacheHelper.Exists();
+
+        public FirebaseAuthLink SignInWithGoogleOAuthAsyncCached()
         {
             if (_firebaseAuthLink != null)
             {
@@ -34,21 +37,32 @@ namespace TimeRecorder.Repository.Firebase.Shared
             }
             else
             {
-                return await SignInWithGoogleOAuthAsync();
+                return  SignInWithGoogleOAuthAsync();
             }
         }
 
-
-        /// <summary>
-        /// Googleでサインインし、OAuthでFirebaseに認証情報を渡します
-        /// </summary>
-        /// <returns></returns>
-        public async Task<FirebaseAuthLink> SignInWithGoogleOAuthAsync()
+        public void SignOut()
         {
-            if (_firebaseAuthLink != null)
-                return _firebaseAuthLink;
+            if (_firebaseAuthLink == null)
+                return;
+
+            FirebaseAuthProvider authProvider = new(new FirebaseConfig(FirebaseCredentialConfigLoader.Value.ApiKey));
+            authProvider.UnlinkAccountsAsync(_firebaseAuthLink.FirebaseToken, FirebaseAuthType.Google);
+            _firebaseAuthLink = null;
+
+            UserCredential googleCredential = GetGoogleOAuthUserCredentialAsync();
+            if (googleCredential != null)
+            {
+                _ = googleCredential.RevokeTokenAsync(new CancellationToken());
+            }
+
+            LoginCacheHelper.Clear();
+        }
 
 
+
+        private UserCredential GetGoogleOAuthUserCredentialAsync()
+        {
             // WebBrowser経由でgoogleログイン
             var currentPath = Directory.GetParent(Process.GetCurrentProcess().MainModule.FileName);
             var credentialFullPath = Path.Combine(currentPath.FullName, _CredentialFileName);
@@ -56,15 +70,28 @@ namespace TimeRecorder.Repository.Firebase.Shared
             using FileStream stream = new(credentialFullPath, FileMode.Open, FileAccess.Read);
 
             // The file token.json stores the user's access and refresh tokens, and is created
-            // automatically when the authorization flow completes for the first time.
+            // automatically when the authorization flow completes for the f0irst time.
 
-            UserCredential result = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+            return GoogleWebAuthorizationBroker.AuthorizeAsync(
                                                         GoogleClientSecrets.Load(stream).Secrets,
                                                         new[] { "email", "profile" },
                                                         "user",
                                                         CancellationToken.None,
                                                         null,
-                                                        null);
+                                                        null).Result;
+        }
+
+        /// <summary>
+        /// Googleでサインインし、OAuthでFirebaseに認証情報を渡します
+        /// </summary>
+        /// <returns></returns>
+        public FirebaseAuthLink SignInWithGoogleOAuthAsync()
+        {
+            if (_firebaseAuthLink != null)
+                return _firebaseAuthLink;
+
+            UserCredential result = GetGoogleOAuthUserCredentialAsync();
+
 
             if (result.Token.IsExpired(SystemClock.Default))
             {
@@ -79,7 +106,9 @@ namespace TimeRecorder.Repository.Firebase.Shared
             
             // なぜかawaitするとフリーズする...
             _firebaseAuthLink = authProvider.SignInWithGoogleIdTokenAsync(result.Token.IdToken).Result;
-            
+
+
+            LoginCacheHelper.Cache(_firebaseAuthLink.User.Email);
             return _firebaseAuthLink;
         }
 

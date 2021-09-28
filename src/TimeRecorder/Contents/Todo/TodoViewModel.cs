@@ -7,6 +7,7 @@ using Reactive.Bindings.Extensions;
 using System;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Windows.Data;
 using System.Windows.Input;
 using TimeRecorder.Contents.Shared;
@@ -39,7 +40,7 @@ namespace TimeRecorder.Contents.Todo
         public TodoListNavigationItemViewModel CurrentTodoListViewModel
             => NavigationItems.OfType<TodoListNavigationItemViewModel>().FirstOrDefault(i => i.IsSelected);
 
-        public ReactivePropertySlim<LoginStatus> LoginStatus { get; }
+        public ReadOnlyReactivePropertySlim<LoginStatus> LoginStatus { get; }
 
         public ReactivePropertySlim<bool> IsProcessing { get; } = new();
 
@@ -51,6 +52,9 @@ namespace TimeRecorder.Contents.Todo
 
         public ReactiveCommand DeleteTaskListCommand { get; } = new();
         public ReactiveCommand EditTaskListTitleCommand { get; } = new();
+        public ReactiveCommand LogoutCommand { get; } = new();
+
+        public ReadOnlyReactivePropertySlim<bool> IsSignined { get; }
 
         public TodoViewModel()
         {
@@ -82,7 +86,8 @@ namespace TimeRecorder.Contents.Todo
 
             NavigationItems.First().IsSelected = true;
 
-            LoginStatus = _Model.ToReactivePropertySlimAsSynchronized(m => m.LoginStatus)
+            LoginStatus = _Model.ObserveProperty(m => m.LoginStatus)
+                                .ToReadOnlyReactivePropertySlim()
                                 .AddTo(CompositeDisposable);
 
             IsSelected.Subscribe(i => Handler(i)).AddTo(CompositeDisposable);
@@ -93,6 +98,14 @@ namespace TimeRecorder.Contents.Todo
 
             EditTaskListTitleCommand.Subscribe(() => CurrentTodoListViewModel.FocusToTitleTextbox())
                                     .AddTo(CompositeDisposable);
+
+            LogoutCommand.Subscribe(() => _Model.Logout())
+                         .AddTo(CompositeDisposable);
+
+            IsSignined = _Model.ObserveProperty(m => m.LoginStatus)
+                               .Select(s => s != null)
+                               .ToReadOnlyReactivePropertySlim()
+                               .AddTo(CompositeDisposable);
         }
 
         private void SetLiveSorting()
@@ -130,13 +143,15 @@ namespace TimeRecorder.Contents.Todo
 
                     if(_IsInitialized == false)
                     {
-                        await _Model.InitializeAsync();
+                        await _Model.InitializeIfNeededAsync();
 
                         _IsInitialized = true;
                     }
 
-                    Keyboard.ClearFocus();
-
+                    if(CurrentTodoList == null)
+                    {
+                        NavigationItems.First(i => i.IsSelectable).IsSelected = true;
+                    }
                     await _Model.LoadTodoItemsAsync(CurrentTodoList.Id);
                 }
                 finally
@@ -227,6 +242,10 @@ namespace TimeRecorder.Contents.Todo
             }
         }
 
+        public async void Login()
+        {
+            await _Model.InitializeAsync();
+        }
 
     }
 }

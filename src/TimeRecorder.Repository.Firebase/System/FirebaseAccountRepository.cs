@@ -22,11 +22,13 @@ namespace TimeRecorder.Repository.Firebase.System
 {
     public class FirebaseAccountRepository : IAccountRepository
     {
-        public LoginStatus GetLoginStatus()
+        public bool IsSignined() => FirebaseAuthenticator.Current.ExistsLoginCache();
+
+        public LoginStatus Signin()
         {
             FirebaseAuthLink link = FirebaseAuthenticator.Current
                                                          .SignInWithGoogleOAuthAsyncCached()
-                                                         .Result;
+                                                         ;
 
             LoginStatus status = new()
             {
@@ -74,5 +76,9 @@ namespace TimeRecorder.Repository.Firebase.System
             return status;
         }
 
+        public void Signout()
+        {
+            FirebaseAuthenticator.Current.SignOut();
+        }
     }
 }

@@ -8,6 +8,10 @@ namespace TimeRecorder.Domain.Domain.System
 {
     public interface IAccountRepository
     {
-        LoginStatus GetLoginStatus();
+        bool IsSignined();
+
+        LoginStatus Signin();
+
+        void Signout();
     }
 }

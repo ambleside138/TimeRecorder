@@ -104,6 +104,17 @@ namespace TimeRecorder.Contents.Todo
             }
         }
 
+
+        public async Task InitializeIfNeededAsync()
+        {
+            if (_AuthenticationUseCase.IsSignined() == false)
+            {
+                return;
+            }
+
+            await InitializeAsync();
+        }
+
         public async Task InitializeAsync()
         {
             LoginStatus = _AuthenticationUseCase.TrySignin();
@@ -113,6 +124,11 @@ namespace TimeRecorder.Contents.Todo
 
         public async Task LoadTodoItemsAsync(TodoListIdentity selectedListId)
         {
+            if (_AuthenticationUseCase.IsSignined() == false)
+            {
+                return;
+            }
+
             _CurrentTodoList = selectedListId;
 
             var todoItems = await _TodoUseCase.SelectAsync();
@@ -182,6 +198,12 @@ namespace TimeRecorder.Contents.Todo
         {
             TodoListCollection.Remove(todoList);
             await _TodoListUseCase.DeleteAsync(todoList.Id);
+        }
+
+        public void Logout()
+        {
+            _AuthenticationUseCase.Signout();
+            LoginStatus = null;
         }
     }
 }
