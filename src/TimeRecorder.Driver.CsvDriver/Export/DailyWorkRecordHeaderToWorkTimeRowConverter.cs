@@ -89,7 +89,7 @@ namespace TimeRecorder.Driver.CsvDriver
                     return clientName;
 
                 default:
-                    return taskUnit.Product.Name + WorkTimeRow.AlertMessage;
+                    return taskUnit.Product.Name;
             }
         }
 
