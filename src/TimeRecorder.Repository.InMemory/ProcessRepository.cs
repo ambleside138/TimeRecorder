@@ -8,7 +8,7 @@ namespace TimeRecorder.Repository.InMemory
 {
     public class ProcessRepository : IWorkProcessRepository
     {
-        private readonly List<WorkProcess> _ListProcess = new List<WorkProcess>()
+        private readonly List<WorkProcess> _ListProcess = new()
         {
             new WorkProcess(new Domain.Identity<WorkProcess>(1), "コーディング"),
             new WorkProcess(new Domain.Identity<WorkProcess>(2), "テスト"),

@@ -15,7 +15,7 @@ namespace TimeRecorder.Configurations.Items
         internal override ConfigKey Key => ConfigKey.LunchTime;
 
         [JsonIgnore]
-        public TimePeriod TimePeriod => new TimePeriod(StartHHmm + "00", EndHHmm + "00");
+        public TimePeriod TimePeriod => new(StartHHmm + "00", EndHHmm + "00");
         
     }
 }

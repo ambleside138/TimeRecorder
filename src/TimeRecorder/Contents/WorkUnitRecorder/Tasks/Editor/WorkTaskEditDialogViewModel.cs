@@ -25,7 +25,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
 
         public ReactivePropertySlim<bool> IsEditMode { get; } = new ReactivePropertySlim<bool>(false);
 
-        private readonly WorkTaskEditDialogModel _WorkTaskEditDialogModel = new WorkTaskEditDialogModel();
+        private readonly WorkTaskEditDialogModel _WorkTaskEditDialogModel = new();
 
         public WorkProcess[] Processes { get; }
 

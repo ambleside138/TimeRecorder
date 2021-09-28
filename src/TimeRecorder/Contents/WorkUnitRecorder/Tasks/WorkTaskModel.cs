@@ -21,11 +21,11 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks
 
         public WorkTaskModel()
         {
-            _WorkTaskUseCase = new WorkTaskUseCase(ContainerHelper.Resolver.Resolve<IWorkTaskRepository>(), ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>());
+            _WorkTaskUseCase = new WorkTaskUseCase(ContainerHelper.GetRequiredService<IWorkTaskRepository>(), ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>());
 
             _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(
-                                            ContainerHelper.Resolver.Resolve<IWorkingTimeRangeRepository>(),
-                                            ContainerHelper.Resolver.Resolve<IWorkTaskRepository>());
+                                            ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>(),
+                                            ContainerHelper.GetRequiredService<IWorkTaskRepository>());
         }
 
         public void EditWorkTask(WorkTask workTask)

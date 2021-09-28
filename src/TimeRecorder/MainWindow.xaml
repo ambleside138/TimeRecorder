@@ -2,17 +2,18 @@
     x:Class="TimeRecorder.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:archive="clr-namespace:TimeRecorder.Contents.Archive"
     xmlns:b="clr-namespace:TimeRecorder.Behaviors.Messaging"
     xmlns:behaviors="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:configuration="clr-namespace:TimeRecorder.Contents.Configuration"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:exporter="clr-namespace:TimeRecorder.Contents.Exporter"
-    xmlns:archive="clr-namespace:TimeRecorder.Contents.Archive"
     xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
     xmlns:local="clr-namespace:TimeRecorder"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:metro="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:todo="clr-namespace:TimeRecorder.Contents.Todo"
     xmlns:vm="clr-namespace:TimeRecorder.Host"
     xmlns:workUnitRecorder="clr-namespace:TimeRecorder.Contents.WorkUnitRecorder"
     Title="工数管理"
@@ -21,12 +22,12 @@
     MinWidth="560"
     MinHeight="480"
     Background="{DynamicResource MaterialDesignPaper}"
+    BorderBrush="{DynamicResource PrimaryHueMidBrush}"
     FontFamily="{materialDesign:MaterialDesignFont}"
     TextElement.FontSize="11"
     TextElement.FontWeight="Medium"
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     WindowTitleBrush="{DynamicResource PrimaryHueMidBrush}"
-    BorderBrush="{DynamicResource PrimaryHueMidBrush}"
     mc:Ignorable="d">
 
     <metro:MetroWindow.Resources>
@@ -59,6 +60,10 @@
                 <configuration:ConfigurationView />
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type todo:TodoViewModel}">
+                <todo:TodoView />
+            </DataTemplate>
+
         </ResourceDictionary>
     </metro:MetroWindow.Resources>
 
@@ -82,7 +87,7 @@
     </behaviors:Interaction.Triggers>
 
 
-    <materialDesign:DialogHost x:Name="RootDialog" SnackbarMessageQueue="{Binding ElementName=Snackbar, Path=MessageQueue}">
+    <materialDesign:DialogHost x:Name="RootDialog" Identifier="RootDialog" SnackbarMessageQueue="{Binding ElementName=Snackbar, Path=MessageQueue}">
         <Grid>
             <TabControl
                 Padding="16"

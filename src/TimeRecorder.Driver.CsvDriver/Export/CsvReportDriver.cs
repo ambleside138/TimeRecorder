@@ -14,7 +14,7 @@ namespace TimeRecorder.Driver.CsvDriver
 {
     public class CsvReportDriver : IReportDriver
     {
-        private DailyWorkRecordHeaderToWorkTimeRowConverter _Converter = new DailyWorkRecordHeaderToWorkTimeRowConverter();
+        private DailyWorkRecordHeaderToWorkTimeRowConverter _Converter = new();
         
         public ExportResult ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust)
         {

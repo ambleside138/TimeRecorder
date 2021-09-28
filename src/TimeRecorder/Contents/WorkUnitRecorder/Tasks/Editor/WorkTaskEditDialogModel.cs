@@ -19,9 +19,9 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor
 
         public WorkTaskEditDialogModel()
         {
-            _ProcessUseCase = new WorkProcessUseCase(ContainerHelper.Resolver.Resolve<IWorkProcessRepository>());
-            _ClientUseCase = new ClientUseCase(ContainerHelper.Resolver.Resolve<IClientRepository>());
-            _ProductUseCase = new ProductUseCase(ContainerHelper.Resolver.Resolve<IProductRepository>());
+            _ProcessUseCase = new WorkProcessUseCase(ContainerHelper.GetRequiredService<IWorkProcessRepository>());
+            _ClientUseCase = new ClientUseCase(ContainerHelper.GetRequiredService<IClientRepository>());
+            _ProductUseCase = new ProductUseCase(ContainerHelper.GetRequiredService<IProductRepository>());
         }
 
         public WorkProcess[] GetProcesses(Identity<WorkProcess> currentId)

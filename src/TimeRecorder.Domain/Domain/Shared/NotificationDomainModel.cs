@@ -105,7 +105,7 @@ namespace TimeRecorder.Domain
     {
         [NotNull]
         private static readonly ConcurrentDictionary<string, PropertyChangedEventArgs>
-            PropertyChangedEventArgsDictionary = new ConcurrentDictionary<string, PropertyChangedEventArgs>();
+            PropertyChangedEventArgsDictionary = new();
 
         public static PropertyChangedEventArgs GetPropertyChangedEventArgs(string propertyName)
         {

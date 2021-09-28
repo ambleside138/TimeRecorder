@@ -25,7 +25,7 @@ namespace TimeRecorder.Domain.Domain.Tracking.Reports
 
         public bool IsScheduled { get; }
 
-        private readonly List<WorkingTimeRange> _WorkingTimeRanges = new List<WorkingTimeRange>();
+        private readonly List<WorkingTimeRange> _WorkingTimeRanges = new();
 
         public IReadOnlyList<WorkingTimeRange> WorkingTimeRanges => _WorkingTimeRanges;
 

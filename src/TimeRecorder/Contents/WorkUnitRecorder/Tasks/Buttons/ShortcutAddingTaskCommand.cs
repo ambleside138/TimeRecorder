@@ -10,7 +10,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Buttons
     /// </summary>
     class ShortcutAddingTaskCommand : IAddingTaskCommand
     {
-        private readonly WorkTaskRegistor _WorkTaskRegistor = new WorkTaskRegistor();
+        private readonly WorkTaskRegistor _WorkTaskRegistor = new();
         private readonly FavoriteWorkTask _WorkTask;
 
         public ShortcutAddingTaskCommand(FavoriteWorkTask workTask)

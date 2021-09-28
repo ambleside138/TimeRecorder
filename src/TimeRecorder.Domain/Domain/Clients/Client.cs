@@ -16,7 +16,7 @@ namespace TimeRecorder.Domain.Domain.Clients
 
         public string KanaName { get; set; }
 
-        public static Client Empty => new Client(Identity<Client>.Empty, "未選択", "ミセンタク");
+        public static Client Empty => new(Identity<Client>.Empty, "未選択", "ミセンタク");
 
         public Client(Identity<Client> id, string name, string kanaName)
         {

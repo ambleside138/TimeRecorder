@@ -52,7 +52,7 @@ namespace TimeRecorder.Domain.Domain
             yield return Month;
         }
 
-        public DateTime StartDate => new DateTime(Year, Month, 1);
+        public DateTime StartDate => new(Year, Month, 1);
 
         public DateTime EndDate
 

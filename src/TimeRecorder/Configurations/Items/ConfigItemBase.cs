@@ -13,7 +13,8 @@ namespace TimeRecorder.Configurations.Items
         ScheduleTitleMap,
         WorkingHourImportApiUrl,
         ImportParam,
-        LunchTime
+        LunchTime,
+        UseTodo
     };
 
     abstract class ConfigItemBase

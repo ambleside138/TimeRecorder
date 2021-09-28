@@ -32,7 +32,7 @@ namespace TimeRecorder.Configurations
 
         private UserConfigurationManager()
         {
-            _ConfigurationUseCase = new ConfigurationUseCase(ContainerHelper.Resolver.Resolve<IConfigurationRepository>());
+            _ConfigurationUseCase = new ConfigurationUseCase(ContainerHelper.GetRequiredService<IConfigurationRepository>());
 
             Load();
         }
