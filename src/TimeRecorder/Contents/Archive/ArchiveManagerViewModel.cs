@@ -13,16 +13,16 @@ using TimeRecorder.Contents.WorkUnitRecorder.Tasks;
 using TimeRecorder.Contents.WorkUnitRecorder.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Helpers;
-using TimeRecorder.NavigationRail.ViewModels;
+using TimeRecorder.NavigationRail;
 
 namespace TimeRecorder.Contents.Archive
 {
     public class ArchiveManagerViewModel : ViewModel, IContentViewModel
     {
-        public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "アーカイブ", IconKey = "Archive" };
+        public NavigationIconButtonViewModel NavigationIcon => new() { Title = "アーカイブ", IconKey = "Archive" };
 
-        private readonly ArchiveManagerModel _Model = new ArchiveManagerModel();
-        private readonly WorkTaskModel _WorkTaskModel = new WorkTaskModel();
+        private readonly ArchiveManagerModel _Model = new();
+        private readonly WorkTaskModel _WorkTaskModel = new();
 
         public ReactiveProperty<DateTime> TargetDateTime { get; }
 
@@ -30,6 +30,7 @@ namespace TimeRecorder.Contents.Archive
 
         // もっと良い書き方があるはずだが...
         public ReadOnlyReactivePropertySlim<bool> NoResults { get; set; }
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
         public ArchiveManagerViewModel()
         {

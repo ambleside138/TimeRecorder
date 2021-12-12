@@ -13,7 +13,7 @@ namespace TimeRecorder.Host
 
         public MainModel()
         {
-            _CheckStatusUseCase = new CheckStatusUseCase(ContainerHelper.Resolver.Resolve<IHealthChecker>());
+            _CheckStatusUseCase = new CheckStatusUseCase(ContainerHelper.GetRequiredService<IHealthChecker>());
         }
 
         public string CheckHealth()

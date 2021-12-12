@@ -55,13 +55,13 @@ namespace TimeRecorder.Driver.CsvDriver
             var productName = taskUnit.Product.Name;
             var clientName = taskUnit.Client.Name;
 
-            // 製品名・案件名ともに指定がなければ作業内容のみ記載
-            if(taskUnit.Product.Id.IsEmpty
-                && taskUnit.Client.Id.IsEmpty)
-            {
-                return "その他";
-                //return taskUnit.WorkProcess.Title;
-            }
+            //// 製品名・案件名ともに指定がなければ作業内容のみ記載
+            //if(taskUnit.Product.Id.IsEmpty
+            //    && taskUnit.Client.Id.IsEmpty)
+            //{
+            //    return "その他";
+            //    //return taskUnit.WorkProcess.Title;
+            //}
 
             // 案件名が入っていなければ無条件で製品名を記載
             if (taskUnit.Client.Id.IsEmpty)
@@ -75,6 +75,9 @@ namespace TimeRecorder.Driver.CsvDriver
                     case TaskCategory.Introduce:
                         return productName + " 保守";
 
+                    case TaskCategory.Other:
+                        return taskUnit.WorkProcess.Title;
+
                     default:
                         return productName + WorkTimeRow.AlertMessage;
                 }
@@ -86,10 +89,11 @@ namespace TimeRecorder.Driver.CsvDriver
             {
                 case TaskCategory.Introduce:
                 case TaskCategory.Maintain:
+                case TaskCategory.Other:
                     return clientName;
 
                 default:
-                    return taskUnit.Product.Name + WorkTimeRow.AlertMessage;
+                    return taskUnit.Product.Name;
             }
         }
 

@@ -21,7 +21,7 @@ namespace TimeRecorder.Domain.Domain.Products
         /// </summary>
         public bool Invalid { get; }
 
-        public static Product Empty => new Product(Identity<Product>.Empty, "未選択", "ミセンタク", false);
+        public static Product Empty => new(Identity<Product>.Empty, "未選択", "ミセンタク", false);
 
         public Product(Identity<Product> id, string name, string shortName, bool invalid = false)
         {

@@ -327,7 +327,7 @@
                     Visibility="{Binding ShowScheduleDescription.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
                 <!--  6. workinghour import  -->
-                <TextBlock
+                <!--<TextBlock
                     Grid.Row="5"
                     Grid.Column="0"
                     Margin="0,16,16,4"
@@ -366,8 +366,34 @@
                         Grid.Row="1"
                         Style="{StaticResource MaterialDesignCaptionTextBlock}"
                         Text="勤務時間の取込に利用するAPIのURLを設定します　※設定変更後再起動が必要です" />
-                </Grid>
+                </Grid>-->
 
+                <!--  Todo機能の利用  -->
+                <TextBlock
+                    Grid.Row="5"
+                    Grid.Column="0"
+                    Margin="0,16,16,4"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                    Text="Todo機能の利用" />
+
+                <StackPanel
+                    Grid.Row="5"
+                    Grid.Column="1"
+                    Margin="0,16,0,0"
+                    Orientation="Horizontal">
+                    <ToggleButton IsChecked="{Binding UseTodo.Value}" Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+                    <TextBlock
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Text="{Binding UseTodoText.Value}" />
+                    <TextBlock
+                        Margin="32,0,0,0"
+                        VerticalAlignment="Center"
+                        Text="※変更後に再起動が必要" />
+                </StackPanel>
             </Grid>
 
         </ScrollViewer>

@@ -6,6 +6,7 @@ using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Linq;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using TimeRecorder.Contents.Configuration.TaskConfigEditor;
@@ -13,7 +14,7 @@ using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Helpers;
 using TimeRecorder.Host;
-using TimeRecorder.NavigationRail.ViewModels;
+using TimeRecorder.NavigationRail;
 
 namespace TimeRecorder.Contents.Configuration
 {
@@ -21,7 +22,7 @@ namespace TimeRecorder.Contents.Configuration
     {
         private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "設定", IconKey = "Cog" };
+        public NavigationIconButtonViewModel NavigationIcon => new() { Title = "設定", IconKey = "Cog" };
 
         public Swatch[] Swatches { get; } = new SwatchesProvider().Swatches.ToArray();
 
@@ -39,6 +40,10 @@ namespace TimeRecorder.Contents.Configuration
 
         public ReactivePropertySlim<string> LunchStartTimeHHmm { get; }
         public ReactivePropertySlim<string> LunchEndTimeHHmm { get; }
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
+
+        public ReactivePropertySlim<bool> UseTodo { get; }
+        public ReadOnlyReactivePropertySlim<string> UseTodoText { get; }
 
         public ConfigurationViewModel()
         {
@@ -70,6 +75,16 @@ namespace TimeRecorder.Contents.Configuration
 
             var url = UserConfigurationManager.Instance.GetConfiguration<WorkingHourImportApiUrlConfig>(ConfigKey.WorkingHourImportApiUrl);
             WorkingHourImportUrl = new ReactivePropertySlim<string>(url?.URL);
+
+            var useTodo = UserConfigurationManager.Instance.GetConfiguration<UseTodoConfig>(ConfigKey.UseTodo);
+            UseTodo = new ReactivePropertySlim<bool>(useTodo?.UseTodo ?? true);
+            UseTodo.Subscribe(u => UserConfigurationManager.Instance.SetConfiguration(new UseTodoConfig { UseTodo = u }))
+                   .AddTo(CompositeDisposable);
+
+            UseTodoText = UseTodo.ToReactiveProperty()
+                                 .Select(u => u ? "オン" : "オフ")
+                                 .ToReadOnlyReactivePropertySlim()
+                                 .AddTo(CompositeDisposable);
         }
 
         private void ChangeTheme(Swatch swatch)

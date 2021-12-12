@@ -20,7 +20,7 @@ namespace TimeRecorder.Host
 
         private const string _AttributeText = "TimeRecorder ⏰ 工数管理";
 
-        public static NotificationService Current => new NotificationService();
+        public static NotificationService Current => new();
 
         private NotificationService()
         {

@@ -14,9 +14,9 @@ namespace TimeRecorder
     /// </summary>
     public partial class App : Application
     {
-        private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly Logger _Logger = LogManager.GetCurrentClassLogger();
 
-        private Mutex _Mutex = new Mutex(false, "TimeRecorder");
+        private Mutex _Mutex = new(false, "TimeRecorder");
 
         protected override void OnStartup(StartupEventArgs e)
         {

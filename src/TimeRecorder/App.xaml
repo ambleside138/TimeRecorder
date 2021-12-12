@@ -43,6 +43,7 @@
                 <ResourceDictionary Source="Styles/MaterialTextBlockStyle.xaml" />
                 <ResourceDictionary Source="Styles/MacLikeScrollBarStyle.xaml" />
                 <ResourceDictionary Source="Styles/ChipBorderStyle.xaml" />
+                <ResourceDictionary Source="Styles/ListBoxItemStyle.xaml" />
 
             </ResourceDictionary.MergedDictionaries>
 
@@ -69,6 +70,9 @@
 
             <!--  Original  -->
             <SolidColorBrush x:Key="NavigationRailBorderBrush" Color="{StaticResource BlueGreyPrimary50}" />
+            
+            <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource Deep OrangeAccent700}" />
+            <SolidColorBrush x:Key="WarningForegroundBrush" Color="{StaticResource Deep OrangeAccent700Foreground}" />
 
             <Style
                 x:Key="HorizontalMarginStyleKey"
@@ -85,6 +89,7 @@
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
             <converters:TaskCategoryToSolidBrushConverter x:Key="TaskCategoryToSolidBrushConverter" />
             <converters:StringToVisibilityConverter x:Key="StringToVisibilityConverter" />
+            <converters:IntToVisibilityConverter x:Key="IntToVisibilityConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

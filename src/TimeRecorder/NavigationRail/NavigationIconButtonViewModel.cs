@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.NavigationRail.ViewModels
+namespace TimeRecorder.NavigationRail
 {
-    public class NavigationIconButtonViewModel : ViewModel
+    public class NavigationIconButtonViewModel : ViewModel, INavigationItem
     {
 
         private string _Title;
@@ -27,12 +27,22 @@ namespace TimeRecorder.NavigationRail.ViewModels
 
         private bool _IsSelected;
 
-        public bool IsSelected
+        public virtual bool IsSelected
         {
             get => _IsSelected;
             set => RaisePropertyChangedIfSet(ref _IsSelected, value);
         }
 
+
+        #region IsSelectable変更通知プロパティ
+        private bool _IsSelectable = true;
+
+        public virtual bool IsSelectable
+        {
+            get => _IsSelectable;
+            set => RaisePropertyChangedIfSet(ref _IsSelectable, value);
+        }
+        #endregion
 
     }
 }

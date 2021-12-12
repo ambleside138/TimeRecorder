@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Contents.WorkUnitRecorder.Editor;
-using TimeRecorder.NavigationRail.ViewModels;
+using TimeRecorder.NavigationRail;
 using Reactive.Bindings.Helpers;
 using Reactive.Bindings.Extensions;
 using TimeRecorder.Contents.WorkUnitRecorder.Timeline;
@@ -31,7 +31,7 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
     {
         public NavigationIconButtonViewModel NavigationIcon => new() { Title = "入力", IconKey = "CalendarClock" };
 
-        private readonly WorkUnitRecorderModel _Model = new WorkUnitRecorderModel();
+        private readonly WorkUnitRecorderModel _Model = new();
 
         public ReadOnlyReactiveCollection<WorkTaskWithTimesCardViewModel> PlanedTaskCards { get; }
 
@@ -49,6 +49,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder
 
         // 通知間隔[sec]
         private const int _AlertCount = 60 * 5;
+
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
         public WorkUnitRecorderViewModel()
         {

@@ -10,7 +10,7 @@ using System.Text;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using TimeRecorder.Host;
-using TimeRecorder.NavigationRail.ViewModels;
+using TimeRecorder.NavigationRail;
 
 namespace TimeRecorder.Contents.Exporter
 {
@@ -18,7 +18,7 @@ namespace TimeRecorder.Contents.Exporter
     {
 
 
-        public NavigationIconButtonViewModel NavigationIcon => new NavigationIconButtonViewModel { Title = "レポート", IconKey = "FileDocumentOutline" };
+        public NavigationIconButtonViewModel NavigationIcon => new() { Title = "レポート", IconKey = "FileDocumentOutline" };
 
         public int[] Years => Enumerable.Range(DateTime.Today.Year - 2, 5).ToArray();
 
@@ -38,7 +38,8 @@ namespace TimeRecorder.Contents.Exporter
 
         public ReadOnlyReactivePropertySlim<string> InitialFileName { get; }
 
-        private readonly ExporterModel _ExporterModel = new ExporterModel();
+        private readonly ExporterModel _ExporterModel = new();
+        public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
         public ExporterViewModel()
         {
