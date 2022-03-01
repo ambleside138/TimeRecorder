@@ -73,7 +73,7 @@ namespace TimeRecorder.Repository.Firebase.Shared
             // automatically when the authorization flow completes for the f0irst time.
 
             return GoogleWebAuthorizationBroker.AuthorizeAsync(
-                                                        GoogleClientSecrets.Load(stream).Secrets,
+                                                        GoogleClientSecrets.FromStream(stream).Secrets,
                                                         new[] { "email", "profile" },
                                                         "user",
                                                         CancellationToken.None,

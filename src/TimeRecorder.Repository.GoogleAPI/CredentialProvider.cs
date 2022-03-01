@@ -46,7 +46,7 @@ namespace TimeRecorder.Repository.GoogleAPI
                 var tokenPath = Path.Combine(currentPath.FullName, _TokenDirectory);
                 Console.WriteLine("Credential file saved to: " + tokenPath);
                 return await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.Load(stream).Secrets,
+                    GoogleClientSecrets.FromStream(stream).Secrets,
                     _Scopes,
                     "user",
                     CancellationToken.None,
