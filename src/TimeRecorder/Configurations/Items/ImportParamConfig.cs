@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Configurations.Items
+namespace TimeRecorder.Configurations.Items;
+
+class ImportParamConfig : ConfigItemBase
 {
-    class ImportParamConfig : ConfigItemBase
-    {
-        public string Param { get; set; }
-        internal override ConfigKey Key => ConfigKey.ImportParam;
-    }
+    public string Param { get; set; }
+    internal override ConfigKey Key => ConfigKey.ImportParam;
 }

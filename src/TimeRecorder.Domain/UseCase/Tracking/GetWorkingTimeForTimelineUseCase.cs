@@ -2,20 +2,19 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.UseCase.Tracking
+namespace TimeRecorder.Domain.UseCase.Tracking;
+
+public class GetWorkingTimeForTimelineUseCase
 {
-    public class GetWorkingTimeForTimelineUseCase
+    private readonly IWorkingTimeQueryService _WorkingTimeQueryService;
+
+    public GetWorkingTimeForTimelineUseCase(IWorkingTimeQueryService workingTimeQueryService)
     {
-        private readonly IWorkingTimeQueryService _WorkingTimeQueryService;
+        _WorkingTimeQueryService = workingTimeQueryService;
+    }
 
-        public GetWorkingTimeForTimelineUseCase(IWorkingTimeQueryService workingTimeQueryService)
-        {
-            _WorkingTimeQueryService = workingTimeQueryService;
-        }
-
-        public WorkingTimeForTimelineDto[] SelectByYmd(string ymd)
-        {
-            return _WorkingTimeQueryService.SelectByYmd(ymd);
-        }
+    public WorkingTimeForTimelineDto[] SelectByYmd(string ymd)
+    {
+        return _WorkingTimeQueryService.SelectByYmd(ymd);
     }
 }

@@ -7,19 +7,19 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Repository.SQLite.Utilities;
 
-namespace TimeRecorder.Repository.SQLite.Tasks.Dao
-{
-    class WorkTaskCompletedDao : DaoBase
-    {
-        public WorkTaskCompletedDao(SQLiteConnection connection, SQLiteTransaction transaction)
-            : base(connection, transaction)
-        {
-        }
+namespace TimeRecorder.Repository.SQLite.Tasks.Dao;
 
-        public void InsertIfNotExist(int worktaskId)
-        {
-            #region SQL
-            const string sql = @"
+class WorkTaskCompletedDao : DaoBase
+{
+    public WorkTaskCompletedDao(SQLiteConnection connection, SQLiteTransaction transaction)
+        : base(connection, transaction)
+    {
+    }
+
+    public void InsertIfNotExist(int worktaskId)
+    {
+        #region SQL
+        const string sql = @"
 INSERT INTO worktaskscompleted
 (
   worktaskid,
@@ -31,35 +31,35 @@ VALUES
   @registdatetime
 )
 ";
-            #endregion
+        #endregion
 
-            var row = new 
-            {
-                WorkTaskId = worktaskId,
-                RegistDateTime = DateTime.Now,
-            };
-
-            Connection.Execute(sql, row, Transaction);
-        }
-
-        public void DeleteByWorkTaskId(int worktaskId)
+        var row = new
         {
-            #region SQL
-            const string sql = @"
+            WorkTaskId = worktaskId,
+            RegistDateTime = DateTime.Now,
+        };
+
+        Connection.Execute(sql, row, Transaction);
+    }
+
+    public void DeleteByWorkTaskId(int worktaskId)
+    {
+        #region SQL
+        const string sql = @"
 DELETE FROM 
   worktaskscompleted
 WHERE
   worktaskid = @worktaskid
   ";
-            #endregion
+        #endregion
 
-            Connection.Execute(sql, new { worktaskId }, Transaction);
-        }
+        Connection.Execute(sql, new { worktaskId }, Transaction);
+    }
 
-        public bool IsCompleted(int workTaskId)
-        {
-            #region SQL
-            const string sql = @"
+    public bool IsCompleted(int workTaskId)
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   1
 FROM
@@ -67,15 +67,15 @@ FROM
 WHERE
   worktaskid = @worktaskid
 ";
-            #endregion
+        #endregion
 
-            return Connection.QuerySingleOrDefault(sql, new { workTaskId }) != null;
-        }
+        return Connection.QuerySingleOrDefault(sql, new { workTaskId }) != null;
+    }
 
-        public int[] SelectCompleted(int[] worktaskIds)
-        {
-            #region SQL
-            const string sql = @"
+    public int[] SelectCompleted(int[] worktaskIds)
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   worktaskid
 FROM
@@ -83,9 +83,8 @@ FROM
 WHERE
   worktaskid in @worktaskids
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<int>(sql, new { worktaskIds }).ToArray();
-        }
+        return Connection.Query<int>(sql, new { worktaskIds }).ToArray();
     }
 }

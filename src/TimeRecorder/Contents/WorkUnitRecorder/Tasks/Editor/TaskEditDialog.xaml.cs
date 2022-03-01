@@ -11,16 +11,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeRecorder.Contents.WorkUnitRecorder.Editor
+namespace TimeRecorder.Contents.WorkUnitRecorder.Editor;
+
+/// <summary>
+/// TaskEditDialog.xaml の相互作用ロジック
+/// </summary>
+public partial class TaskEditDialog : Window
 {
-    /// <summary>
-    /// TaskEditDialog.xaml の相互作用ロジック
-    /// </summary>
-    public partial class TaskEditDialog : Window
+    public TaskEditDialog()
     {
-        public TaskEditDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

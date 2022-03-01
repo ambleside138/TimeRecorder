@@ -4,20 +4,19 @@ using System.Text;
 using TimeRecorder.Domain;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 
-namespace TimeRecorder.Repository.SQLite.WorkProcesses.Dao
+namespace TimeRecorder.Repository.SQLite.WorkProcesses.Dao;
+
+class WorkProcessTableRow
 {
-    class WorkProcessTableRow
+    public int Id { get; set; }
+
+    public string Title { get; set; }
+
+    public string Invalid { get; set; }
+
+    public WorkProcess ToDomainObject()
     {
-        public int Id { get; set; }
-
-        public string Title { get; set; }
-
-        public string Invalid { get; set; }
-
-        public WorkProcess ToDomainObject()
-        {
-            return new WorkProcess(new Identity<WorkProcess>(Id), Title, Invalid == "1");
-        }
-
+        return new WorkProcess(new Identity<WorkProcess>(Id), Title, Invalid == "1");
     }
+
 }

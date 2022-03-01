@@ -11,16 +11,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeRecorder.Contents.WorkUnitRecorder.Tracking
+namespace TimeRecorder.Contents.WorkUnitRecorder.Tracking;
+
+/// <summary>
+/// WorkingTimeRangeEditDialog.xaml の相互作用ロジック
+/// </summary>
+public partial class WorkingTimeRangeEditDialog : UserControl
 {
-    /// <summary>
-    /// WorkingTimeRangeEditDialog.xaml の相互作用ロジック
-    /// </summary>
-    public partial class WorkingTimeRangeEditDialog : UserControl
+    public WorkingTimeRangeEditDialog()
     {
-        public WorkingTimeRangeEditDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

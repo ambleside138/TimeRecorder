@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.Domain.System
+namespace TimeRecorder.Domain.Domain.System;
+
+public enum SystemStatus
 {
-    public enum SystemStatus
-    {
-        OK,
-        InvalidVersion,
-        NotInitialized,
-    }
+    OK,
+    InvalidVersion,
+    NotInitialized,
 }

@@ -5,25 +5,24 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Todo;
 
-namespace TimeRecorder.Contents.Todo
+namespace TimeRecorder.Contents.Todo;
+
+enum ChangeType
 {
-    enum ChangeType
+    Updated,
+    Deleted,
+}
+
+class TodoItemChangedEventArgs
+{
+    public TodoItemIdentity TodoItemIdentity { get; }
+
+    public ChangeType ChangeType { get; }
+
+
+    public TodoItemChangedEventArgs(ChangeType changeType, TodoItemIdentity todoItemIdentity)
     {
-        Updated,
-        Deleted,
-    }
-
-    class TodoItemChangedEventArgs
-    {
-        public TodoItemIdentity TodoItemIdentity { get; }
-
-        public ChangeType ChangeType { get; }
-
-
-        public TodoItemChangedEventArgs(ChangeType changeType, TodoItemIdentity todoItemIdentity)
-        {
-            ChangeType = changeType;
-            TodoItemIdentity = todoItemIdentity;
-        }
+        ChangeType = changeType;
+        TodoItemIdentity = todoItemIdentity;
     }
 }

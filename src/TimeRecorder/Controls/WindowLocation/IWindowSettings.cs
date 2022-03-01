@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Controls.WindowLocation
+namespace TimeRecorder.Controls.WindowLocation;
+
+public interface IWindowSettings
 {
-	public interface IWindowSettings
-	{
-		WINDOWPLACEMENT? Placement { get; set; }
-		void Reload();
-		void Save();
-	}
+    WINDOWPLACEMENT? Placement { get; set; }
+    void Reload();
+    void Save();
 }

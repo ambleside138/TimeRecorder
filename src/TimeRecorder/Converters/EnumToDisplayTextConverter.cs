@@ -5,28 +5,27 @@ using System.Text;
 using System.Windows.Data;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Converters
+namespace TimeRecorder.Converters;
+
+[ValueConversion(typeof(Enum), typeof(bool))]
+class EnumToDisplayTextConverter : IValueConverter
 {
-    [ValueConversion(typeof(Enum), typeof(bool))]
-    class EnumToDisplayTextConverter : IValueConverter
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null)
-                return "";
+        if (value == null)
+            return "";
 
-            var fi = value.GetType().GetField(value.ToString());
-            if (fi == null)
-                return "";
+        var fi = value.GetType().GetField(value.ToString());
+        if (fi == null)
+            return "";
 
-            var attribute = (DisplayTextAttribute)Attribute.GetCustomAttribute(fi, typeof(DisplayTextAttribute));
+        var attribute = (DisplayTextAttribute)Attribute.GetCustomAttribute(fi, typeof(DisplayTextAttribute));
 
-            return attribute.Text;
-        }
+        return attribute.Text;
+    }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
     }
 }

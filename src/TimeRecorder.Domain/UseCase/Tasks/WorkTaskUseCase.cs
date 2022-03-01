@@ -13,60 +13,59 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.InteropServices;
 using TimeRecorder.Domain.Domain.Tasks.Commands;
 
-namespace TimeRecorder.Domain.UseCase.Tasks
+namespace TimeRecorder.Domain.UseCase.Tasks;
+
+public class WorkTaskUseCase
 {
-    public class WorkTaskUseCase
+    private readonly IWorkTaskRepository _TaskRepository;
+    private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
+
+    private readonly WorkTaskCompletionCommand _WorkTaskCompletionCommand;
+
+    public WorkTaskUseCase(IWorkTaskRepository taskRepository, IWorkingTimeRangeRepository workingTimeRangeRepository)
     {
-        private readonly IWorkTaskRepository _TaskRepository;
-        private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
+        _TaskRepository = taskRepository;
+        _WorkingTimeRangeRepository = workingTimeRangeRepository;
+        _WorkTaskCompletionCommand = new WorkTaskCompletionCommand(taskRepository, workingTimeRangeRepository);
+    }
 
-        private readonly WorkTaskCompletionCommand _WorkTaskCompletionCommand;
+    public WorkTask Add(WorkTask workTask)
+    {
+        return _TaskRepository.Add(workTask);
+    }
 
-        public WorkTaskUseCase(IWorkTaskRepository taskRepository, IWorkingTimeRangeRepository workingTimeRangeRepository)
+    public void Edit(WorkTask workTask)
+    {
+        _TaskRepository.Edit(workTask);
+    }
+
+    public void Delete(Identity<WorkTask> workTaskId)
+    {
+        // todo: transaction
+
+        _TaskRepository.Delete(workTaskId);
+        _WorkingTimeRangeRepository.RemoveByTaskId(workTaskId);
+    }
+
+    public void Complete(Identity<WorkTask> id)
+    {
+        _WorkTaskCompletionCommand.CompleteWorkTask(id);
+    }
+
+    public void UnComplete(Identity<WorkTask> id)
+    {
+        _WorkTaskCompletionCommand.ReStartTask(id);
+    }
+
+    public WorkTask SelectById(Identity<WorkTask> workTaskId)
+    {
+        var target = _TaskRepository.SelectById(workTaskId);
+
+        if (target == null)
         {
-            _TaskRepository = taskRepository;
-            _WorkingTimeRangeRepository = workingTimeRangeRepository;
-            _WorkTaskCompletionCommand = new WorkTaskCompletionCommand(taskRepository, workingTimeRangeRepository);
+            throw new Exception("みつかりませんでした");
         }
 
-        public WorkTask Add(WorkTask workTask)
-        {
-            return _TaskRepository.Add(workTask);
-        }
-
-        public void Edit(WorkTask workTask)
-        {
-            _TaskRepository.Edit(workTask);
-        }
-
-        public void Delete(Identity<WorkTask> workTaskId)
-        {
-            // todo: transaction
-
-            _TaskRepository.Delete(workTaskId);
-            _WorkingTimeRangeRepository.RemoveByTaskId(workTaskId);
-        }
-
-        public void Complete(Identity<WorkTask> id)
-        {
-            _WorkTaskCompletionCommand.CompleteWorkTask(id);
-        }
-
-        public void UnComplete(Identity<WorkTask> id)
-        {
-            _WorkTaskCompletionCommand.ReStartTask(id);
-        }
-
-        public WorkTask SelectById(Identity<WorkTask> workTaskId)
-        {
-            var target = _TaskRepository.SelectById(workTaskId);
-
-            if(target == null)
-            {
-                throw new Exception("みつかりませんでした");
-            }
-
-            return target;
-        }
+        return target;
     }
 }

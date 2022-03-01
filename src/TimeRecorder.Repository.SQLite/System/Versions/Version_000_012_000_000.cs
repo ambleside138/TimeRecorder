@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeRecorder.Repository.SQLite.System.Versions
+namespace TimeRecorder.Repository.SQLite.System.Versions;
+
+class Version_000_012_000_000 : IVersion
 {
-    class Version_000_012_000_000 : IVersion
-    {
-        public string CommandQuery => @"
+    public string CommandQuery => @"
 ALTER TABLE
   processes
 ADD COLUMN
@@ -30,6 +30,5 @@ ADD COLUMN
   invalid char(1);
 ";
 
-        public string Version => "000.012.000.000";
-    }
+    public string Version => "000.012.000.000";
 }

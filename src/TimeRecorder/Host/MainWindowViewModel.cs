@@ -16,56 +16,55 @@ using TimeRecorder.Configurations.Items;
 using TimeRecorder.Contents.Archive;
 using TimeRecorder.Contents.Todo;
 
-namespace TimeRecorder.Host
+namespace TimeRecorder.Host;
+
+public class MainWindowViewModel : ViewModel
 {
-    public class MainWindowViewModel : ViewModel
+    public ObservableSynchronizedCollection<IContentViewModel> Contents { get; } = new ObservableSynchronizedCollection<IContentViewModel>();
+
+    public ObservableSynchronizedCollection<NavigationIconButtonViewModel> NavigationIconButtons { get; } = new ObservableSynchronizedCollection<NavigationIconButtonViewModel>();
+
+    public SnackbarMessageQueue SnackMessageQueue { get; } = SnackbarService.Current.MessageQueue;
+
+    private readonly MainModel _MainModel = new();
+
+    public static MainWindowViewModel Instance { get; } = new MainWindowViewModel();
+
+    private MainWindowViewModel()
     {
-        public ObservableSynchronizedCollection<IContentViewModel> Contents { get; } = new ObservableSynchronizedCollection<IContentViewModel>();
+        TransitionHelper.Current.SetMessanger(Messenger);
 
-        public ObservableSynchronizedCollection<NavigationIconButtonViewModel> NavigationIconButtons { get; } = new ObservableSynchronizedCollection<NavigationIconButtonViewModel>();
+        var message = _MainModel.CheckHealth();
+        if (string.IsNullOrEmpty(message) == false)
+            SnackbarService.Current.ShowMessage(message);
 
-        public SnackbarMessageQueue SnackMessageQueue { get; } = SnackbarService.Current.MessageQueue;
+        SetupTheme();
+    }
 
-        private readonly MainModel _MainModel = new();
-
-        public static MainWindowViewModel Instance { get; } = new MainWindowViewModel();
-
-        private MainWindowViewModel()
+    private static void SetupTheme()
+    {
+        var theme = UserConfigurationManager.Instance.GetConfiguration<ThemeConfig>(ConfigKey.Theme);
+        if (theme != null)
         {
-            TransitionHelper.Current.SetMessanger(Messenger);
+            ThemeService.ApplyFromName(theme.ThemeName);
+        }
+    }
 
-            var message = _MainModel.CheckHealth();
-            if (string.IsNullOrEmpty(message) == false)
-                SnackbarService.Current.ShowMessage(message);
-
-            SetupTheme();
+    public void Initialize()
+    {
+        if (UserConfigurationManager.Instance.GetConfiguration<UseTodoConfig>(ConfigKey.UseTodo)?.UseTodo ?? true)
+        {
+            Contents.Add(new TodoViewModel());
         }
 
-        private static void SetupTheme()
+        Contents.Add(new WorkUnitRecorderViewModel());
+        Contents.Add(new ArchiveManagerViewModel());
+        Contents.Add(new ExporterViewModel());
+        Contents.Add(new ConfigurationViewModel());
+
+        foreach (var c in Contents)
         {
-            var theme = UserConfigurationManager.Instance.GetConfiguration<ThemeConfig>(ConfigKey.Theme);
-            if(theme != null)
-            {
-                ThemeService.ApplyFromName(theme.ThemeName);
-            }
-        }
-
-        public void Initialize()
-        {
-            if(UserConfigurationManager.Instance.GetConfiguration<UseTodoConfig>(ConfigKey.UseTodo)?.UseTodo ?? true)
-            {
-                Contents.Add(new TodoViewModel());
-            }
-
-            Contents.Add(new WorkUnitRecorderViewModel());
-            Contents.Add(new ArchiveManagerViewModel());
-            Contents.Add(new ExporterViewModel());
-            Contents.Add(new ConfigurationViewModel());
-
-            foreach(var c in Contents)
-            {
-                NavigationIconButtons.Add(c.NavigationIcon);
-            }
+            NavigationIconButtons.Add(c.NavigationIcon);
         }
     }
 }

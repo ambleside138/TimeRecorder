@@ -24,298 +24,297 @@ using TimeRecorder.Helpers;
 using TimeRecorder.Host;
 using TimeRecorder.Repository.SQLite.System;
 
-namespace TimeRecorder.Contents.WorkUnitRecorder
+namespace TimeRecorder.Contents.WorkUnitRecorder;
+
+public class WorkUnitRecorderModel : NotificationObject, IDisposable
 {
-    public class WorkUnitRecorderModel : NotificationObject, IDisposable
+    private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+
+    public ReactivePropertySlim<DateTime> TargetDate { get; }
+
+    public YmdString TargetYmd => new(TargetDate.Value.ToString("yyyyMMdd"));
+
+    public ObservableCollection<WorkTaskWithTimesDto> PlanedTaskModels { get; } = new ObservableCollection<WorkTaskWithTimesDto>();
+
+    public ObservableCollection<WorkingTimeForTimelineDto> WorkingTimes { get; } = new ObservableCollection<WorkingTimeForTimelineDto>();
+
+
+    public ReactiveProperty<WorkingTimeForTimelineDto> DoingTask { get; } = new ReactiveProperty<WorkingTimeForTimelineDto>(null, ReactivePropertyMode.Default, new WorkingTimeForTimelineDtoEqualityComparer());
+
+    public ReactivePropertySlim<bool> ContainsCompleted { get; } = new ReactivePropertySlim<bool>(false, ReactivePropertyMode.DistinctUntilChanged);
+
+    private LivetCompositeDisposable _Disposables = new();
+
+    private DateTime? _LatestBackupTime = null;
+
+    private bool _LunchTimeStartNotificated = false;
+    private bool _LunchTimeEndNotificated = false;
+
+    #region UseCases
+    private readonly WorkTaskUseCase _WorkTaskUseCase;
+    private readonly GetWorkTaskWithTimesUseCase _GetWorkTaskWithTimesUseCase;
+    private readonly WorkingTimeRangeUseCase _WorkingTimeRangeUseCase;
+    private readonly GetWorkingTimeForTimelineUseCase _GetWorkingTimeForTimelineUseCase;
+    #endregion
+
+    public WorkUnitRecorderModel()
     {
-        private static readonly NLog.Logger _Logger = NLog.LogManager.GetCurrentClassLogger();
+        _WorkTaskUseCase = new WorkTaskUseCase(
+                                    ContainerHelper.GetRequiredService<IWorkTaskRepository>(),
+                                    ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>());
+        _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(
+                                        ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>(),
+                                        ContainerHelper.GetRequiredService<IWorkTaskRepository>());
+        _GetWorkingTimeForTimelineUseCase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.GetRequiredService<IWorkingTimeQueryService>());
+        _GetWorkTaskWithTimesUseCase = new GetWorkTaskWithTimesUseCase(ContainerHelper.GetRequiredService<IWorkTaskWithTimesQueryService>());
 
-        public ReactivePropertySlim<DateTime> TargetDate { get; }
+        ObjectChangedNotificator.Instance.WorkTaskEdited += Load;
+        MessageBroker.Default.Subscribe<WorkTaskRegistedEventArg>(_ => Load());
 
-        public YmdString TargetYmd => new(TargetDate.Value.ToString("yyyyMMdd"));
+        TargetDate = new ReactivePropertySlim<DateTime>(DateTime.Today);
+        TargetDate.Subscribe(_ => Load()).AddTo(_Disposables);
 
-        public ObservableCollection<WorkTaskWithTimesDto> PlanedTaskModels { get; } = new ObservableCollection<WorkTaskWithTimesDto>();
+        ContainsCompleted.Subscribe(_ => Load()).AddTo(_Disposables);
+    }
 
-        public ObservableCollection<WorkingTimeForTimelineDto> WorkingTimes { get; } = new ObservableCollection<WorkingTimeForTimelineDto>();
+    public ImportTaskFromCalendarUseCase BuildImportTaskFromCalendarUseCase()
+    {
+        // 設定を再起動なしで反映させるために都度生成する
 
+        var config = JsonFileIO.Deserialize<TimeRecorderConfiguration>("TimeRecorderConfiguration.json") ?? new TimeRecorderConfiguration();
 
-        public ReactiveProperty<WorkingTimeForTimelineDto> DoingTask { get; } = new ReactiveProperty<WorkingTimeForTimelineDto>(null, ReactivePropertyMode.Default, new WorkingTimeForTimelineDtoEqualityComparer());
+        var maps = UserConfigurationManager.Instance.GetConfiguration<ScheduleTitleMapConfig>(ConfigKey.ScheduleTitleMap);
 
-        public ReactivePropertySlim<bool> ContainsCompleted { get; } = new ReactivePropertySlim<bool>(false, ReactivePropertyMode.DistinctUntilChanged);
+        return new ImportTaskFromCalendarUseCase(
+            ContainerHelper.GetRequiredService<IWorkTaskRepository>(),
+            ContainerHelper.GetRequiredService<IScheduledEventRepository>(),
+            ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>(),
+            config.WorkTaskBuilderConfig,
+            maps?.ScheduleTitleMaps);
+    }
 
-        private LivetCompositeDisposable _Disposables = new();
+    public void Load()
+    {
+        var list = _GetWorkTaskWithTimesUseCase.GetByYmd(TargetYmd, ContainsCompleted.Value);
 
-        private DateTime? _LatestBackupTime = null;
+        PlanedTaskModels.Clear();
+        PlanedTaskModels.AddRange(list);
 
-        private bool _LunchTimeStartNotificated = false;
-        private bool _LunchTimeEndNotificated = false;
+        LoadWorkingTime();
+    }
 
-        #region UseCases
-        private readonly WorkTaskUseCase _WorkTaskUseCase;
-        private readonly GetWorkTaskWithTimesUseCase _GetWorkTaskWithTimesUseCase;
-        private readonly WorkingTimeRangeUseCase _WorkingTimeRangeUseCase;
-        private readonly GetWorkingTimeForTimelineUseCase _GetWorkingTimeForTimelineUseCase;
-        #endregion
+    private void LoadWorkingTime()
+    {
+        var list = _GetWorkingTimeForTimelineUseCase.SelectByYmd(TargetYmd.Value);
 
-        public WorkUnitRecorderModel()
+        WorkingTimes.Clear();
+        WorkingTimes.AddRange(list);
+
+        SetDoingTask();
+    }
+
+    public void UpdateDoingTask()
+    {
+        if (DoingTask.Value == null)
         {
-            _WorkTaskUseCase = new WorkTaskUseCase(
-                                        ContainerHelper.GetRequiredService<IWorkTaskRepository>(), 
-                                        ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>());
-            _WorkingTimeRangeUseCase = new WorkingTimeRangeUseCase(
-                                            ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>(),
-                                            ContainerHelper.GetRequiredService<IWorkTaskRepository>());
-            _GetWorkingTimeForTimelineUseCase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.GetRequiredService<IWorkingTimeQueryService>());
-            _GetWorkTaskWithTimesUseCase = new GetWorkTaskWithTimesUseCase(ContainerHelper.GetRequiredService<IWorkTaskWithTimesQueryService>());
+            // 登録済みの予定が存在する可能性がある
+            SetDoingTask();
 
-            ObjectChangedNotificator.Instance.WorkTaskEdited += Load;
-            MessageBroker.Default.Subscribe<WorkTaskRegistedEventArg>(_ => Load());
-
-            TargetDate = new ReactivePropertySlim<DateTime>(DateTime.Today);
-            TargetDate.Subscribe(_ => Load()).AddTo(_Disposables);
-
-            ContainsCompleted.Subscribe(_ => Load()).AddTo(_Disposables);
-        }
-
-        public ImportTaskFromCalendarUseCase BuildImportTaskFromCalendarUseCase()
-        {
-            // 設定を再起動なしで反映させるために都度生成する
-
-            var config = JsonFileIO.Deserialize<TimeRecorderConfiguration>("TimeRecorderConfiguration.json") ?? new TimeRecorderConfiguration();
-
-            var maps = UserConfigurationManager.Instance.GetConfiguration<ScheduleTitleMapConfig>(ConfigKey.ScheduleTitleMap);
-
-            return new ImportTaskFromCalendarUseCase(
-                ContainerHelper.GetRequiredService<IWorkTaskRepository>(),
-                ContainerHelper.GetRequiredService<IScheduledEventRepository>(),
-                ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>(),
-                config.WorkTaskBuilderConfig,
-                maps?.ScheduleTitleMaps);
-        }
-
-        public void Load()
-        {
-            var list = _GetWorkTaskWithTimesUseCase.GetByYmd(TargetYmd, ContainsCompleted.Value);
-
-            PlanedTaskModels.Clear();
-            PlanedTaskModels.AddRange(list);
-
-            LoadWorkingTime();
-        }
-
-        private void LoadWorkingTime()
-        {
-            var list = _GetWorkingTimeForTimelineUseCase.SelectByYmd(TargetYmd.Value);
-
-            WorkingTimes.Clear();
-            WorkingTimes.AddRange(list);
-
-           SetDoingTask();
-        }
-
-        public void UpdateDoingTask()
-        {
-            if (DoingTask.Value == null)
+            if (DoingTask.Value != null)
             {
-                // 登録済みの予定が存在する可能性がある
-                SetDoingTask();
-
-                if(DoingTask.Value != null)
-                {
-                    NotificationService.Current.Info("作業タスク 更新のお知らせ", "予定されているタスクの開始時間になりました");
-                }
-            }
-            else
-            {
-                // 実行中の作業がある場合
-                //  A.そのまま続行
-                //  B.次のスケジュールが埋まっている or 予定終了時間を超えた場合は自動終了する
-                // いずれかの処理が必要
-                if (AutoStopCurrentTaskIfNeeded(out string message))
-                {
-                    NotificationService.Current.Info("作業タスク 更新のお知らせ", message);
-                }
+                NotificationService.Current.Info("作業タスク 更新のお知らせ", "予定されているタスクの開始時間になりました");
             }
         }
-
-        public void CheckLunchTime()
+        else
         {
-            var config = UserConfigurationManager.Instance.GetConfiguration<LunchTimeConfig>(ConfigKey.LunchTime);
-            if (config == null
-                || string.IsNullOrEmpty(config.StartHHmm)
-                || string.IsNullOrEmpty(config.EndHHmm))
+            // 実行中の作業がある場合
+            //  A.そのまま続行
+            //  B.次のスケジュールが埋まっている or 予定終了時間を超えた場合は自動終了する
+            // いずれかの処理が必要
+            if (AutoStopCurrentTaskIfNeeded(out string message))
             {
-                return;
-            }
-
-            // 休憩開始
-            var lunchPeriod = config.TimePeriod;
-            if (lunchPeriod.WithinRangeAtCurrentTime
-                && _LunchTimeStartNotificated == false)
-            {
-                NotificationService.Current.ShowLunchStartInteractor();
-                _LunchTimeStartNotificated = true;
-            }
-            // 仕事再開
-            if(lunchPeriod.EndDateTime.Value < SystemClockServiceLocator.Current.Now
-                && _LunchTimeEndNotificated == false
-                && _LunchTimeStartNotificated )
-            {
-                var selectableTasks = PlanedTaskModels.Where(c => c.IsScheduled == false);
-                NotificationService.Current.ShowTaskStarterInteractor(selectableTasks, "お昼休憩が終了しました" + Environment.NewLine + "再開するタスクを選択してください");
-                _LunchTimeEndNotificated = true; 
+                NotificationService.Current.Info("作業タスク 更新のお知らせ", message);
             }
         }
+    }
 
-        public void BackupIfNeeded()
+    public void CheckLunchTime()
+    {
+        var config = UserConfigurationManager.Instance.GetConfiguration<LunchTimeConfig>(ConfigKey.LunchTime);
+        if (config == null
+            || string.IsNullOrEmpty(config.StartHHmm)
+            || string.IsNullOrEmpty(config.EndHHmm))
         {
-            var backupDirectory = UserConfigurationManager.Instance.GetConfiguration<BackupPathConfig>(ConfigKey.BackupPath)?.DirectoryPath;
-            
-            if (string.IsNullOrEmpty(backupDirectory))
-                return;
-
-            if (Directory.Exists(backupDirectory) == false)
-            {
-                _Logger.Warn("バックアップ先のフォルダが見つかりませんでした path="  + backupDirectory);
-                return;
-            }
-
-            var now = SystemClockServiceLocator.Current.Now;
-            if(_LatestBackupTime == null
-                || (now - _LatestBackupTime.Value).TotalMinutes > 60)
-            {
-                new BackupWorker().Backup(backupDirectory);
-                _Logger.Info("バックアップに成功しました");
-                _LatestBackupTime = now;
-            }
+            return;
         }
 
-
-        public void SetDoingTask()
+        // 休憩開始
+        var lunchPeriod = config.TimePeriod;
+        if (lunchPeriod.WithinRangeAtCurrentTime
+            && _LunchTimeStartNotificated == false)
         {
-            if(SystemClockServiceLocator.Current.Now.Date != TargetDate.Value.Date)
-            {
-                DoingTask.Value = null;
-            }
-            else
-            {
-                var target = WorkingTimes.Where(w => w.TimePeriod.WithinRangeAtCurrentTime)
-                         .FirstOrDefault();
+            NotificationService.Current.ShowLunchStartInteractor();
+            _LunchTimeStartNotificated = true;
+        }
+        // 仕事再開
+        if (lunchPeriod.EndDateTime.Value < SystemClockServiceLocator.Current.Now
+            && _LunchTimeEndNotificated == false
+            && _LunchTimeStartNotificated)
+        {
+            var selectableTasks = PlanedTaskModels.Where(c => c.IsScheduled == false);
+            NotificationService.Current.ShowTaskStarterInteractor(selectableTasks, "お昼休憩が終了しました" + Environment.NewLine + "再開するタスクを選択してください");
+            _LunchTimeEndNotificated = true;
+        }
+    }
 
-                DoingTask.Value = target;
-            }
+    public void BackupIfNeeded()
+    {
+        var backupDirectory = UserConfigurationManager.Instance.GetConfiguration<BackupPathConfig>(ConfigKey.BackupPath)?.DirectoryPath;
 
+        if (string.IsNullOrEmpty(backupDirectory))
+            return;
+
+        if (Directory.Exists(backupDirectory) == false)
+        {
+            _Logger.Warn("バックアップ先のフォルダが見つかりませんでした path=" + backupDirectory);
+            return;
         }
 
-        public bool AutoStopCurrentTaskIfNeeded(out string message)
+        var now = SystemClockServiceLocator.Current.Now;
+        if (_LatestBackupTime == null
+            || (now - _LatestBackupTime.Value).TotalMinutes > 60)
         {
-            message = "";
+            new BackupWorker().Backup(backupDirectory);
+            _Logger.Info("バックアップに成功しました");
+            _LatestBackupTime = now;
+        }
+    }
 
-            if (DoingTask.Value == null)
-                return false;
 
-            // 終了予定時刻ありの場合
-            if (DoingTask.Value.TimePeriod.EndDateTime.HasValue)
-            {
-                // 現在のタスクが終了時刻を迎えたら終了
-                if (DoingTask.Value.TimePeriod.WithinRangeAtCurrentTime == false)
-                {
-                    SetDoingTask();
-                    message = "終了予定時刻となったため 現在の作業を終了しました";
-                    return true;
-                }
-            }
-            // 終了予定時刻なしの場合
-            else
-            {
-                // 予定タスクがあれば自動移行
-                var otherPlanedTask = WorkingTimes.Where(t => t.WorkingTimeId != DoingTask.Value.WorkingTimeId)
-                                                       .Where(w => w.TimePeriod.WithinRangeAtCurrentTime)
-                                                       .FirstOrDefault();
-                if (otherPlanedTask != null)
-                {
-                    // 現在タスクの終了
-                    // ＃終了処理のなかで再読み込みも行われる
-                    StopCurrentTask();
-                    message = $"タスク [ {otherPlanedTask.TaskTitle} ] の開始予定時刻となったため現在の作業を終了しました";
-                    return true;
-                }
-            }
+    public void SetDoingTask()
+    {
+        if (SystemClockServiceLocator.Current.Now.Date != TargetDate.Value.Date)
+        {
+            DoingTask.Value = null;
+        }
+        else
+        {
+            var target = WorkingTimes.Where(w => w.TimePeriod.WithinRangeAtCurrentTime)
+                     .FirstOrDefault();
 
+            DoingTask.Value = target;
+        }
+
+    }
+
+    public bool AutoStopCurrentTaskIfNeeded(out string message)
+    {
+        message = "";
+
+        if (DoingTask.Value == null)
             return false;
 
-        }
-
-        public void AddWorkTask(WorkTask workTask, bool needStart)
+        // 終了予定時刻ありの場合
+        if (DoingTask.Value.TimePeriod.EndDateTime.HasValue)
         {
-            var task = _WorkTaskUseCase.Add(workTask);
-            if(needStart)
+            // 現在のタスクが終了時刻を迎えたら終了
+            if (DoingTask.Value.TimePeriod.WithinRangeAtCurrentTime == false)
             {
-                _WorkingTimeRangeUseCase.StartWorking(task.Id);
+                SetDoingTask();
+                message = "終了予定時刻となったため 現在の作業を終了しました";
+                return true;
             }
-            Load();
         }
-
-        public void StopCurrentTask()
+        // 終了予定時刻なしの場合
+        else
         {
-            if (DoingTask.Value == null)
-                return;
-
-            _WorkingTimeRangeUseCase.StopWorking(DoingTask.Value.WorkingTimeId);
-
-            Load();
-        }
-
-        public async Task<WorkTask[]> ImportFromCalendarAsync()
-        {
-            var useCase = BuildImportTaskFromCalendarUseCase();
-            var importedWorkTasks = await useCase.ImportToTaskAsync(TargetYmd);
-
-            if(importedWorkTasks.Any())
+            // 予定タスクがあれば自動移行
+            var otherPlanedTask = WorkingTimes.Where(t => t.WorkingTimeId != DoingTask.Value.WorkingTimeId)
+                                                   .Where(w => w.TimePeriod.WithinRangeAtCurrentTime)
+                                                   .FirstOrDefault();
+            if (otherPlanedTask != null)
             {
-                Load();
-            }
-
-            return importedWorkTasks;
-        }
-
-        #region IDisposable Support
-        private bool disposedValue = false; // 重複する呼び出しを検出するには
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // Mangedリソースの解放
-                    ObjectChangedNotificator.Instance.WorkTaskEdited -= Load;
-                    _Disposables.Dispose();
-                    _Disposables = null;
-                }
-
-                // TODO: アンマネージ リソース (アンマネージ オブジェクト) を解放し、下のファイナライザーをオーバーライドします。
-                // TODO: 大きなフィールドを null に設定します。
-
-                disposedValue = true;
+                // 現在タスクの終了
+                // ＃終了処理のなかで再読み込みも行われる
+                StopCurrentTask();
+                message = $"タスク [ {otherPlanedTask.TaskTitle} ] の開始予定時刻となったため現在の作業を終了しました";
+                return true;
             }
         }
 
-        // TODO: 上の Dispose(bool disposing) にアンマネージ リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします。
-        // ~WorkUnitRecorderModel()
-        // {
-        //   // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
-        //   Dispose(false);
-        // }
+        return false;
 
-        // このコードは、破棄可能なパターンを正しく実装できるように追加されました。
-        public void Dispose()
-        {
-            // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
-            Dispose(true);
-            // TODO: 上のファイナライザーがオーバーライドされる場合は、次の行のコメントを解除してください。
-            // GC.SuppressFinalize(this);
-        }
-        #endregion
     }
+
+    public void AddWorkTask(WorkTask workTask, bool needStart)
+    {
+        var task = _WorkTaskUseCase.Add(workTask);
+        if (needStart)
+        {
+            _WorkingTimeRangeUseCase.StartWorking(task.Id);
+        }
+        Load();
+    }
+
+    public void StopCurrentTask()
+    {
+        if (DoingTask.Value == null)
+            return;
+
+        _WorkingTimeRangeUseCase.StopWorking(DoingTask.Value.WorkingTimeId);
+
+        Load();
+    }
+
+    public async Task<WorkTask[]> ImportFromCalendarAsync()
+    {
+        var useCase = BuildImportTaskFromCalendarUseCase();
+        var importedWorkTasks = await useCase.ImportToTaskAsync(TargetYmd);
+
+        if (importedWorkTasks.Any())
+        {
+            Load();
+        }
+
+        return importedWorkTasks;
+    }
+
+    #region IDisposable Support
+    private bool disposedValue = false; // 重複する呼び出しを検出するには
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposedValue)
+        {
+            if (disposing)
+            {
+                // Mangedリソースの解放
+                ObjectChangedNotificator.Instance.WorkTaskEdited -= Load;
+                _Disposables.Dispose();
+                _Disposables = null;
+            }
+
+            // TODO: アンマネージ リソース (アンマネージ オブジェクト) を解放し、下のファイナライザーをオーバーライドします。
+            // TODO: 大きなフィールドを null に設定します。
+
+            disposedValue = true;
+        }
+    }
+
+    // TODO: 上の Dispose(bool disposing) にアンマネージ リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします。
+    // ~WorkUnitRecorderModel()
+    // {
+    //   // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
+    //   Dispose(false);
+    // }
+
+    // このコードは、破棄可能なパターンを正しく実装できるように追加されました。
+    public void Dispose()
+    {
+        // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
+        Dispose(true);
+        // TODO: 上のファイナライザーがオーバーライドされる場合は、次の行のコメントを解除してください。
+        // GC.SuppressFinalize(this);
+    }
+    #endregion
 }

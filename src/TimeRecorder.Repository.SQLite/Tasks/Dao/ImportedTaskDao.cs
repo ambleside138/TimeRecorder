@@ -6,19 +6,19 @@ using System.Linq;
 using System.Text;
 using TimeRecorder.Repository.SQLite.Utilities;
 
-namespace TimeRecorder.Repository.SQLite.Tasks.Dao
-{
-    class ImportedTaskDao : DaoBase
-    {
-        public ImportedTaskDao(SQLiteConnection connection, SQLiteTransaction transaction)
-            : base(connection, transaction)
-        {
-        }
+namespace TimeRecorder.Repository.SQLite.Tasks.Dao;
 
-        public void Insert(ImportedTaskTableRow row)
-        {
-            #region SQL
-            const string sql = @"
+class ImportedTaskDao : DaoBase
+{
+    public ImportedTaskDao(SQLiteConnection connection, SQLiteTransaction transaction)
+        : base(connection, transaction)
+    {
+    }
+
+    public void Insert(ImportedTaskTableRow row)
+    {
+        #region SQL
+        const string sql = @"
 INSERT INTO importedtasks
 (
   importkey
@@ -36,17 +36,17 @@ VALUES
   , @worktaskid
 )
 ";
-            #endregion
+        #endregion
 
-            row.CreateDateTime = DateTime.Now;
+        row.CreateDateTime = DateTime.Now;
 
-            Connection.Execute(sql, row, Transaction);
-        }
+        Connection.Execute(sql, row, Transaction);
+    }
 
-        public ImportedTaskTableRow[] SelectByImportKeys(string[] keys)
-        {
-            #region SQL
-            const string sql = @"
+    public ImportedTaskTableRow[] SelectByImportKeys(string[] keys)
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   importkey
   , title
@@ -58,9 +58,8 @@ FROM
 WHERE
   importkey in @keys
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<ImportedTaskTableRow>(sql, new { keys }).ToArray();
-        }
+        return Connection.Query<ImportedTaskTableRow>(sql, new { keys }).ToArray();
     }
 }

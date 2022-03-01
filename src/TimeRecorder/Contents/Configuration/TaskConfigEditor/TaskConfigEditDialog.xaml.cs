@@ -10,16 +10,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace TimeRecorder.Contents.Configuration.TaskConfigEditor
+namespace TimeRecorder.Contents.Configuration.TaskConfigEditor;
+
+/// <summary>
+/// TaskConfigEditDialog.xaml の相互作用ロジック
+/// </summary>
+public partial class TaskConfigEditDialog : Window
 {
-    /// <summary>
-    /// TaskConfigEditDialog.xaml の相互作用ロジック
-    /// </summary>
-    public partial class TaskConfigEditDialog : Window
+    public TaskConfigEditDialog()
     {
-        public TaskConfigEditDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

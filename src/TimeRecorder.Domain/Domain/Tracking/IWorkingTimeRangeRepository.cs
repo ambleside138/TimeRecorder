@@ -4,23 +4,22 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Domain.Domain.Tracking
+namespace TimeRecorder.Domain.Domain.Tracking;
+
+public interface IWorkingTimeRangeRepository : IRepository
 {
-    public interface IWorkingTimeRangeRepository : IRepository
-    {
-        WorkingTimeRange Add(WorkingTimeRange workingTimeRange);
+    WorkingTimeRange Add(WorkingTimeRange workingTimeRange);
 
-        void Edit(WorkingTimeRange workingTimeRange);
+    void Edit(WorkingTimeRange workingTimeRange);
 
-        void Remove(Identity<WorkingTimeRange> identity);
+    void Remove(Identity<WorkingTimeRange> identity);
 
-        void RemoveByTaskId(Identity<WorkTask> taskId);
+    void RemoveByTaskId(Identity<WorkTask> taskId);
 
-        WorkingTimeRange[] SelectByYmd(string ymd);
+    WorkingTimeRange[] SelectByYmd(string ymd);
 
-        WorkingTimeRange SelectById(Identity<WorkingTimeRange> identity);
+    WorkingTimeRange SelectById(Identity<WorkingTimeRange> identity);
 
-        WorkingTimeRange[] SelectByTaskId(Identity<WorkTask> taskId);
+    WorkingTimeRange[] SelectByTaskId(Identity<WorkTask> taskId);
 
-    }
 }

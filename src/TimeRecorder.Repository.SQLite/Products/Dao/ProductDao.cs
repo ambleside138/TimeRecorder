@@ -7,17 +7,17 @@ using System.Text;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Utilities;
 
-namespace TimeRecorder.Repository.SQLite.Products.Dao
-{
-    class ProductDao : DaoBase
-    {
-        public ProductDao(SQLiteConnection connection, SQLiteTransaction transaction)
-            : base(connection, transaction) { }
+namespace TimeRecorder.Repository.SQLite.Products.Dao;
 
-        public ProductTableRow[] SelectAll()
-        {
-            #region SQL
-            const string sql = @"
+class ProductDao : DaoBase
+{
+    public ProductDao(SQLiteConnection connection, SQLiteTransaction transaction)
+        : base(connection, transaction) { }
+
+    public ProductTableRow[] SelectAll()
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   id
   , name
@@ -28,9 +28,8 @@ FROM
 ORDER BY
   displayorder
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<ProductTableRow>(sql).ToArray();
-        }
+        return Connection.Query<ProductTableRow>(sql).ToArray();
     }
 }

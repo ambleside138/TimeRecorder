@@ -5,33 +5,32 @@ using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Repository.SQLite.Tracking.Dao
+namespace TimeRecorder.Repository.SQLite.Tracking.Dao;
+
+class WorkingHourTableRow
 {
-    class WorkingHourTableRow
+    public string Ymd { get; set; }
+
+    public string StartTime { get; set; }
+
+    public string EndTime { get; set; }
+
+    public static WorkingHourTableRow FromDomainObjects(WorkingHour workingHour)
     {
-        public string Ymd { get; set; }
-
-        public string StartTime { get; set; }
-
-        public string EndTime { get; set; }
-
-        public static WorkingHourTableRow FromDomainObjects(WorkingHour workingHour)
+        return new WorkingHourTableRow
         {
-            return new WorkingHourTableRow
-            {
-                Ymd = workingHour.Ymd.Value,
-                StartTime = workingHour.StartTime?.ToString("HHmmss") ?? "",
-                EndTime = workingHour.EndTime?.ToString("HHmmss") ?? "",
-            };
-        }
+            Ymd = workingHour.Ymd.Value,
+            StartTime = workingHour.StartTime?.ToString("HHmmss") ?? "",
+            EndTime = workingHour.EndTime?.ToString("HHmmss") ?? "",
+        };
+    }
 
-        public WorkingHour ConvertToDomainObjects()
-        {
-            return new WorkingHour(
-                new YmdString(Ymd),
-                DateTimeParser.ConvertFromYmdHHmmss(Ymd, StartTime),
-                DateTimeParser.ConvertFromYmdHHmmss(Ymd, EndTime)
-                );
-        }
+    public WorkingHour ConvertToDomainObjects()
+    {
+        return new WorkingHour(
+            new YmdString(Ymd),
+            DateTimeParser.ConvertFromYmdHHmmss(Ymd, StartTime),
+            DateTimeParser.ConvertFromYmdHHmmss(Ymd, EndTime)
+            );
     }
 }

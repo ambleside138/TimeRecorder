@@ -8,35 +8,34 @@ using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Repository.Firebase.Shared;
 using TimeRecorder.Repository.Firebase.Todo.Dao;
 
-namespace TimeRecorder.Repository.Firebase.Todo
+namespace TimeRecorder.Repository.Firebase.Todo;
+
+public class FirestoreTodoListRepository : ITodoListRepository
 {
-    public class FirestoreTodoListRepository : ITodoListRepository
+    public async Task<TodoListIdentity> AddAsync(TodoList item)
     {
-        public async Task<TodoListIdentity> AddAsync(TodoList item)
-        {
-            FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
-            TodoListDocument doc = TodoListDocument.FromDomainObject(item);
+        FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
+        TodoListDocument doc = TodoListDocument.FromDomainObject(item);
 
-            return await new TodoListDao(db, FirebaseAuthenticator.Current.UserId).SetAsync(item.Id, doc);
-        }
+        return await new TodoListDao(db, FirebaseAuthenticator.Current.UserId).SetAsync(item.Id, doc);
+    }
 
-        public async Task DeleteAsync(TodoListIdentity id)
-        {
-            FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
-            await new TodoListDao(db, FirebaseAuthenticator.Current.UserId).DeleteAsync(id);
-        }
+    public async Task DeleteAsync(TodoListIdentity id)
+    {
+        FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
+        await new TodoListDao(db, FirebaseAuthenticator.Current.UserId).DeleteAsync(id);
+    }
 
-        public async Task EditAsync(TodoList item) => await AddAsync(item);
+    public async Task EditAsync(TodoList item) => await AddAsync(item);
 
-        public async Task<TodoList[]> SelectAsync()
-        {
-             FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
+    public async Task<TodoList[]> SelectAsync()
+    {
+        FirestoreDb db = await FirestoreAccessor.CreateDbClientAsync();
 
-            IEnumerable<TodoListDocument> todoLists = await new TodoListDao(db, FirebaseAuthenticator.Current.UserId).SelectAsync();
+        IEnumerable<TodoListDocument> todoLists = await new TodoListDao(db, FirebaseAuthenticator.Current.UserId).SelectAsync();
 
-            return todoLists?
-                      .Select(i => i.ConvertToDomainObject())
-                      .ToArray() ?? Array.Empty<TodoList>();
-        }
+        return todoLists?
+                  .Select(i => i.ConvertToDomainObject())
+                  .ToArray() ?? Array.Empty<TodoList>();
     }
 }

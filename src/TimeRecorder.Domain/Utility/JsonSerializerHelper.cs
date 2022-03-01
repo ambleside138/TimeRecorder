@@ -5,15 +5,14 @@ using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Unicode;
 
-namespace TimeRecorder.Domain.Utility
+namespace TimeRecorder.Domain.Utility;
+
+public static class JsonSerializerHelper
 {
-    public static class JsonSerializerHelper
+    public static JsonSerializerOptions DefaultOptions { get; } = new JsonSerializerOptions
     {
-        public static JsonSerializerOptions DefaultOptions { get; } = new JsonSerializerOptions
-                                                                {
-                                                                    Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // デフォルトでは日本語がエンコードされない
-                                                                    WriteIndented = true,
-                                                                    AllowTrailingCommas = true, // 末尾のカンマを許可する
-                                                                };
-    }
+        Encoder = JavaScriptEncoder.Create(UnicodeRanges.All), // デフォルトでは日本語がエンコードされない
+        WriteIndented = true,
+        AllowTrailingCommas = true, // 末尾のカンマを許可する
+    };
 }

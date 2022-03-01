@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.UseCase.Tracking
-{
-    // QueryServiceのIF・戻りの型はUseCase層で定義する
+namespace TimeRecorder.Domain.UseCase.Tracking;
 
-    public interface IWorkingTimeQueryService : IQueryService
-    {
-        WorkingTimeForTimelineDto[] SelectByYmd(string ymd);
-    }
+// QueryServiceのIF・戻りの型はUseCase層で定義する
+
+public interface IWorkingTimeQueryService : IQueryService
+{
+    WorkingTimeForTimelineDto[] SelectByYmd(string ymd);
 }

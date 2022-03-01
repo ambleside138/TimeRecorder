@@ -7,28 +7,27 @@ using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.WorkProcesses.Dao;
 
-namespace TimeRecorder.Repository.SQLite.WorkProcesses
+namespace TimeRecorder.Repository.SQLite.WorkProcesses;
+
+public class SQLiteWorkProcessRepository : IWorkProcessRepository
 {
-    public class SQLiteWorkProcessRepository : IWorkProcessRepository
+    public WorkProcess Regist(WorkProcess process)
     {
-        public WorkProcess Regist(WorkProcess process)
-        {
-            throw new NotImplementedException();
-        }
-
-        public WorkProcess[] SelectAll()
-        {
-            var list = new List<WorkProcess>();
-
-            RepositoryAction.Query(c =>
-            {
-                var rows = new WorkProcessDao(c, null).SelectAll();
-                list.AddRange(rows.Select(r => r.ToDomainObject()));
-            });
-
-            return list.ToArray();
-        }
-
-        
+        throw new NotImplementedException();
     }
+
+    public WorkProcess[] SelectAll()
+    {
+        var list = new List<WorkProcess>();
+
+        RepositoryAction.Query(c =>
+        {
+            var rows = new WorkProcessDao(c, null).SelectAll();
+            list.AddRange(rows.Select(r => r.ToDomainObject()));
+        });
+
+        return list.ToArray();
+    }
+
+
 }

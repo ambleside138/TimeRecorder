@@ -6,15 +6,14 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Utility.SystemClocks;
 
-namespace TimeRecorder.Contents.Shared
-{
-    class DateTimePickerViewModel
-    {
-        public ReactiveProperty<DateTime> SelectedDate { get; }
+namespace TimeRecorder.Contents.Shared;
 
-        public DateTimePickerViewModel(DateTime? date)
-        {
-            SelectedDate = new ReactiveProperty<DateTime>(date ?? SystemClockServiceLocator.Current.Now.Date);
-        }
+class DateTimePickerViewModel
+{
+    public ReactiveProperty<DateTime> SelectedDate { get; }
+
+    public DateTimePickerViewModel(DateTime? date)
+    {
+        SelectedDate = new ReactiveProperty<DateTime>(date ?? SystemClockServiceLocator.Current.Now.Date);
     }
 }

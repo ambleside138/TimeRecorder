@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Repository.SQLite.System.Versions
-{
-    public interface IVersion
-    {
-        string CommandQuery { get; }
+namespace TimeRecorder.Repository.SQLite.System.Versions;
 
-        string Version { get; }
-    }
+public interface IVersion
+{
+    string CommandQuery { get; }
+
+    string Version { get; }
 }

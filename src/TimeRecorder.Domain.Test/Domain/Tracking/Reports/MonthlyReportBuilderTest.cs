@@ -12,48 +12,48 @@ using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
+namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports;
+
+[TestFixture]
+class MonthlyReportBuilderTest
 {
-    [TestFixture]
-    class MonthlyReportBuilderTest
+    private MonthlyReportBuilder _MonthlyReportBuilder;
+
+    private YmdString _Ymd0501 = new("20200501");
+    private YmdString _Ymd0510 = new("20200510");
+    private YmdString _Ymd0531 = new("20200531");
+
+    private WorkProcess _Process01 = new(new Identity<WorkProcess>(1), "プロセス1");
+    private WorkProcess _Process02 = new(new Identity<WorkProcess>(2), "プロセス2");
+    private WorkProcess _Process03 = new(new Identity<WorkProcess>(3), "プロセス3");
+
+    private Product _Product01 = new(new Identity<Product>(1), "製品1", "1");
+    private Product _Product02 = new(new Identity<Product>(2), "製品2", "2");
+    private Product _Product03 = new(new Identity<Product>(3), "製品3", "3");
+
+    private Client _Client01 = new(new Identity<Client>(1), "田中", "タナカ");
+    private Client _Client02 = new(new Identity<Client>(2), "佐藤", "サトウ");
+    private Client _Client03 = new(new Identity<Client>(3), "青木", "アオキ");
+
+
+    [SetUp]
+    public void Setup()
     {
-        private MonthlyReportBuilder _MonthlyReportBuilder;
+        _MonthlyReportBuilder = new MonthlyReportBuilder(new YearMonth(2020, 5));
+    }
 
-        private YmdString _Ymd0501 = new("20200501");
-        private YmdString _Ymd0510 = new("20200510");
-        private YmdString _Ymd0531 = new("20200531");
+    [Test]
+    public void データなし()
+    {
+        var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = new WorkingTimeRecordForReport[0] });
+        Assert.IsTrue(list.Length == 0);
+    }
 
-        private WorkProcess _Process01 = new(new Identity<WorkProcess>(1), "プロセス1");
-        private WorkProcess _Process02 = new(new Identity<WorkProcess>(2), "プロセス2");
-        private WorkProcess _Process03 = new(new Identity<WorkProcess>(3), "プロセス3");
-
-        private Product _Product01 = new(new Identity<Product>(1), "製品1", "1");
-        private Product _Product02 = new(new Identity<Product>(2), "製品2", "2");
-        private Product _Product03 = new(new Identity<Product>(3), "製品3", "3");
-
-        private Client _Client01 = new(new Identity<Client>(1), "田中", "タナカ");
-        private Client _Client02 = new(new Identity<Client>(2), "佐藤", "サトウ");
-        private Client _Client03 = new(new Identity<Client>(3), "青木", "アオキ");
-
-
-        [SetUp]
-        public void Setup()
+    [Test]
+    public void 同日複数レコードあり_同一種別含まない()
+    {
+        var records = new WorkingTimeRecordForReport[]
         {
-            _MonthlyReportBuilder = new MonthlyReportBuilder(new YearMonth(2020, 5));
-        }
-
-        [Test]
-        public void データなし()
-        {
-            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = new WorkingTimeRecordForReport[0] });
-            Assert.IsTrue(list.Length == 0);
-        }
-
-        [Test]
-        public void 同日複数レコードあり_同一種別含まない()
-        {
-            var records = new WorkingTimeRecordForReport[]
-            {
                 new WorkingTimeRecordForReport
                 {
                     Ymd = _Ymd0501,
@@ -80,30 +80,30 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
                     WorkingTimeId = new Identity<WorkingTimeRange>(2),
                     WorkTaskId = new Identity<WorkTask>(2),
                 },
-            };
+        };
 
-            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records, WorkingHours = new WorkingHour[0] });
+        var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records, WorkingHours = new WorkingHour[0] });
 
-            Assert.IsTrue(list.Length == 31);
-            Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits.Count == 2);
+        Assert.IsTrue(list.Length == 31);
+        Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits.Count == 2);
 
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TaskId.Value == 1);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].WorkingTimeRanges.Count == 1);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TotalWorkMinutes == 30);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].Title == "サンプル作業１");
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TaskId.Value == 1);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[0].WorkingTimeRanges.Count == 1);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TotalWorkMinutes == 30);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[0].Title == "サンプル作業１");
 
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TaskId.Value == 2);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].WorkingTimeRanges.Count == 1);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TotalWorkMinutes == 60);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].Title == "サンプル作業２");
-        }
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TaskId.Value == 2);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[1].WorkingTimeRanges.Count == 1);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TotalWorkMinutes == 60);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[1].Title == "サンプル作業２");
+    }
 
-        [Test]
-        public void 同日複数レコードあり_同一種別含む()
-        {
-            var records = new WorkingTimeRecordForReport[]
-           {
+    [Test]
+    public void 同日複数レコードあり_同一種別含む()
+    {
+        var records = new WorkingTimeRecordForReport[]
+       {
                 new WorkingTimeRecordForReport
                 {
                     Ymd = _Ymd0501,
@@ -143,23 +143,22 @@ namespace TimeRecorder.Domain.Test.Domain.Tracking.Reports
                     WorkingTimeId = new Identity<WorkingTimeRange>(3),
                     WorkTaskId = new Identity<WorkTask>(1),
                 },
-           };
+       };
 
-            var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records, WorkingHours = new WorkingHour[0] });
+        var list = _MonthlyReportBuilder.Build(new DailyWorkResults { WorkingTimeRecordForReports = records, WorkingHours = new WorkingHour[0] });
 
-            Assert.IsTrue(list.Length == 31);
-            Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits.Count == 2);
+        Assert.IsTrue(list.Length == 31);
+        Assert.IsTrue(list[0].WorkYmd == _Ymd0501.Value);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits.Count == 2);
 
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TaskId.Value == 1);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].WorkingTimeRanges.Count == 2);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TotalWorkMinutes == 180);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[0].Title == "サンプル作業１");
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TaskId.Value == 1);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[0].WorkingTimeRanges.Count == 2);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[0].TotalWorkMinutes == 180);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[0].Title == "サンプル作業１");
 
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TaskId.Value == 2);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].WorkingTimeRanges.Count == 1);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TotalWorkMinutes == 60);
-            Assert.IsTrue(list[0].DailyWorkTaskUnits[1].Title == "サンプル作業２");
-        }
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TaskId.Value == 2);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[1].WorkingTimeRanges.Count == 1);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[1].TotalWorkMinutes == 60);
+        Assert.IsTrue(list[0].DailyWorkTaskUnits[1].Title == "サンプル作業２");
     }
 }

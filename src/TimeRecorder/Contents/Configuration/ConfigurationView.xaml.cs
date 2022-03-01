@@ -11,16 +11,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeRecorder.Contents.Configuration
+namespace TimeRecorder.Contents.Configuration;
+
+/// <summary>
+/// ConfigurationView.xaml の相互作用ロジック
+/// </summary>
+public partial class ConfigurationView : UserControl
 {
-    /// <summary>
-    /// ConfigurationView.xaml の相互作用ロジック
-    /// </summary>
-    public partial class ConfigurationView : UserControl
+    public ConfigurationView()
     {
-        public ConfigurationView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

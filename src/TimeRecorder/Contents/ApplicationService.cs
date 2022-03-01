@@ -2,23 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Contents
+namespace TimeRecorder.Contents;
+
+class ApplicationService
 {
-    class ApplicationService
+    public static ApplicationService Instance { get; } = new ApplicationService();
+
+    private ApplicationService()
     {
-        public static ApplicationService Instance { get; } = new ApplicationService();
 
-        private ApplicationService()
-        {
+    }
 
-        }
+    public bool IsShutDownProcessing { get; private set; }
 
-        public bool IsShutDownProcessing { get; private set; }
-
-        public void Shutdown()
-        {
-            IsShutDownProcessing = true;
-            App.Current.MainWindow.Close();
-        }
+    public void Shutdown()
+    {
+        IsShutDownProcessing = true;
+        App.Current.MainWindow.Close();
     }
 }

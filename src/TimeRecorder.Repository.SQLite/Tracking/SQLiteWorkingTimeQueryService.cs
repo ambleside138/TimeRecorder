@@ -7,14 +7,14 @@ using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Repository.SQLite.Tracking
+namespace TimeRecorder.Repository.SQLite.Tracking;
+
+public class SQLiteWorkingTimeQueryService : IWorkingTimeQueryService
 {
-    public class SQLiteWorkingTimeQueryService : IWorkingTimeQueryService
+    public WorkingTimeForTimelineDto[] SelectByYmd(string ymd)
     {
-        public WorkingTimeForTimelineDto[] SelectByYmd(string ymd)
-        {
-            #region SQL
-            const string sql = @"
+        #region SQL
+        const string sql = @"
 SELECT
   time.id as WorkingTimeId
   , time.taskid as WorkTaskId
@@ -32,49 +32,48 @@ INNER JOIN
 WHERE
   time.ymd = @ymd
 ";
-            #endregion
+        #endregion
 
-            var list = new List<WorkingTimeForTimelineDto>();
+        var list = new List<WorkingTimeForTimelineDto>();
 
-            RepositoryAction.Query(c =>
-            {
-                var listRow = c.Query<WorkingTimeForTimelineTableRow>(sql, new { ymd });
-
-                list.AddRange(listRow.Select(r => r.ConvertToDto()));
-            });
-
-            return list.OrderBy(i => i.TimePeriod.StartDateTime).ToArray();
-        }
-
-        private class WorkingTimeForTimelineTableRow
+        RepositoryAction.Query(c =>
         {
-            public int WorkingTimeId { get; set; }
+            var listRow = c.Query<WorkingTimeForTimelineTableRow>(sql, new { ymd });
 
-            public int WorkTaskId { get; set; }
+            list.AddRange(listRow.Select(r => r.ConvertToDto()));
+        });
 
-            public string StartTime { get; set; }
+        return list.OrderBy(i => i.TimePeriod.StartDateTime).ToArray();
+    }
 
-            public string EndTime { get; set; }
+    private class WorkingTimeForTimelineTableRow
+    {
+        public int WorkingTimeId { get; set; }
 
-            public string Title { get; set; }
+        public int WorkTaskId { get; set; }
 
-            public TaskCategory  TaskCategory { get; set; }
+        public string StartTime { get; set; }
 
-            public string WorkProcessName { get; set; }
+        public string EndTime { get; set; }
 
-            public WorkingTimeForTimelineDto ConvertToDto()
+        public string Title { get; set; }
+
+        public TaskCategory TaskCategory { get; set; }
+
+        public string WorkProcessName { get; set; }
+
+        public WorkingTimeForTimelineDto ConvertToDto()
+        {
+
+            return new WorkingTimeForTimelineDto
             {
-                
-                return new WorkingTimeForTimelineDto
-                {
-                    WorkingTimeId = new Domain.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
-                    WorkTaskId = new Domain.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
-                    TimePeriod = new Domain.Domain.Tracking.TimePeriod(StartTime, EndTime),
-                    TaskTitle = Title,
-                    TaskCategory = TaskCategory,
-                    WorkProcessName = WorkProcessName,
-                };
-            }
+                WorkingTimeId = new Domain.Identity<Domain.Domain.Tracking.WorkingTimeRange>(WorkingTimeId),
+                WorkTaskId = new Domain.Identity<Domain.Domain.Tasks.WorkTask>(WorkTaskId),
+                TimePeriod = new Domain.Domain.Tracking.TimePeriod(StartTime, EndTime),
+                TaskTitle = Title,
+                TaskCategory = TaskCategory,
+                WorkProcessName = WorkProcessName,
+            };
         }
     }
 }
