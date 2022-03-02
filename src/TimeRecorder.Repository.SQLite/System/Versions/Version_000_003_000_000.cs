@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Repository.SQLite.System.Versions
+namespace TimeRecorder.Repository.SQLite.System.Versions;
+
+class Version_000_003_000_000 : IVersion
 {
-    class Version_000_003_000_000 : IVersion
-    {
-        public string CommandQuery => @"
+    public string CommandQuery => @"
 ALTER TABLE 
   worktasks
 ADD COLUMN
@@ -30,6 +30,5 @@ CREATE TABLE worktasksarchive (
 )
 ";
 
-        public string Version => "000.003.000.000";
-    }
+    public string Version => "000.003.000.000";
 }

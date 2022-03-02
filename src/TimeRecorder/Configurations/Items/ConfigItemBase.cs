@@ -3,23 +3,22 @@ using System.Collections.Generic;
 using System.Text;
 using System.Text.Json.Serialization;
 
-namespace TimeRecorder.Configurations.Items
-{
-    enum ConfigKey
-    {
-        Theme,
-        BackupPath,
-        FavoriteWorkTask,
-        ScheduleTitleMap,
-        WorkingHourImportApiUrl,
-        ImportParam,
-        LunchTime,
-        UseTodo
-    };
+namespace TimeRecorder.Configurations.Items;
 
-    abstract class ConfigItemBase
-    {
-        [JsonIgnore]
-        internal abstract ConfigKey Key { get; }
-    }
+enum ConfigKey
+{
+    Theme,
+    BackupPath,
+    FavoriteWorkTask,
+    ScheduleTitleMap,
+    WorkingHourImportApiUrl,
+    ImportParam,
+    LunchTime,
+    UseTodo
+};
+
+abstract class ConfigItemBase
+{
+    [JsonIgnore]
+    internal abstract ConfigKey Key { get; }
 }

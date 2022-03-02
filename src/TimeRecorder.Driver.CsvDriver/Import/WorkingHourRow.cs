@@ -5,25 +5,24 @@ using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Driver.CsvDriver.Import
+namespace TimeRecorder.Driver.CsvDriver.Import;
+
+class WorkingHourRow
 {
-    class WorkingHourRow
+    public string Ymd { get; set; }
+
+    public string StartYmdHms { get; set; }
+
+    public string EndYmdHms { get; set; }
+
+
+    public WorkingHour ConvertToDomainModel()
     {
-        public string Ymd { get; set; }
-
-        public string StartYmdHms { get; set; }
-
-        public string EndYmdHms { get; set; }
-
-
-        public WorkingHour ConvertToDomainModel()
-        {
-            return new WorkingHour
-            (
-                new YmdString(Ymd),
-                DateTimeParser.ConvertFromYmdHHmmss(StartYmdHms),
-                DateTimeParser.ConvertFromYmdHHmmss(EndYmdHms)
-            );
-        }
+        return new WorkingHour
+        (
+            new YmdString(Ymd),
+            DateTimeParser.ConvertFromYmdHHmmss(StartYmdHms),
+            DateTimeParser.ConvertFromYmdHHmmss(EndYmdHms)
+        );
     }
 }

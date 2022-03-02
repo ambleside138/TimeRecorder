@@ -6,23 +6,22 @@ using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Clients.Dao;
 
-namespace TimeRecorder.Repository.SQLite.Clients
+namespace TimeRecorder.Repository.SQLite.Clients;
+
+public class SQLiteClientRepository : IClientRepository
 {
-    public class SQLiteClientRepository : IClientRepository
+    public Client[] SelectAll()
     {
-        public Client[] SelectAll()
+        var list = new List<Client>();
+
+        RepositoryAction.Query(c =>
         {
-            var list = new List<Client>();
+            var listRow = new ClientDao(c, null).SelectAll();
+            list.AddRange(listRow.Select(r => r.ToDomainObject()));
+        });
 
-            RepositoryAction.Query(c =>
-            {
-                var listRow = new ClientDao(c, null).SelectAll();
-                list.AddRange(listRow.Select(r => r.ToDomainObject()));
-            });
-
-            return list.OrderBy(i => i.KanaName)
-                       .ThenBy(i => i.Id.Value)
-                       .ToArray();
-        }
+        return list.OrderBy(i => i.KanaName)
+                   .ThenBy(i => i.Id.Value)
+                   .ToArray();
     }
 }

@@ -5,107 +5,106 @@ using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Utility.SystemClocks;
 
-namespace TimeRecorder.Domain.Domain.Tracking
+namespace TimeRecorder.Domain.Domain.Tracking;
+
+/// <summary>
+/// 開始時刻・終了時刻を表します
+/// </summary>
+public class TimePeriod : ValueObject<TimePeriod>
 {
     /// <summary>
-    /// 開始時刻・終了時刻を表します
+    /// 開始日時
     /// </summary>
-    public class TimePeriod : ValueObject<TimePeriod>
+    public DateTime StartDateTime { get; private set; }
+
+    /// <summary>
+    /// 終了日時
+    /// </summary>
+    public DateTime? EndDateTime { get; private set; }
+
+    private static ISystemClock _SystemClock => SystemClockServiceLocator.Current;
+
+    /// <summary>
+    /// 作業対象の日付を表します
+    /// </summary>
+    public string TargetYmd => StartDateTime.ToYmd();
+
+    public bool IsStopped => EndDateTime.HasValue;
+
+    /// <summary>
+    /// 現在時刻が開始～終了時刻の範囲内かどうかを表します
+    /// </summary>
+    public bool WithinRangeAtCurrentTime => StartDateTime <= _SystemClock.Now
+                            && (EndDateTime.HasValue == false || EndDateTime.Value > _SystemClock.Now);
+
+    public bool IsFuture => StartDateTime > _SystemClock.Now;
+
+    public static TimePeriod CreateForStart()
     {
-        /// <summary>
-        /// 開始日時
-        /// </summary>
-        public DateTime StartDateTime { get; private set; }
+        return new TimePeriod(_SystemClock.Now, null);
+    }
 
-        /// <summary>
-        /// 終了日時
-        /// </summary>
-        public DateTime? EndDateTime { get; private set; }
+    public TimePeriod(string startHHmm, string endHHmm)
+        : this(DateTimeParser.ConvertFromHHmmss(startHHmm).Value, DateTimeParser.ConvertFromHHmmss(endHHmm)) { }
 
-        private static ISystemClock _SystemClock => SystemClockServiceLocator.Current;
+    public TimePeriod(DateTime start, DateTime? end)
+    {
+        if (end.HasValue
+            && start.Date != end.Value.Date)
+            throw new ArgumentException("開始時刻と終了時刻は同一日を指定してください");
 
-        /// <summary>
-        /// 作業対象の日付を表します
-        /// </summary>
-        public string TargetYmd => StartDateTime.ToYmd();
+        StartDateTime = start;
+        EndDateTime = end;
+    }
 
-        public bool IsStopped => EndDateTime.HasValue;
 
-        /// <summary>
-        /// 現在時刻が開始～終了時刻の範囲内かどうかを表します
-        /// </summary>
-        public bool WithinRangeAtCurrentTime => StartDateTime <= _SystemClock.Now
-                                && (EndDateTime.HasValue == false || EndDateTime.Value > _SystemClock.Now);
-
-        public bool IsFuture => StartDateTime > _SystemClock.Now;
-
-        public static TimePeriod CreateForStart()
+    /// <summary>
+    /// 作業時間を計算します
+    /// </summary>
+    /// <returns></returns>
+    public int CalcWorkTimeMinutes()
+    {
+        if (EndDateTime.HasValue
+            && _SystemClock.Now > EndDateTime.Value)
         {
-            return new TimePeriod(_SystemClock.Now, null);
+            return (int)(EndDateTime.Value - StartDateTime).TotalMinutes;
         }
 
-        public TimePeriod(string startHHmm, string endHHmm)
-            : this(DateTimeParser.ConvertFromHHmmss(startHHmm).Value, DateTimeParser.ConvertFromHHmmss(endHHmm)) { }
-
-        public TimePeriod(DateTime start, DateTime? end)
+        if (_SystemClock.Now > StartDateTime)
         {
-            if (end.HasValue
-                && start.Date != end.Value.Date)
-                throw new ArgumentException("開始時刻と終了時刻は同一日を指定してください");
+            return (int)(_SystemClock.Now - StartDateTime).TotalMinutes;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
-            StartDateTime = start;
-            EndDateTime = end;
+    protected override IEnumerable<object> GetAtomicValues()
+    {
+        yield return StartDateTime;
+        yield return EndDateTime;
+    }
+
+
+    public bool IsOverlapped(TimePeriod other)
+    {
+        // 比較対象のほうが開始時刻が早い場合
+        if (StartDateTime > other.StartDateTime)
+        {
+            // 比較対象の終了時刻で確定
+            return other.EndDateTime == null
+                       || other.EndDateTime.Value > StartDateTime;
         }
 
-
-        /// <summary>
-        /// 作業時間を計算します
-        /// </summary>
-        /// <returns></returns>
-        public int CalcWorkTimeMinutes()
+        // 比較対象のほうが開始時刻が遅い場合
+        if (EndDateTime.HasValue)
         {
-            if (EndDateTime.HasValue
-                && _SystemClock.Now > EndDateTime.Value)
-            {
-                return (int)(EndDateTime.Value - StartDateTime).TotalMinutes;
-            }
-
-            if (_SystemClock.Now > StartDateTime)
-            {
-                return (int)(_SystemClock.Now - StartDateTime).TotalMinutes;
-            }
-            else
-            {
-                return 0;
-            }
+            return other.StartDateTime < EndDateTime.Value;
         }
-
-        protected override IEnumerable<object> GetAtomicValues()
+        else
         {
-            yield return StartDateTime;
-            yield return EndDateTime;
-        }
-
-
-        public bool IsOverlapped(TimePeriod other)
-        {
-            // 比較対象のほうが開始時刻が早い場合
-            if (StartDateTime > other.StartDateTime)
-            {
-                // 比較対象の終了時刻で確定
-                return other.EndDateTime == null
-                           || other.EndDateTime.Value > StartDateTime;
-            }
-
-            // 比較対象のほうが開始時刻が遅い場合
-            if (EndDateTime.HasValue)
-            {
-                return other.StartDateTime < EndDateTime.Value;
-            }
-            else
-            {
-                return true;
-            }
+            return true;
         }
     }
 }

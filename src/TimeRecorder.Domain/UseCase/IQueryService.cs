@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.UseCase
+namespace TimeRecorder.Domain.UseCase;
+
+/// <summary>
+/// QueryServiceであることを表すマーカIFです
+/// </summary>
+public interface IQueryService
 {
-    /// <summary>
-    /// QueryServiceであることを表すマーカIFです
-    /// </summary>
-    public interface IQueryService
-    {
-    }
 }

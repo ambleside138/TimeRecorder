@@ -11,16 +11,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeRecorder.Contents.Exporter
+namespace TimeRecorder.Contents.Exporter;
+
+/// <summary>
+/// ExporterView.xaml の相互作用ロジック
+/// </summary>
+public partial class ExporterView : UserControl
 {
-    /// <summary>
-    /// ExporterView.xaml の相互作用ロジック
-    /// </summary>
-    public partial class ExporterView : UserControl
+    public ExporterView()
     {
-        public ExporterView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -7,22 +7,21 @@ using System.Text;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain;
 
-namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor
+namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor;
+
+class ProcessViewModel : ViewModel
 {
-    class ProcessViewModel : ViewModel
+    public ReactivePropertySlim<bool> IsSelected { get; }
+
+    public string Title { get; }
+
+    public Identity<WorkProcess> ProcessId { get; }
+
+    public ProcessViewModel(WorkProcess process)
     {
-        public ReactivePropertySlim<bool> IsSelected { get; }
+        IsSelected = new ReactivePropertySlim<bool>(false).AddTo(CompositeDisposable);
 
-        public string Title { get; }
-
-        public Identity<WorkProcess> ProcessId { get; }
-
-        public ProcessViewModel(WorkProcess process)
-        {
-            IsSelected = new ReactivePropertySlim<bool>(false).AddTo(CompositeDisposable);
-
-            Title = process.Title;
-            ProcessId = process.Id;
-        }
+        Title = process.Title;
+        ProcessId = process.Id;
     }
 }

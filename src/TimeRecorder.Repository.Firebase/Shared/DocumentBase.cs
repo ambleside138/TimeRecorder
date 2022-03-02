@@ -1,25 +1,23 @@
 ﻿using Google.Cloud.Firestore;
 
-namespace TimeRecorder.Repository.Firebase.Shared
+namespace TimeRecorder.Repository.Firebase.Shared;
+
+[FirestoreData]
+class DocumentBase
 {
+    [FirestoreProperty]
+    public Timestamp CreatedAt { get; set; }
 
-    [FirestoreData]
-    class DocumentBase
+    [FirestoreProperty]
+    public Timestamp UpdatedAt { get; set; }
+
+    public void SetCreateDateTime()
     {
-        [FirestoreProperty]
-        public Timestamp CreatedAt { get; set; }
+        CreatedAt = Timestamp.GetCurrentTimestamp();
+    }
 
-        [FirestoreProperty]
-        public Timestamp UpdatedAt { get; set; }
-
-        public void SetCreateDateTime()
-        {
-            CreatedAt = Timestamp.GetCurrentTimestamp();
-        }
-
-        public void SetUpdateDateTime()
-        {
-            UpdatedAt = Timestamp.GetCurrentTimestamp();
-        }
+    public void SetUpdateDateTime()
+    {
+        UpdatedAt = Timestamp.GetCurrentTimestamp();
     }
 }

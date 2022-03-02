@@ -6,101 +6,100 @@ using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain;
 using TimeRecorder.Repository.SQLite.Tasks.Dao;
 
-namespace TimeRecorder.Repository.SQLite.Tasks
+namespace TimeRecorder.Repository.SQLite.Tasks;
+
+public class SQLiteWorkTaskRepository : IWorkTaskRepository
 {
-    public class SQLiteWorkTaskRepository : IWorkTaskRepository
+    public WorkTask Add(WorkTask task)
     {
-        public WorkTask Add(WorkTask task)
+        return AddCore(task, null);
+    }
+
+    public WorkTask AddForSchedule(WorkTask task, ImportedTask workTaskImportSource)
+    {
+
+        return AddCore(task, workTaskImportSource);
+    }
+
+    private WorkTask AddCore(WorkTask task, ImportedTask workTaskImportSource)
+    {
+        var row = WorkTaskTableRow.FromDomainObject(task);
+
+        RepositoryAction.Transaction((c, t) =>
         {
-            return AddCore(task, null);
-        }
-
-        public WorkTask AddForSchedule(WorkTask task, ImportedTask workTaskImportSource)
-        {
-
-            return AddCore(task, workTaskImportSource);
-        }
-
-        private WorkTask AddCore(WorkTask task, ImportedTask workTaskImportSource)
-        {
-            var row = WorkTaskTableRow.FromDomainObject(task);
-
-            RepositoryAction.Transaction((c, t) =>
-            {
-                var dao = new WorkTaskDao(c, t);
-                var id = dao.Insert(row);
+            var dao = new WorkTaskDao(c, t);
+            var id = dao.Insert(row);
 
                 // ID採番結果
                 row.Id = id;
 
                 // スケジュールからの取込の場合は取込歴にも残す
                 if (task.IsScheduled)
-                {
-                    var importDao = new ImportedTaskDao(c, t);
-                    importDao.Insert(ImportedTaskTableRow.FromDomainObject(id, workTaskImportSource));
-                }
-            });
-
-            return WorkTaskFactory.Create(row, task.IsCompleted);
-        }
-
-        public void Delete(Identity<WorkTask> identity)
-        {
-            RepositoryAction.Transaction((c, t) =>
             {
-                new WorkTaskDao(c, t).Delete(identity.Value);
-                new WorkTaskCompletedDao(c, t).DeleteByWorkTaskId(identity.Value);
-            });
-        }
+                var importDao = new ImportedTaskDao(c, t);
+                importDao.Insert(ImportedTaskTableRow.FromDomainObject(id, workTaskImportSource));
+            }
+        });
 
-        public void Edit(WorkTask task)
+        return WorkTaskFactory.Create(row, task.IsCompleted);
+    }
+
+    public void Delete(Identity<WorkTask> identity)
+    {
+        RepositoryAction.Transaction((c, t) =>
         {
-            RepositoryAction.Transaction((c, t) =>
-            {
-                var row = WorkTaskTableRow.FromDomainObject(task);
-                var dao = new WorkTaskDao(c, t);
-                var compDao = new WorkTaskCompletedDao(c, t);
-                dao.Update(row);
+            new WorkTaskDao(c, t).Delete(identity.Value);
+            new WorkTaskCompletedDao(c, t).DeleteByWorkTaskId(identity.Value);
+        });
+    }
 
-                if(task.IsCompleted)
-                {
-                    compDao.InsertIfNotExist(task.Id.Value);
-                }
-                else
-                {
-                    compDao.DeleteByWorkTaskId(task.Id.Value);
-                }
-            });
-        }
-
-        public WorkTask SelectById(Identity<WorkTask> identity)
+    public void Edit(WorkTask task)
+    {
+        RepositoryAction.Transaction((c, t) =>
         {
-            WorkTask results = null;
+            var row = WorkTaskTableRow.FromDomainObject(task);
+            var dao = new WorkTaskDao(c, t);
+            var compDao = new WorkTaskCompletedDao(c, t);
+            dao.Update(row);
 
-            RepositoryAction.Query(c =>
+            if (task.IsCompleted)
             {
-                var dao = new WorkTaskDao(c, null);
-                var compDao = new WorkTaskCompletedDao(c, null);
-                var exist = compDao.IsCompleted(identity.Value);
+                compDao.InsertIfNotExist(task.Id.Value);
+            }
+            else
+            {
+                compDao.DeleteByWorkTaskId(task.Id.Value);
+            }
+        });
+    }
 
-                results = WorkTaskFactory.Create(dao.SelectById(identity.Value), exist);
-            });
+    public WorkTask SelectById(Identity<WorkTask> identity)
+    {
+        WorkTask results = null;
 
-            return results;
-        }
-
-        public ImportedTask[] SelectByImportKeys(string[] importKeys)
+        RepositoryAction.Query(c =>
         {
-            ImportedTask[] results = null;
+            var dao = new WorkTaskDao(c, null);
+            var compDao = new WorkTaskCompletedDao(c, null);
+            var exist = compDao.IsCompleted(identity.Value);
 
-            RepositoryAction.Query(c =>
-            {
-                var dao = new ImportedTaskDao(c, null);
+            results = WorkTaskFactory.Create(dao.SelectById(identity.Value), exist);
+        });
 
-                results = dao.SelectByImportKeys(importKeys).Select(d => d.ConvertToDomainObject()).ToArray();
-            });
+        return results;
+    }
 
-            return results;
-        }
+    public ImportedTask[] SelectByImportKeys(string[] importKeys)
+    {
+        ImportedTask[] results = null;
+
+        RepositoryAction.Query(c =>
+        {
+            var dao = new ImportedTaskDao(c, null);
+
+            results = dao.SelectByImportKeys(importKeys).Select(d => d.ConvertToDomainObject()).ToArray();
+        });
+
+        return results;
     }
 }

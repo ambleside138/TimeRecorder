@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeRecorder.Domain.Domain.Shared
-{
-    public interface IIdentifiable<T>
-    {
-        bool IsMatch(T id);
+namespace TimeRecorder.Domain.Domain.Shared;
 
-        T GetIdentity();
-    }
+public interface IIdentifiable<T>
+{
+    bool IsMatch(T id);
+
+    T GetIdentity();
 }

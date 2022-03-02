@@ -7,43 +7,42 @@ using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Tracking.Dao;
 
-namespace TimeRecorder.Repository.SQLite.Tracking
+namespace TimeRecorder.Repository.SQLite.Tracking;
+
+public class SQLiteWorkingHoursRepository : IWorkingHourRepository
 {
-    public class SQLiteWorkingHoursRepository : IWorkingHourRepository
+    public void Add(WorkingHour workingHour)
     {
-        public void Add(WorkingHour workingHour)
-        {
-            throw new NotImplementedException();
-        }
+        throw new NotImplementedException();
+    }
 
-        public void AddRange(WorkingHour[] workingHours)
+    public void AddRange(WorkingHour[] workingHours)
+    {
+        RepositoryAction.Transaction((c, t) =>
         {
-            RepositoryAction.Transaction((c, t) =>
+            var dao = new WorkingHourDao(c, t);
+
+            dao.Delete(workingHours.Select(w => w.Ymd.Value).Distinct().ToArray());
+
+            foreach (var row in workingHours.Where(w => w.IsEmpty == false))
             {
-                var dao = new WorkingHourDao(c, t);
+                dao.Insert(WorkingHourTableRow.FromDomainObjects(row));
+            }
+        });
+    }
 
-                dao.Delete(workingHours.Select(w => w.Ymd.Value).Distinct().ToArray());
-               
-                foreach(var row in workingHours.Where(w => w.IsEmpty == false))
-                {
-                    dao.Insert(WorkingHourTableRow.FromDomainObjects(row));
-                }
-            });
-        }
+    public void Edit(WorkingHour workingHour)
+    {
+        throw new NotImplementedException();
+    }
 
-        public void Edit(WorkingHour workingHour)
-        {
-            throw new NotImplementedException();
-        }
+    public WorkingHour[] SelectByYearMonth(YearMonth yearMonth)
+    {
+        throw new NotImplementedException();
+    }
 
-        public WorkingHour[] SelectByYearMonth(YearMonth yearMonth)
-        {
-            throw new NotImplementedException();
-        }
-
-        public WorkingHour SelectYmd(YmdString ymd)
-        {
-            throw new NotImplementedException();
-        }
+    public WorkingHour SelectYmd(YmdString ymd)
+    {
+        throw new NotImplementedException();
     }
 }

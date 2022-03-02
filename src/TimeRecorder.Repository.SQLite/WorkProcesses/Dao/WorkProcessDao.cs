@@ -7,17 +7,17 @@ using System.Text;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Utilities;
 
-namespace TimeRecorder.Repository.SQLite.WorkProcesses.Dao
-{
-    class WorkProcessDao : DaoBase
-    {
-        public WorkProcessDao(SQLiteConnection connection, SQLiteTransaction transaction)
-            : base(connection, transaction) { }
+namespace TimeRecorder.Repository.SQLite.WorkProcesses.Dao;
 
-        public WorkProcessTableRow[] SelectAll()
-        {
-            #region SQL
-            const string sql = @"
+class WorkProcessDao : DaoBase
+{
+    public WorkProcessDao(SQLiteConnection connection, SQLiteTransaction transaction)
+        : base(connection, transaction) { }
+
+    public WorkProcessTableRow[] SelectAll()
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   id
   , title
@@ -27,9 +27,8 @@ FROM
 ORDER BY
   displayorder
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<WorkProcessTableRow>(sql).ToArray();
-        }
+        return Connection.Query<WorkProcessTableRow>(sql).ToArray();
     }
 }

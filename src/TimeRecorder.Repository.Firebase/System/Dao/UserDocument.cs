@@ -1,27 +1,26 @@
 ﻿using Google.Cloud.Firestore;
 using TimeRecorder.Repository.Firebase.Shared;
 
-namespace TimeRecorder.Repository.Firebase.System.Dao
+namespace TimeRecorder.Repository.Firebase.System.Dao;
+
+[FirestoreData]
+
+class UserDocument : DocumentBase
 {
-    [FirestoreData]
+    [FirestoreProperty]
+    public string UserId { get; set; }
 
-    class UserDocument : DocumentBase
-    {
-        [FirestoreProperty]
-        public string UserId { get; set; }
+    [FirestoreProperty]
+    public string DisplayName { get; set; }
 
-        [FirestoreProperty]
-        public string DisplayName { get; set; }
+    [FirestoreProperty]
+    public string Email { get; set; }
 
-        [FirestoreProperty]
-        public string Email { get; set; }
+    [FirestoreProperty]
+    public string PhotoUrl { get; set; }
 
-        [FirestoreProperty]
-        public string PhotoUrl { get; set; }
-
-        [FirestoreProperty]
-        public Timestamp LatestSignInDateTime { get; set; }
+    [FirestoreProperty]
+    public Timestamp LatestSignInDateTime { get; set; }
 
 
-    }
 }

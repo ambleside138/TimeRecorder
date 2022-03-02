@@ -7,17 +7,17 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Utilities;
-namespace TimeRecorder.Repository.SQLite.Clients.Dao
-{
-    class ClientDao : DaoBase
-    {
-        public ClientDao(SQLiteConnection connection, SQLiteTransaction transaction)
-            : base(connection, transaction) { }
+namespace TimeRecorder.Repository.SQLite.Clients.Dao;
 
-        public ClientTableRow[] SelectAll()
-        {
-            #region SQL
-            const string sql = @"
+class ClientDao : DaoBase
+{
+    public ClientDao(SQLiteConnection connection, SQLiteTransaction transaction)
+        : base(connection, transaction) { }
+
+    public ClientTableRow[] SelectAll()
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   id
   , name
@@ -25,9 +25,8 @@ SELECT
 FROM
   clients
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<ClientTableRow>(sql).ToArray();
-        }
+        return Connection.Query<ClientTableRow>(sql).ToArray();
     }
 }

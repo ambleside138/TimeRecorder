@@ -8,72 +8,70 @@ using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Domain.UseCase.Todo;
 
-namespace TimeRecorder.Contents.Todo
+namespace TimeRecorder.Contents.Todo;
+
+
+class TodoItemModel
 {
+    public TodoItem DomainModel { get; }
 
 
-    class TodoItemModel
+    private readonly TodoItemUseCase _TodoUseCase;
+
+    private readonly IPublisher<TodoItemChangedEventArgs> _Publisher;
+
+
+    public TodoItemModel(TodoItem todoItem, IPublisher<TodoItemChangedEventArgs> publisher)
     {
-        public TodoItem DomainModel { get; }
+        DomainModel = todoItem;
+        _Publisher = publisher;
+        _TodoUseCase = ContainerHelper.GetRequiredService<TodoItemUseCase>();
+    }
 
-
-        private readonly TodoItemUseCase _TodoUseCase;
-
-        private readonly IPublisher<TodoItemChangedEventArgs> _Publisher;
-
-
-        public TodoItemModel(TodoItem todoItem, IPublisher<TodoItemChangedEventArgs> publisher)
+    public async Task ToggleCompletedAsync(bool completed)
+    {
+        if (completed)
         {
-            DomainModel = todoItem;
-            _Publisher = publisher;
-            _TodoUseCase = ContainerHelper.GetRequiredService<TodoItemUseCase>();
+            DomainModel.Complete();
+        }
+        else
+        {
+            DomainModel.RevertComplete();
         }
 
-        public async Task ToggleCompletedAsync(bool completed)
-        {
-            if(completed)
-            {
-                DomainModel.Complete();
-            }
-            else
-            {
-                DomainModel.RevertComplete();
-            }
+        await UpdateAsync();
+    }
 
-            await UpdateAsync();
+
+    public async Task ToggleImportantAsync()
+    {
+        DomainModel.IsImportant = !DomainModel.IsImportant;
+        await UpdateAsync();
+    }
+
+    public async Task ToggleTodayTask()
+    {
+        if (DomainModel.IsTodayTask)
+        {
+            DomainModel.ClearAsTodayTask();
+        }
+        else
+        {
+            DomainModel.AddAsTodayTask();
         }
 
+        await UpdateAsync();
+    }
 
-        public async Task ToggleImportantAsync()
-        {
-            DomainModel.IsImportant = !DomainModel.IsImportant;
-            await UpdateAsync();
-        }
+    public async Task UpdateAsync()
+    {
+        _Publisher.Publish(new TodoItemChangedEventArgs(ChangeType.Updated, DomainModel.Id));
+        await _TodoUseCase.EditAsync(DomainModel);
+    }
 
-        public async Task ToggleTodayTask()
-        {
-            if(DomainModel.IsTodayTask)
-            {
-                DomainModel.ClearAsTodayTask();
-            }
-            else
-            {
-                DomainModel.AddAsTodayTask();
-            }
-
-            await UpdateAsync();
-        }
-
-        public async Task UpdateAsync()
-        {
-            _Publisher.Publish(new TodoItemChangedEventArgs(ChangeType.Updated, DomainModel.Id));
-            await _TodoUseCase.EditAsync(DomainModel);
-        }
-
-        public async Task DeleteAsync()
-        {
-            _Publisher.Publish(new TodoItemChangedEventArgs(ChangeType.Deleted, DomainModel.Id));
-            await _TodoUseCase.DeleteAsync(DomainModel.Id);
-        }
+    public async Task DeleteAsync()
+    {
+        _Publisher.Publish(new TodoItemChangedEventArgs(ChangeType.Deleted, DomainModel.Id));
+        await _TodoUseCase.DeleteAsync(DomainModel.Id);
     }
 }

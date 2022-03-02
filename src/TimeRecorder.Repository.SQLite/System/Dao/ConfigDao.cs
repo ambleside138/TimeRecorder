@@ -6,17 +6,17 @@ using System.Linq;
 using System.Text;
 using TimeRecorder.Repository.SQLite.Utilities;
 
-namespace TimeRecorder.Repository.SQLite.System.Dao
-{
-    class ConfigDao : DaoBase
-    {
-        public ConfigDao(SQLiteConnection connection, SQLiteTransaction transaction)
-           : base(connection, transaction) { }
+namespace TimeRecorder.Repository.SQLite.System.Dao;
 
-        public void DeleteInsert(ConfigTableRow row)
-        {
-            #region SQL
-            const string sql = @"
+class ConfigDao : DaoBase
+{
+    public ConfigDao(SQLiteConnection connection, SQLiteTransaction transaction)
+       : base(connection, transaction) { }
+
+    public void DeleteInsert(ConfigTableRow row)
+    {
+        #region SQL
+        const string sql = @"
 delete from 
   configs 
 where 
@@ -33,20 +33,19 @@ values
   , @jsonvalue
 )
 ";
-            #endregion
+        #endregion
 
-            Connection.Execute(sql, row, Transaction);
-        }
+        Connection.Execute(sql, row, Transaction);
+    }
 
 
-        public ConfigTableRow[] SelectAll()
-        {
-            #region SQL
-            const string sql = @"
+    public ConfigTableRow[] SelectAll()
+    {
+        #region SQL
+        const string sql = @"
 SELECT * FROM configs";
-            #endregion
+        #endregion
 
-            return Connection.Query<ConfigTableRow>(sql).ToArray();
-        }
+        return Connection.Query<ConfigTableRow>(sql).ToArray();
     }
 }

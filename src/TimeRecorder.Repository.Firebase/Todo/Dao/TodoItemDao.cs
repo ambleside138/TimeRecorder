@@ -7,79 +7,78 @@ using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Repository.Firebase.Shared.Helpers;
 
-namespace TimeRecorder.Repository.Firebase.Todo.Dao
+namespace TimeRecorder.Repository.Firebase.Todo.Dao;
+
+internal class TodoItemDao
 {
-    internal class TodoItemDao
+    private readonly FirestoreDb _FirestoreDb;
+    private readonly string _UserId;
+    private readonly string CollectionName = "todos";
+
+    private readonly string SubCollectionName = "todoItems";
+
+
+    public TodoItemDao(FirestoreDb firestoreDb, string userId)
     {
-        private readonly FirestoreDb _FirestoreDb;
-        private readonly string _UserId;
-        private readonly string CollectionName = "todos";
+        _FirestoreDb = firestoreDb;
+        _UserId = userId;
+    }
 
-        private readonly string SubCollectionName = "todoItems";
+    public async Task<TodoItemIdentity> SetAsync(TodoItemIdentity docId, TodoItemDocument todoDocument)
+    {
+        DocumentReference rootDocRef = GetRootDocumentReference();
 
-
-        public TodoItemDao(FirestoreDb firestoreDb, string userId)
+        // 初回の場合はUIdを設定する
+        var doc = await rootDocRef.GetSnapshotAsync();
+        if (doc.Exists == false)
         {
-            _FirestoreDb = firestoreDb;
-            _UserId = userId;
+            _ = await rootDocRef.SetAsync(new TodoRootDocument { UserId = _UserId, CreatedAt = Timestamp.GetCurrentTimestamp() });
         }
 
-        public async Task<TodoItemIdentity> SetAsync(TodoItemIdentity docId, TodoItemDocument todoDocument)
+        var subCollectionRef = rootDocRef.Collection(SubCollectionName);
+
+
+        if (docId.IsEmpty)
         {
-            DocumentReference rootDocRef = GetRootDocumentReference();
-
-            // 初回の場合はUIdを設定する
-            var doc = await rootDocRef.GetSnapshotAsync();
-            if(doc.Exists == false)
-            {
-                _ = await rootDocRef.SetAsync(new TodoRootDocument { UserId = _UserId, CreatedAt = Timestamp.GetCurrentTimestamp() });
-            }
-
-            var subCollectionRef = rootDocRef.Collection(SubCollectionName);
-
-
-            if (docId.IsEmpty)
-            {
-                // get auto-generated-id
-                DocumentReference documentReference = subCollectionRef.Document();
-                docId = new TodoItemIdentity(documentReference.Id);
-                todoDocument.SetCreateDateTime();
-            }
-
-            todoDocument.SetUpdateDateTime();
-
-            _ = await subCollectionRef.Document(docId.Value).SetAsync(todoDocument);
-            return docId;
+            // get auto-generated-id
+            DocumentReference documentReference = subCollectionRef.Document();
+            docId = new TodoItemIdentity(documentReference.Id);
+            todoDocument.SetCreateDateTime();
         }
 
+        todoDocument.SetUpdateDateTime();
 
-        public async Task DeleteAsync(TodoItemIdentity docId) => await GetCollectionReference().Document(docId.Value).DeleteAsync();
-
-
-        private DocumentReference GetRootDocumentReference() => _FirestoreDb.Collection(CollectionName).Document(_UserId);
-
-        private CollectionReference GetCollectionReference() => _FirestoreDb.Collection($"{CollectionName}/{_UserId}/{SubCollectionName}");
+        _ = await subCollectionRef.Document(docId.Value).SetAsync(todoDocument);
+        return docId;
+    }
 
 
-        /// <summary>
-        /// 指定したUserIdのTodoを取得します
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IEnumerable<TodoItemDocument>> SelectAsync()
+    public async Task DeleteAsync(TodoItemIdentity docId) => await GetCollectionReference().Document(docId.Value).DeleteAsync();
+
+
+    private DocumentReference GetRootDocumentReference() => _FirestoreDb.Collection(CollectionName).Document(_UserId);
+
+    private CollectionReference GetCollectionReference() => _FirestoreDb.Collection($"{CollectionName}/{_UserId}/{SubCollectionName}");
+
+
+    /// <summary>
+    /// 指定したUserIdのTodoを取得します
+    /// </summary>
+    /// <returns></returns>
+    public async Task<IEnumerable<TodoItemDocument>> SelectAsync()
+    {
+        var docRef = await GetRootDocumentReference().GetSnapshotAsync();
+
+        if (docRef.Exists == false)
         {
-            var docRef = await GetRootDocumentReference().GetSnapshotAsync();
-
-            if(docRef.Exists == false)
-            {
-                return null;
-            }
-
-            // さらにサブコレクションを取得する
-            var todoCollection = await docRef.Reference.Collection(SubCollectionName).GetSnapshotAsync();
-
-            return todoCollection.Documents
-                                     .Select(d => d.ConvertToWithId<TodoItemDocument>((obj,id) => obj.Id = id))
-                                     .ToList();
+            return null;
         }
+
+        // さらにサブコレクションを取得する
+        var todoCollection = await docRef.Reference.Collection(SubCollectionName).GetSnapshotAsync();
+
+        return todoCollection.Documents
+                                 .Select(d => d.ConvertToWithId<TodoItemDocument>((obj, id) => obj.Id = id))
+                                 .ToList();
     }
 }

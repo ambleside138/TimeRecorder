@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows10.0.17763.0</TargetFramework>
+    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>clock_32.ico</ApplicationIcon>
     <Version>0.13.0</Version>
@@ -34,23 +34,23 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="LivetCask" Version="3.2.3.1" />
-    <PackageReference Include="LivetExtensions" Version="3.2.3.1" />
-    <PackageReference Include="MahApps.Metro" Version="2.4.3" />
-    <PackageReference Include="MaterialDesignColors" Version="2.0.1" />
-    <PackageReference Include="MaterialDesignThemes" Version="4.1.0" />
-    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.1.7" />
-    <PackageReference Include="MessagePipe" Version="1.6.1" />
-    <PackageReference Include="MessagePipe.Analyzer" Version="1.6.1">
+    <PackageReference Include="LivetCask" Version="4.0.2" />
+    <PackageReference Include="LivetExtensions" Version="4.0.2" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+    <PackageReference Include="MaterialDesignColors" Version="2.0.4" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
+    <PackageReference Include="MaterialDesignThemes.MahApps" Version="0.2.0" />
+    <PackageReference Include="MessagePipe" Version="1.7.1" />
+    <PackageReference Include="MessagePipe.Analyzer" Version="1.7.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.2" />
-    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.0.1" />
-    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" />
-    <PackageReference Include="NLog" Version="4.7.11" />
-    <PackageReference Include="ReactiveProperty" Version="7.6.1" />
-    <PackageReference Include="System.Management" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.39" />
+    <PackageReference Include="NLog" Version="4.7.14" />
+    <PackageReference Include="ReactiveProperty" Version="8.0.3" />
+    <PackageReference Include="System.Management" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

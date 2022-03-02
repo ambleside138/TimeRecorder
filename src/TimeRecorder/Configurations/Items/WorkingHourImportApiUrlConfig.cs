@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Configurations.Items
+namespace TimeRecorder.Configurations.Items;
+
+class WorkingHourImportApiUrlConfig : ConfigItemBase
 {
-    class WorkingHourImportApiUrlConfig : ConfigItemBase
-    {
-        public string URL { get; set; }
-        internal override ConfigKey Key => ConfigKey.WorkingHourImportApiUrl;
-    }
+    public string URL { get; set; }
+    internal override ConfigKey Key => ConfigKey.WorkingHourImportApiUrl;
 }

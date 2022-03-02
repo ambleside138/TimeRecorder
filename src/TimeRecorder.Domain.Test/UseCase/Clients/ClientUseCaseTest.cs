@@ -5,22 +5,21 @@ using System.Text;
 using TimeRecorder.UseCase.Clients;
 using TimeRecorder.Repository.InMemory;
 
-namespace TimeRecorder.Domain.Test.UseCase.Clients
+namespace TimeRecorder.Domain.Test.UseCase.Clients;
+
+[TestFixture]
+class ClientUseCaseTest
 {
-    [TestFixture]
-    class ClientUseCaseTest
+
+    [Test]
+    public void 病院一覧の取得()
     {
+        var interactor = new ClientUseCase(new ClientRepository());
 
-        [Test]
-        public void 病院一覧の取得()
-        {
-            var interactor = new ClientUseCase(new ClientRepository());
+        var list = interactor.GetClients();
 
-            var list = interactor.GetClients();
+        Assert.IsNotNull(list);
 
-            Assert.IsNotNull(list);
-
-            Assert.IsTrue(list.Length == 4);
-        }
+        Assert.IsTrue(list.Length == 4);
     }
 }

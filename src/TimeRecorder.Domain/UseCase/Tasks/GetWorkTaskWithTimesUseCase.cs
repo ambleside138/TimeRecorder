@@ -4,20 +4,19 @@ using System.Text;
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Domain.UseCase.Tasks
+namespace TimeRecorder.Domain.UseCase.Tasks;
+
+public class GetWorkTaskWithTimesUseCase
 {
-    public class GetWorkTaskWithTimesUseCase
+    private readonly IWorkTaskWithTimesQueryService _WorkTaskWithTimesQueryService;
+
+    public GetWorkTaskWithTimesUseCase(IWorkTaskWithTimesQueryService workTaskWithTimesQueryService)
     {
-        private readonly IWorkTaskWithTimesQueryService _WorkTaskWithTimesQueryService;
+        _WorkTaskWithTimesQueryService = workTaskWithTimesQueryService;
+    }
 
-        public GetWorkTaskWithTimesUseCase(IWorkTaskWithTimesQueryService workTaskWithTimesQueryService)
-        {
-            _WorkTaskWithTimesQueryService = workTaskWithTimesQueryService;
-        }
-
-        public WorkTaskWithTimesDto[] GetByYmd(YmdString ymdString, bool containsCompleted)
-        {
-            return _WorkTaskWithTimesQueryService.SelectByYmd(ymdString, containsCompleted);
-        }
+    public WorkTaskWithTimesDto[] GetByYmd(YmdString ymdString, bool containsCompleted)
+    {
+        return _WorkTaskWithTimesQueryService.SelectByYmd(ymdString, containsCompleted);
     }
 }
