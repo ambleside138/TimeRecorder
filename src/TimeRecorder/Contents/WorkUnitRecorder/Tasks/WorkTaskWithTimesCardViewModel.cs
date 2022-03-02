@@ -214,7 +214,7 @@ public class WorkTaskWithTimesCardViewModel : ViewModel
         };
 
         //show the dialog
-        var result = (bool?)await DialogHost.Show(view);
+        var result = (bool?)await DialogHostHelper.Show(view);
 
         if (result.HasValue && result.Value)
         {
@@ -233,7 +233,7 @@ public class WorkTaskWithTimesCardViewModel : ViewModel
         };
 
         //show the dialog
-        var result = (bool?)await DialogHost.Show(view);
+        var result = (bool?)await DialogHostHelper.Show(view);
 
         if (result.HasValue && result.Value)
         {

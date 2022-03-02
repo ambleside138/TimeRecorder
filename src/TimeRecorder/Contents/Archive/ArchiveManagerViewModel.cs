@@ -13,6 +13,7 @@ using TimeRecorder.Contents.WorkUnitRecorder.Tasks;
 using TimeRecorder.Contents.WorkUnitRecorder.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Helpers;
+using TimeRecorder.Host;
 using TimeRecorder.NavigationRail;
 
 namespace TimeRecorder.Contents.Archive;
@@ -80,7 +81,7 @@ public class ArchiveManagerViewModel : ViewModel, IContentViewModel
         };
 
         //show the dialog
-        var result = (bool?)await DialogHost.Show(view);
+        var result = (bool?)await DialogHostHelper.Show(view);
 
         if (result.HasValue && result.Value)
         {

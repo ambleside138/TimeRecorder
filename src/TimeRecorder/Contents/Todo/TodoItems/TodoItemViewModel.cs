@@ -14,6 +14,7 @@ using TimeRecorder.Contents.Shared;
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Domain.Utility.SystemClocks;
+using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.Todo.TodoItems;
 
@@ -166,7 +167,7 @@ public class TodoItemViewModel : ViewModel, IEquatable<TodoItemViewModel>
         };
 
         //show the dialog
-        var result = await DialogHost.Show(view, "RootDialog");
+        var result = await DialogHostHelper.Show(view);
 
         if (result?.ToString() == "1")
         {
@@ -247,7 +248,7 @@ public class TodoItemViewModel : ViewModel, IEquatable<TodoItemViewModel>
         };
 
         //show the dialog
-        var result = await DialogHost.Show(view, "RootDialog");
+        var result = await DialogHostHelper.Show(view);
 
         if ((bool)result)
         {
