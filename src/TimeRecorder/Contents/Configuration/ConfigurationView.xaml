@@ -332,7 +332,7 @@
 
                     <!--  Todo機能の利用  -->
                     <TextBlock
-                    Margin="0 16 0 0"
+                    Margin="0 4 0 0"
                     Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                     Text="Todo機能の利用（β）" />
                     <TextBlock Text="タスク管理の機能を利用するかどうかを設定します" Style="{StaticResource MaterialDesignBody2TextBlock}" Margin="0 4 0 0" />
@@ -353,6 +353,12 @@
                         VerticalAlignment="Center"
                         Text="※変更後に再起動が必要" />
                     </StackPanel>
+
+                    <Separator Margin="0 32 0 8"/>
+
+                    <TextBlock Text="TimeRecorder" Style="{StaticResource MaterialDesignHeadline5TextBlock}" />
+                    <TextBlock Text="{Binding VersionInfo.Value}" Style="{StaticResource MaterialDesignCaptionTextBlock}" FontSize="12" />
+
                 </StackPanel>
 
 
