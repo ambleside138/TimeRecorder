@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reflection;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using TimeRecorder.Contents.Configuration.TaskConfigEditor;
@@ -44,6 +45,11 @@ public class ConfigurationViewModel : ViewModel, IContentViewModel
 
     public ReactivePropertySlim<bool> UseTodo { get; }
     public ReadOnlyReactivePropertySlim<string> UseTodoText { get; }
+
+    public Lazy<string> VersionInfo { get; } = new Lazy<string>(() =>
+    {
+        return Assembly.GetExecutingAssembly().GetName().Version?.ToString();
+    });
 
     public ConfigurationViewModel()
     {
