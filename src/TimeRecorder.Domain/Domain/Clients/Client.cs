@@ -16,7 +16,9 @@ public class Client : Entity<Client>
 
     public string KanaName { get; set; }
 
-    public static Client Empty => new(Identity<Client>.Empty, "未選択", "ミセンタク");
+    public string InitialLetters => string.IsNullOrEmpty(KanaName) ? "" :  KanaName.Substring(0, 1);
+
+    public static Client Empty => new(Identity<Client>.Empty, "未選択", "");
 
     public Client(Identity<Client> id, string name, string kanaName)
     {
