@@ -30,16 +30,20 @@ internal class RunnableHyperlink : Hyperlink
 	{
 		base.OnClick();
 
-		if (this.Uri != null)
+		if (this.Uri == null)
+			return;
+
+		try
 		{
-			try
+			Process.Start(new ProcessStartInfo
 			{
-				Process.Start(this.Uri.ToString());
-			}
-			catch (Exception ex)
-			{
-				_logger.Error(ex);
-			}
+				UseShellExecute = true,
+				FileName = Uri.ToString(),
+			});
+		}
+		catch (Exception ex)
+		{
+			_logger.Error(ex);
 		}
 	}
 }
