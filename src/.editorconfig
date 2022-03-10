@@ -8,3 +8,5 @@ csharp_prefer_braces = when_multiline
 
 # Default severity for all analyzer diagnostics
 dotnet_analyzer_diagnostic.severity = silent
+
+csharp_style_namespace_declarations=file_scoped:suggestion

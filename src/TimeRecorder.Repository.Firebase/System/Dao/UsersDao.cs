@@ -5,16 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeRecorder.Repository.Firebase.System.Dao
+namespace TimeRecorder.Repository.Firebase.System.Dao;
+
+class UsersDao
 {
-    class UsersDao
+    public const string CollectionName = "users";
+
+
+    public static CollectionReference GetUsersReference(FirestoreDb firestoreDb)
     {
-        public const string CollectionName = "users";
-
-
-        public static CollectionReference GetUsersReference(FirestoreDb firestoreDb)
-        {
-            return firestoreDb.Collection(CollectionName);
-        }
+        return firestoreDb.Collection(CollectionName);
     }
 }

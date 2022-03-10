@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Repository.SQLite.System.Versions
+namespace TimeRecorder.Repository.SQLite.System.Versions;
+
+class Version_000_002_000_000 : IVersion
 {
-    class Version_000_002_000_000 : IVersion
-    {
-        // 列の複数追加はサポートされていないよう
-        public string CommandQuery => @"
+    // 列の複数追加はサポートされていないよう
+    public string CommandQuery => @"
 ALTER TABLE 
   worktasks
 ADD COLUMN
@@ -19,6 +19,5 @@ ADD COLUMN
   importkey varchar(1024)
 ";
 
-        public string Version => "000.002.000.000";
-    }
+    public string Version => "000.002.000.000";
 }

@@ -4,19 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeRecorder.Repository.Firebase.Shared
+namespace TimeRecorder.Repository.Firebase.Shared;
+
+class FirebaseCredentialConfigLoader
 {
-    class FirebaseCredentialConfigLoader
+    private static readonly Lazy<FirebaseCredentialConfig> _FirebaseTokenInitialized = new(() => GetFirebaseToken());
+
+    public static FirebaseCredentialConfig Value => _FirebaseTokenInitialized.Value;
+
+
+    private static FirebaseCredentialConfig GetFirebaseToken()
     {
-        private static readonly Lazy<FirebaseCredentialConfig> _FirebaseTokenInitialized = new(() => GetFirebaseToken());
-
-        public static FirebaseCredentialConfig Value => _FirebaseTokenInitialized.Value;
-
-
-        private static FirebaseCredentialConfig GetFirebaseToken()
-        {
-            const string filename = "firebase-credentialconfig.json";
-            return JsonFileIO.Deserialize<FirebaseCredentialConfig>(filename);
-        }
+        const string filename = "firebase-credentialconfig.json";
+        return JsonFileIO.Deserialize<FirebaseCredentialConfig>(filename);
     }
 }

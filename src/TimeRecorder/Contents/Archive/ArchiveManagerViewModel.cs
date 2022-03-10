@@ -13,82 +13,82 @@ using TimeRecorder.Contents.WorkUnitRecorder.Tasks;
 using TimeRecorder.Contents.WorkUnitRecorder.Tracking;
 using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Helpers;
+using TimeRecorder.Host;
 using TimeRecorder.NavigationRail;
 
-namespace TimeRecorder.Contents.Archive
+namespace TimeRecorder.Contents.Archive;
+
+public class ArchiveManagerViewModel : ViewModel, IContentViewModel
 {
-    public class ArchiveManagerViewModel : ViewModel, IContentViewModel
+    public NavigationIconButtonViewModel NavigationIcon => new() { Title = "アーカイブ", IconKey = "Archive" };
+
+    private readonly ArchiveManagerModel _Model = new();
+    private readonly WorkTaskModel _WorkTaskModel = new();
+
+    public ReactiveProperty<DateTime> TargetDateTime { get; }
+
+    public ReadOnlyReactiveCollection<WorkingTimeRecordForReport> WorkingTimeRecords { get; }
+
+    // もっと良い書き方があるはずだが...
+    public ReadOnlyReactivePropertySlim<bool> NoResults { get; set; }
+    public ReactivePropertySlim<bool> IsSelected { get; } = new();
+
+    public ArchiveManagerViewModel()
     {
-        public NavigationIconButtonViewModel NavigationIcon => new() { Title = "アーカイブ", IconKey = "Archive" };
+        TargetDateTime = _Model.TargetDate
+                               .ToReactivePropertyAsSynchronized(d => d.Value)
+                               .AddTo(CompositeDisposable);
 
-        private readonly ArchiveManagerModel _Model = new();
-        private readonly WorkTaskModel _WorkTaskModel = new();
+        WorkingTimeRecords = _Model.DailyWorkRecordHeaders
+                                    .ToReadOnlyReactiveCollection()
+                                    .AddTo(CompositeDisposable);
 
-        public ReactiveProperty<DateTime> TargetDateTime { get; }
+        NoResults = _Model.NoResults.ToReadOnlyReactivePropertySlim();
+    }
 
-        public ReadOnlyReactiveCollection<WorkingTimeRecordForReport> WorkingTimeRecords { get; }
+    public void EditWorkTask(WorkingTimeRecordForReport record)
+    {
+        var targetData = _WorkTaskModel.SelectWorkTask(record.WorkTaskId);
 
-        // もっと良い書き方があるはずだが...
-        public ReadOnlyReactivePropertySlim<bool> NoResults { get; set; }
-        public ReactivePropertySlim<bool> IsSelected { get; } = new();
+        var editDialogVm = new WorkTaskEditDialogViewModel(targetData);
+        editDialogVm.ShowDeleteButton.Value = false;
 
-        public ArchiveManagerViewModel()
+        var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
+
+        if (result == ModalTransitionResponse.Yes)
         {
-            TargetDateTime = _Model.TargetDate
-                                   .ToReactivePropertyAsSynchronized(d => d.Value)
-                                   .AddTo(CompositeDisposable);
-
-            WorkingTimeRecords = _Model.DailyWorkRecordHeaders
-                                        .ToReadOnlyReactiveCollection()
-                                        .AddTo(CompositeDisposable);
-
-            NoResults = _Model.NoResults.ToReadOnlyReactivePropertySlim();
-        }
-
-        public void EditWorkTask(WorkingTimeRecordForReport record)
-        {
-            var targetData = _WorkTaskModel.SelectWorkTask(record.WorkTaskId);
-
-            var editDialogVm = new WorkTaskEditDialogViewModel(targetData);
-            editDialogVm.ShowDeleteButton.Value = false;
-
-            var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
-
-            if (result == ModalTransitionResponse.Yes)
+            if (editDialogVm.NeedDelete)
             {
-                if (editDialogVm.NeedDelete)
-                {
-                    _WorkTaskModel.DeleteWorkTask(record.WorkTaskId);
-                }
-                else
-                {
-                    var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
-                    _WorkTaskModel.EditWorkTask(inputValue);
-                }
-
-                _Model.Load();
+                _WorkTaskModel.DeleteWorkTask(record.WorkTaskId);
             }
-        }
-
-        public async void EditWorkTaskTime(WorkingTimeRecordForReport record)
-        {
-            var editDialogVm = new WorkingTimeRangeEditDialogViewModel(record.ConvertToWorkingTimeRange());
-
-            var view = new WorkingTimeRangeEditDialog
+            else
             {
-                DataContext = editDialogVm
-            };
-
-            //show the dialog
-            var result = (bool?)await DialogHost.Show(view);
-
-            if (result.HasValue && result.Value)
-            {
-                var editObj = editDialogVm.WorkingTimeViewModel.DomainModel;
-                _WorkTaskModel.EditWorkingTime(editObj);
-
-                _Model.Load();
+                var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
+                _WorkTaskModel.EditWorkTask(inputValue);
             }
+
+            _Model.Load();
+        }
+    }
+
+    public async void EditWorkTaskTime(WorkingTimeRecordForReport record)
+    {
+        var editDialogVm = new WorkingTimeRangeEditDialogViewModel(record.ConvertToWorkingTimeRange());
+
+        var view = new WorkingTimeRangeEditDialog
+        {
+            DataContext = editDialogVm
+        };
+
+        //show the dialog
+        var result = (bool?)await DialogHostHelper.Show(view);
+
+        if (result.HasValue && result.Value)
+        {
+            var editObj = editDialogVm.WorkingTimeViewModel.DomainModel;
+            _WorkTaskModel.EditWorkingTime(editObj);
+
+            _Model.Load();
         }
     }
 }

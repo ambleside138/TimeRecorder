@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Repository.SQLite.System.Versions
-{
-    class Version_000_000_000_000 : IVersion
-    {
-        // dapperを利用する場合、Enumはintで定義するとマッピングしてくれる
-        // SQLite は VARCHAR(N) のように N を指定したとしても、TEXT 型として解釈する
+namespace TimeRecorder.Repository.SQLite.System.Versions;
 
-        public string CommandQuery => @"
+class Version_000_000_000_000 : IVersion
+{
+    // dapperを利用する場合、Enumはintで定義するとマッピングしてくれる
+    // SQLite は VARCHAR(N) のように N を指定したとしても、TEXT 型として解釈する
+
+    public string CommandQuery => @"
 create table 
   worktasks
 (
@@ -69,6 +69,5 @@ CREATE TABLE
 
 ";
 
-        public string Version => "000.000.000.000";
-    }
+    public string Version => "000.000.000.000";
 }

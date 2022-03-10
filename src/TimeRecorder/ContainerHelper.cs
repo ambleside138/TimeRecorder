@@ -25,69 +25,68 @@ using TimeRecorder.Repository.SQLite.Tracking;
 using TimeRecorder.Repository.SQLite.Tracking.Reports;
 using TimeRecorder.Repository.SQLite.WorkProcesses;
 
-namespace TimeRecorder
+namespace TimeRecorder;
+
+internal static class ContainerHelper
 {
-    internal static class ContainerHelper
+    public static ServiceProvider Provider { get; private set; }
+
+    public static T GetRequiredService<T>() => Provider.GetRequiredService<T>();
+
+
+    public static void Setup()
     {
-        public static ServiceProvider Provider { get; private set; }
+        IServiceCollection services = new ServiceCollection()
+                                          .AddMessagePipeServices()
+                                          .AddRepositoryServices();
 
-        public static T GetRequiredService<T>() => Provider.GetRequiredService<T>();
+        // フォームのインスタンスをDIで生成する場合はアプリケーションのフォームを登録する
+        services.AddTransient<Domain.UseCase.Todo.TodoItemUseCase>()
+                .AddTransient<Domain.UseCase.Todo.TodoListUseCase>()
+                .AddTransient<Domain.UseCase.System.AuthenticationUseCase>();
 
+        // サービスプロバイダーを生成する
+        Provider = services.BuildServiceProvider();
+    }
 
-        public static void Setup()
-        {
-            IServiceCollection services = new ServiceCollection()
-                                              .AddMessagePipeServices()
-                                              .AddRepositoryServices();
+    /// <summary>
+    /// MessagePipe を使用するためのサービスを生成します。
+    /// </summary>
+    /// <returns></returns>
+    private static IServiceCollection AddMessagePipeServices(this IServiceCollection services)
+    {
 
-            // フォームのインスタンスをDIで生成する場合はアプリケーションのフォームを登録する
-            services.AddTransient<Domain.UseCase.Todo.TodoItemUseCase>()
-                    .AddTransient<Domain.UseCase.Todo.TodoListUseCase>()
-                    .AddTransient<Domain.UseCase.System.AuthenticationUseCase>();
-
-            // サービスプロバイダーを生成する
-            Provider = services.BuildServiceProvider();
-        }
-
-        /// <summary>
-        /// MessagePipe を使用するためのサービスを生成します。
-        /// </summary>
-        /// <returns></returns>
-        private static IServiceCollection AddMessagePipeServices(this IServiceCollection services)
-        {
-
-            // MessagePipe の標準サービスを登録する
-            return services.AddMessagePipe(options =>
-                                           {
+        // MessagePipe の標準サービスを登録する
+        return services.AddMessagePipe(options =>
+                                       {
                                                // 全てのメッセージに適用したいフィルタはグローバルフィルタとして定義するとよい
                                                //options.AddGlobalMessageHandlerFilter(typeof(SampleFilter<>));
                                            }
-                                           )
-                            // 使用するメッセージを登録する
-                            .AddSingleton(typeof(MessagePipe.IPublisher<>), typeof(MessageBroker<>))
-                            .AddSingleton(typeof(MessagePipe.ISubscriber<>), typeof(MessageBroker<>));
+                                       )
+                        // 使用するメッセージを登録する
+                        .AddSingleton(typeof(MessagePipe.IPublisher<>), typeof(MessageBroker<>))
+                        .AddSingleton(typeof(MessagePipe.ISubscriber<>), typeof(MessageBroker<>));
 
-        }
+    }
 
-        private static IServiceCollection AddRepositoryServices(this IServiceCollection services)
-        {
-            return services.AddSingleton<IWorkTaskRepository, SQLiteWorkTaskRepository>()
-                           .AddSingleton<IWorkProcessRepository, SQLiteWorkProcessRepository>()
-                           .AddSingleton<IClientRepository, SQLiteClientRepository>()
-                           .AddSingleton<IProductRepository, SQLiteProductRepository>()
-                           .AddSingleton<IWorkingTimeRangeRepository, SQLiteWorkingTimeRangeRepository>()
-                           .AddSingleton<IDailyWorkRecordQueryService, SQLiteDailyWorkRecordQueryService>()
-                           .AddSingleton<IWorkingTimeQueryService, SQLiteWorkingTimeQueryService>()
-                           .AddSingleton<IWorkTaskWithTimesQueryService, SQLiteWorkTaskWithTimesQueryService>()
-                           .AddSingleton<IHealthChecker, SQLiteHealthChecker>()
-                           .AddSingleton<IScheduledEventRepository, GoogleApiScheduledEventRepository>()
-                           .AddSingleton<IConfigurationRepository, SQLiteConfigurationRepository>()
-                           .AddSingleton<IWorkingHourRepository, SQLiteWorkingHoursRepository>()
-                           .AddSingleton<ITodoItemRepository, FirestoreTodoItemRepository>()
-                           .AddSingleton<ITodoListRepository, FirestoreTodoListRepository>()
-                           .AddSingleton<IAccountRepository, FirebaseAccountRepository>()
-                           .AddSingleton<IReportDriver, CsvReportDriver>()
-                           .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>();
-        }
+    private static IServiceCollection AddRepositoryServices(this IServiceCollection services)
+    {
+        return services.AddSingleton<IWorkTaskRepository, SQLiteWorkTaskRepository>()
+                       .AddSingleton<IWorkProcessRepository, SQLiteWorkProcessRepository>()
+                       .AddSingleton<IClientRepository, SQLiteClientRepository>()
+                       .AddSingleton<IProductRepository, SQLiteProductRepository>()
+                       .AddSingleton<IWorkingTimeRangeRepository, SQLiteWorkingTimeRangeRepository>()
+                       .AddSingleton<IDailyWorkRecordQueryService, SQLiteDailyWorkRecordQueryService>()
+                       .AddSingleton<IWorkingTimeQueryService, SQLiteWorkingTimeQueryService>()
+                       .AddSingleton<IWorkTaskWithTimesQueryService, SQLiteWorkTaskWithTimesQueryService>()
+                       .AddSingleton<IHealthChecker, SQLiteHealthChecker>()
+                       .AddSingleton<IScheduledEventRepository, GoogleApiScheduledEventRepository>()
+                       .AddSingleton<IConfigurationRepository, SQLiteConfigurationRepository>()
+                       .AddSingleton<IWorkingHourRepository, SQLiteWorkingHoursRepository>()
+                       .AddSingleton<ITodoItemRepository, FirestoreTodoItemRepository>()
+                       .AddSingleton<ITodoListRepository, FirestoreTodoListRepository>()
+                       .AddSingleton<IAccountRepository, FirebaseAccountRepository>()
+                       .AddSingleton<IReportDriver, CsvReportDriver>()
+                       .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>();
     }
 }

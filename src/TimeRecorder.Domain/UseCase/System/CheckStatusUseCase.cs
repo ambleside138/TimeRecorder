@@ -3,20 +3,19 @@ using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.System;
 
-namespace TimeRecorder.Domain.UseCase.System
+namespace TimeRecorder.Domain.UseCase.System;
+
+public class CheckStatusUseCase
 {
-    public class CheckStatusUseCase
+    private readonly IHealthChecker _HealthChecker;
+
+    public CheckStatusUseCase(IHealthChecker healthChecker)
     {
-        private readonly IHealthChecker _HealthChecker;
+        _HealthChecker = healthChecker;
+    }
 
-        public CheckStatusUseCase(IHealthChecker healthChecker)
-        {
-            _HealthChecker = healthChecker;
-        }
-
-        public SystemStatus CheckSystemStatus()
-        {
-            return _HealthChecker.CheckStatus();
-        }
+    public SystemStatus CheckSystemStatus()
+    {
+        return _HealthChecker.CheckStatus();
     }
 }

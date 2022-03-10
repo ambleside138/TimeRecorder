@@ -13,197 +13,195 @@ using TimeRecorder.Domain.UseCase.Todo;
 using TimeRecorder.Domain.Utility.SystemClocks;
 using TimeRecorder.Helpers;
 
-namespace TimeRecorder.Contents.Todo
+namespace TimeRecorder.Contents.Todo;
+
+internal class TodoModel : NotificationDomainModel
 {
 
-    internal class TodoModel : NotificationDomainModel
+
+    private readonly TodoItemUseCase _TodoUseCase;
+    private readonly TodoListUseCase _TodoListUseCase;
+    private readonly AuthenticationUseCase _AuthenticationUseCase;
+
+    public ObservableCollection<TodoList> TodoListCollection { get; } = new();
+
+
+    private List<TodoItem> _AllTodoItems;
+
+    public ObservableCollection<TodoItem> FilteredTodoItems { get; } = new();
+
+    private TodoListIdentity _CurrentTodoList;
+
+    #region LoginStatus変更通知プロパティ
+    private LoginStatus _LoginStatus;
+
+    public LoginStatus LoginStatus
     {
+        get => _LoginStatus;
+        set => RaisePropertyChangedIfSet(ref _LoginStatus, value);
+    }
+    #endregion
 
+    private readonly ISubscriber<TodoItemChangedEventArgs> _Subscriber;
 
-        private readonly TodoItemUseCase _TodoUseCase;
-        private readonly TodoListUseCase _TodoListUseCase;
-        private readonly AuthenticationUseCase _AuthenticationUseCase;
+    private readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
 
-        public ObservableCollection<TodoList> TodoListCollection { get; } = new();
+    public TodoModel(ISubscriber<TodoItemChangedEventArgs> subscriber)
+    {
+        _TodoUseCase = ContainerHelper.Provider.GetRequiredService<TodoItemUseCase>();
+        _TodoListUseCase = ContainerHelper.Provider.GetRequiredService<TodoListUseCase>();
 
+        _AuthenticationUseCase = ContainerHelper.Provider.GetRequiredService<AuthenticationUseCase>();
 
-        private List<TodoItem> _AllTodoItems;
+        _Subscriber = subscriber;
+        TodoListCollection.AddRange(TodoListFactory.CreateDefaultCollections());
 
-        public ObservableCollection<TodoItem> FilteredTodoItems { get; } = new();
+        // IDisposableの管理が必要
+        _Subscriber.Subscribe(s => Subscribe(s));
+    }
 
-        private TodoListIdentity _CurrentTodoList;
-
-        #region LoginStatus変更通知プロパティ
-        private LoginStatus _LoginStatus;
-
-        public LoginStatus LoginStatus
+    private void Subscribe(TodoItemChangedEventArgs args)
+    {
+        switch (args.ChangeType)
         {
-            get => _LoginStatus;
-            set => RaisePropertyChangedIfSet(ref _LoginStatus, value);
-        }
-        #endregion
+            case ChangeType.Updated:
+                Filter(_AllTodoItems, _CurrentTodoList);
+                break;
 
-        private readonly ISubscriber<TodoItemChangedEventArgs> _Subscriber;
-
-        private readonly ISystemClock _SystemClock = SystemClockServiceLocator.Current;
-
-        public TodoModel(ISubscriber<TodoItemChangedEventArgs> subscriber)
-        {
-            _TodoUseCase = ContainerHelper.Provider.GetRequiredService<TodoItemUseCase>();
-            _TodoListUseCase = ContainerHelper.Provider.GetRequiredService<TodoListUseCase>();
-
-            _AuthenticationUseCase = ContainerHelper.Provider.GetRequiredService<AuthenticationUseCase>();
-
-            _Subscriber = subscriber;
-            TodoListCollection.AddRange(TodoListFactory.CreateDefaultCollections());
-
-            // IDisposableの管理が必要
-            _Subscriber.Subscribe(s => Subscribe(s));
-        }
-
-        private void Subscribe(TodoItemChangedEventArgs args)
-        {
-            switch (args.ChangeType)
-            {
-                case ChangeType.Updated:
-                    Filter(_AllTodoItems, _CurrentTodoList);
-                    break;
-
-                case ChangeType.Deleted:
-                    var target = FilteredTodoItems.FirstOrDefault(i => i.Id == args.TodoItemIdentity);
-                    if(target != null)
-                    {
-                        _ = FilteredTodoItems.Remove(target);
-                        _ = _AllTodoItems.Remove(target);
-                    }
-                    Filter(_AllTodoItems, _CurrentTodoList);
-
-                    break;
-                default:
-                    break;
-            }
-        }
-
-
-        private async Task LoadTodoListAsync()
-        {
-            for (int i = TodoListCollection.Count - 1; i >= 0; i--)
-            {
-                if(TodoListCollection[i].Id.IsFixed == false
-                    || TodoListCollection[i].Id == TodoListIdentity.Divider)
+            case ChangeType.Deleted:
+                var target = FilteredTodoItems.FirstOrDefault(i => i.Id == args.TodoItemIdentity);
+                if (target != null)
                 {
-                    TodoListCollection.RemoveAt(i);
+                    _ = FilteredTodoItems.Remove(target);
+                    _ = _AllTodoItems.Remove(target);
                 }
-            }
+                Filter(_AllTodoItems, _CurrentTodoList);
 
-            var list = await _TodoListUseCase.SelectAsync();
-            if(list?.Length > 0)
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    private async Task LoadTodoListAsync()
+    {
+        for (int i = TodoListCollection.Count - 1; i >= 0; i--)
+        {
+            if (TodoListCollection[i].Id.IsFixed == false
+                || TodoListCollection[i].Id == TodoListIdentity.Divider)
             {
-                TodoListCollection.Add(new TodoList(TodoListIdentity.Divider));
-                TodoListCollection.AddRange(list);
+                TodoListCollection.RemoveAt(i);
             }
         }
 
-
-        public async Task InitializeIfNeededAsync()
+        var list = await _TodoListUseCase.SelectAsync();
+        if (list?.Length > 0)
         {
-            if (_AuthenticationUseCase.IsSignined() == false)
-            {
-                return;
-            }
+            TodoListCollection.Add(new TodoList(TodoListIdentity.Divider));
+            TodoListCollection.AddRange(list);
+        }
+    }
 
-            await InitializeAsync();
+
+    public async Task InitializeIfNeededAsync()
+    {
+        if (_AuthenticationUseCase.IsSignined() == false)
+        {
+            return;
         }
 
-        public async Task InitializeAsync()
+        await InitializeAsync();
+    }
+
+    public async Task InitializeAsync()
+    {
+        LoginStatus = _AuthenticationUseCase.TrySignin();
+        await LoadTodoListAsync();
+    }
+
+
+    public async Task LoadTodoItemsAsync(TodoListIdentity selectedListId)
+    {
+        if (_AuthenticationUseCase.IsSignined() == false)
         {
-            LoginStatus = _AuthenticationUseCase.TrySignin();
-            await LoadTodoListAsync();
+            return;
         }
 
+        _CurrentTodoList = selectedListId;
 
-        public async Task LoadTodoItemsAsync(TodoListIdentity selectedListId)
+        var todoItems = await _TodoUseCase.SelectAsync();
+        _AllTodoItems = new List<TodoItem>(todoItems);
+
+        Filter(todoItems, selectedListId);
+    }
+
+    private void Filter(IEnumerable<TodoItem> todoItems, TodoListIdentity selectedListId)
+    {
+        foreach (var todolist in TodoListCollection)
         {
-            if (_AuthenticationUseCase.IsSignined() == false)
-            {
-                return;
-            }
 
-            _CurrentTodoList = selectedListId;
+            TodoItem[] ownListItems = todoItems.Where(i => todolist.MatchTodoItem(i))
+                                               .ToArray();
 
-            var todoItems = await _TodoUseCase.SelectAsync();
-            _AllTodoItems = new List<TodoItem>(todoItems);
+            var tmpTodoItems = new List<TodoItem>(ownListItems.Where(i => i.IsCompleted == false));
+            todolist.FilteredCount = tmpTodoItems.Count(i => i.IsDoneFilter == false && i.IsCompleted == false);
 
-            Filter(todoItems, selectedListId);
-        }
-
-        private void Filter(IEnumerable<TodoItem> todoItems, TodoListIdentity selectedListId)
-        {
-            foreach (var todolist in TodoListCollection)
+            if (todolist.Id == selectedListId)
             {
 
-                TodoItem[] ownListItems = todoItems.Where(i => todolist.MatchTodoItem(i))
-                                                   .ToArray();
-
-                var tmpTodoItems = new List<TodoItem>(ownListItems.Where(i => i.IsCompleted == false));
-                todolist.FilteredCount = tmpTodoItems.Count(i => i.IsDoneFilter == false && i.IsCompleted == false);
-
-                if (todolist.Id == selectedListId)
+                var doneItems = ownListItems.Where(i => i.IsCompleted).ToArray();
+                if (doneItems.Any()
+                    && todolist.DoneItemVisilble)
                 {
+                    tmpTodoItems.Add(TodoItem.ForDoneFilter());
+                    tmpTodoItems.AddRange(doneItems);
+                }
 
-                    var doneItems = ownListItems.Where(i => i.IsCompleted).ToArray();
-                    if (doneItems.Any()
-                        && todolist.DoneItemVisilble)
-                    {
-                        tmpTodoItems.Add(TodoItem.ForDoneFilter());
-                        tmpTodoItems.AddRange(doneItems);
-                    }
-
-                    if (tmpTodoItems.SequenceEqual(FilteredTodoItems) == false)
-                    {
-                        FilteredTodoItems.Clear();
-                        FilteredTodoItems.AddRange(tmpTodoItems);
-                    }
-
+                if (tmpTodoItems.SequenceEqual(FilteredTodoItems) == false)
+                {
+                    FilteredTodoItems.Clear();
+                    FilteredTodoItems.AddRange(tmpTodoItems);
                 }
 
             }
 
         }
 
-        public async Task<TodoItemIdentity> AddTodoItemAsync(TodoListIdentity selectedListId, TodoItem item)
-        {
-            TodoItemIdentity id = await _TodoUseCase.AddAsync(item);
-            await LoadTodoItemsAsync(selectedListId);
-            return id;
-        }
+    }
 
-        public async Task<TodoListIdentity> AddTodoListAsync()
-        {
-            var list = TodoList.ForNew(TodoListCollection.Count(i => i.Id.IsFixed == false) + 1);
+    public async Task<TodoItemIdentity> AddTodoItemAsync(TodoListIdentity selectedListId, TodoItem item)
+    {
+        TodoItemIdentity id = await _TodoUseCase.AddAsync(item);
+        await LoadTodoItemsAsync(selectedListId);
+        return id;
+    }
 
-            TodoListIdentity id = await _TodoListUseCase.AddAsync(list);
+    public async Task<TodoListIdentity> AddTodoListAsync()
+    {
+        var list = TodoList.ForNew(TodoListCollection.Count(i => i.Id.IsFixed == false) + 1);
 
-            await LoadTodoListAsync();
+        TodoListIdentity id = await _TodoListUseCase.AddAsync(list);
 
-            return id;
-        }
+        await LoadTodoListAsync();
 
-        public async Task SetTodoListTitleAsync(TodoList todoList)
-        {
-            await _TodoListUseCase.EditAsync(todoList);
-        }
+        return id;
+    }
 
-        public async Task DeleteTodoListAsync(TodoList todoList)
-        {
-            TodoListCollection.Remove(todoList);
-            await _TodoListUseCase.DeleteAsync(todoList.Id);
-        }
+    public async Task SetTodoListTitleAsync(TodoList todoList)
+    {
+        await _TodoListUseCase.EditAsync(todoList);
+    }
 
-        public void Logout()
-        {
-            _AuthenticationUseCase.Signout();
-            LoginStatus = null;
-        }
+    public async Task DeleteTodoListAsync(TodoList todoList)
+    {
+        TodoListCollection.Remove(todoList);
+        await _TodoListUseCase.DeleteAsync(todoList.Id);
+    }
+
+    public void Logout()
+    {
+        _AuthenticationUseCase.Signout();
+        LoginStatus = null;
     }
 }

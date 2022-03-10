@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.Utility.Attributes
-{
-    [System.AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
-    public sealed class IconKeyAttribute : Attribute
-    {
-        public IconKeyAttribute(string key)
-        {
-            Key = key;
-        }
+namespace TimeRecorder.Domain.Utility.Attributes;
 
-        /// <summary>
-        /// 表示名称
-        /// </summary>
-        public string Key { get; }
+[System.AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
+public sealed class IconKeyAttribute : Attribute
+{
+    public IconKeyAttribute(string key)
+    {
+        Key = key;
     }
+
+    /// <summary>
+    /// 表示名称
+    /// </summary>
+    public string Key { get; }
 }

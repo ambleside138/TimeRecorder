@@ -11,16 +11,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeRecorder.Contents.Archive
+namespace TimeRecorder.Contents.Archive;
+
+/// <summary>
+/// ArchiveManagerView.xaml の相互作用ロジック
+/// </summary>
+public partial class ArchiveManagerView : UserControl
 {
-    /// <summary>
-    /// ArchiveManagerView.xaml の相互作用ロジック
-    /// </summary>
-    public partial class ArchiveManagerView : UserControl
+    public ArchiveManagerView()
     {
-        public ArchiveManagerView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

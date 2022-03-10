@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Utility;
 
-namespace TimeRecorder.Domain.Domain.Tracking
+namespace TimeRecorder.Domain.Domain.Tracking;
+
+public interface IWorkingHourRepository : IRepository
 {
-    public interface IWorkingHourRepository : IRepository
-    {
-        public void Add(WorkingHour workingHour);
+    public void Add(WorkingHour workingHour);
 
-        public void AddRange(WorkingHour[] workingHours);
+    public void AddRange(WorkingHour[] workingHours);
 
-        public void Edit(WorkingHour workingHour);
+    public void Edit(WorkingHour workingHour);
 
-        public WorkingHour SelectYmd(YmdString ymd);
+    public WorkingHour SelectYmd(YmdString ymd);
 
-        public WorkingHour[] SelectByYearMonth(YearMonth yearMonth);
-    }
+    public WorkingHour[] SelectByYearMonth(YearMonth yearMonth);
 }

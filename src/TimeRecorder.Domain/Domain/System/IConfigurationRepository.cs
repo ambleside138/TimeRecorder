@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.Domain.System
-{
-    public interface IConfigurationRepository : IRepository
-    {
-        void UpdateConfiguration(ConfigurationItem item);
+namespace TimeRecorder.Domain.Domain.System;
 
-        ConfigurationItem[] SelectAll();
-    }
+public interface IConfigurationRepository : IRepository
+{
+    void UpdateConfiguration(ConfigurationItem item);
+
+    ConfigurationItem[] SelectAll();
 }

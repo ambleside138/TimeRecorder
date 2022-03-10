@@ -4,27 +4,26 @@ using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.Tracking;
 
-namespace TimeRecorder.Contents.WorkUnitRecorder.Tracking
+namespace TimeRecorder.Contents.WorkUnitRecorder.Tracking;
+
+class WorkingTimeRangeEditDialogViewModel : ViewModel
 {
-    class WorkingTimeRangeEditDialogViewModel : ViewModel
+    public WorkingTimeRange DomainModel { get; }
+
+    public WorkingTimeViewModel WorkingTimeViewModel { get; }
+
+    public WorkingTimeRangeEditDialogViewModel(WorkingTimeRange workingTimeRange)
     {
-        public WorkingTimeRange DomainModel { get; }
+        DomainModel = workingTimeRange;
+        WorkingTimeViewModel = new WorkingTimeViewModel(workingTimeRange);
+    }
 
-        public WorkingTimeViewModel WorkingTimeViewModel { get; }
-
-        public WorkingTimeRangeEditDialogViewModel(WorkingTimeRange workingTimeRange)
+    public void Regist()
+    {
+        if (WorkingTimeViewModel.TryValidate())
         {
-            DomainModel = workingTimeRange;
-            WorkingTimeViewModel = new WorkingTimeViewModel(workingTimeRange);
+            Messenger.Raise(new Livet.Messaging.InteractionMessage("RegistKey"));
         }
 
-        public void Regist()
-        {
-            if(WorkingTimeViewModel.TryValidate())
-            {
-                Messenger.Raise(new Livet.Messaging.InteractionMessage("RegistKey"));
-            }
-
-        }
     }
 }

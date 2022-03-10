@@ -13,16 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeRecorder.Contents.Shared
+namespace TimeRecorder.Contents.Shared;
+
+/// <summary>
+/// ConfirmDialog.xaml の相互作用ロジック
+/// </summary>
+public partial class ConfirmDialog : UserControl
 {
-    /// <summary>
-    /// ConfirmDialog.xaml の相互作用ロジック
-    /// </summary>
-    public partial class ConfirmDialog : UserControl
+    public ConfirmDialog()
     {
-        public ConfirmDialog()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

@@ -5,45 +5,44 @@ using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.UseCase.System;
 using TimeRecorder.Repository.SQLite;
 
-namespace TimeRecorder.Host
+namespace TimeRecorder.Host;
+
+class MainModel
 {
-    class MainModel
+    private readonly CheckStatusUseCase _CheckStatusUseCase;
+
+    public MainModel()
     {
-        private readonly CheckStatusUseCase _CheckStatusUseCase;
+        _CheckStatusUseCase = new CheckStatusUseCase(ContainerHelper.GetRequiredService<IHealthChecker>());
+    }
 
-        public MainModel()
+    public string CheckHealth()
+    {
+        try
         {
-            _CheckStatusUseCase = new CheckStatusUseCase(ContainerHelper.GetRequiredService<IHealthChecker>());
+            var result = _CheckStatusUseCase.CheckSystemStatus();
+
+            switch (result)
+            {
+                case SystemStatus.OK:
+                    return "";
+
+                case SystemStatus.InvalidVersion:
+                    Setup.VersionUp();
+                    return "ローカルDBファイルのバージョンアップを行いました";
+
+                case SystemStatus.NotInitialized:
+                    Setup.CreateDatabaseFile();
+                    return "新規インストールされたためローカルDBファイルを作成しました";
+
+                default:
+                    return "";
+            }
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
         }
 
-        public string CheckHealth()
-        {
-            try
-            {
-                var result = _CheckStatusUseCase.CheckSystemStatus();
-
-                switch (result)
-                {
-                    case SystemStatus.OK:
-                        return "";
-
-                    case SystemStatus.InvalidVersion:
-                        Setup.VersionUp();
-                        return "ローカルDBファイルのバージョンアップを行いました";
-
-                    case SystemStatus.NotInitialized:
-                        Setup.CreateDatabaseFile();
-                        return "新規インストールされたためローカルDBファイルを作成しました";
-
-                    default:
-                        return "";
-                }
-            }
-            catch (Exception ex)
-            {
-                return ex.Message;
-            }
-            
-        }
     }
 }

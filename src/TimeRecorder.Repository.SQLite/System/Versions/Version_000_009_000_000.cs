@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Repository.SQLite.System.Versions
+namespace TimeRecorder.Repository.SQLite.System.Versions;
+
+class Version_000_009_000_000 : IVersion
 {
-    class Version_000_009_000_000 : IVersion
-    {
-        // インポート済みタスク
-        public string CommandQuery => @"
+    // インポート済みタスク
+    public string CommandQuery => @"
 create table 
   importedtasks
 (
@@ -19,6 +19,5 @@ create table
 
 ";
 
-        public string Version => "000.009.000.000";
-    }
+    public string Version => "000.009.000.000";
 }

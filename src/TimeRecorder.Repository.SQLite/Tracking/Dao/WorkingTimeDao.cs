@@ -8,17 +8,17 @@ using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Repository.SQLite.Utilities;
 
-namespace TimeRecorder.Repository.SQLite.Tracking.Dao
-{
-    class WorkingTimeDao : DaoBase
-    {
-        public WorkingTimeDao(SQLiteConnection connection, SQLiteTransaction transaction)
-            : base(connection, transaction) { }
+namespace TimeRecorder.Repository.SQLite.Tracking.Dao;
 
-        public int Insert(WorkingTimeTableRow row)
-        {
-            #region SQL
-            const string sql = @"
+class WorkingTimeDao : DaoBase
+{
+    public WorkingTimeDao(SQLiteConnection connection, SQLiteTransaction transaction)
+        : base(connection, transaction) { }
+
+    public int Insert(WorkingTimeTableRow row)
+    {
+        #region SQL
+        const string sql = @"
 INSERT INTO 
   workingtimes
 (
@@ -35,17 +35,17 @@ values
   , @endtime
 )
 ";
-            #endregion
+        #endregion
 
-            Connection.Execute(sql, row, Transaction);
+        Connection.Execute(sql, row, Transaction);
 
-            return (int)Connection.LastInsertRowId;
-        }
+        return (int)Connection.LastInsertRowId;
+    }
 
-        public void Update(WorkingTimeTableRow row)
-        {
-            #region SQL
-            const string sql = @"
+    public void Update(WorkingTimeTableRow row)
+    {
+        #region SQL
+        const string sql = @"
 UPDATE
   workingtimes
 SET
@@ -56,43 +56,43 @@ SET
 WHERE
   id = @id
 ";
-            #endregion
+        #endregion
 
-            Connection.Execute(sql, row, Transaction);
-        }
+        Connection.Execute(sql, row, Transaction);
+    }
 
-        public void Delete(int wokingTimeId)
-        {
-            #region SQL
-            const string sql = @"
+    public void Delete(int wokingTimeId)
+    {
+        #region SQL
+        const string sql = @"
 DELETE FROM
   workingtimes
 WHERE
   id = @id
 ";
-            #endregion
+        #endregion
 
-            Connection.Execute(sql, new { id = wokingTimeId }, Transaction);
-        }
+        Connection.Execute(sql, new { id = wokingTimeId }, Transaction);
+    }
 
-        public void DeleteByTaskId(int taskId)
-        {
-            #region SQL
-            const string sql = @"
+    public void DeleteByTaskId(int taskId)
+    {
+        #region SQL
+        const string sql = @"
 DELETE FROM
   workingtimes
 WHERE
   taskid = @taskid
 ";
-            #endregion
+        #endregion
 
-            Connection.Execute(sql, new { taskid = taskId }, Transaction);
-        }
+        Connection.Execute(sql, new { taskid = taskId }, Transaction);
+    }
 
-        public WorkingTimeTableRow[] SelectYmd(string ymd)
-        {
-            #region SQL
-            const string sql = @"
+    public WorkingTimeTableRow[] SelectYmd(string ymd)
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   id
   , taskid
@@ -104,15 +104,15 @@ FROM
 WHERE
   ymd = @ymd
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<WorkingTimeTableRow>(sql, new { ymd }).ToArray();
-        }
+        return Connection.Query<WorkingTimeTableRow>(sql, new { ymd }).ToArray();
+    }
 
-        public WorkingTimeTableRow SelectId(int id)
-        {
-            #region SQL
-            const string sql = @"
+    public WorkingTimeTableRow SelectId(int id)
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   id
   , taskid
@@ -124,15 +124,15 @@ FROM
 WHERE
   id = @id
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<WorkingTimeTableRow>(sql, new { id }).FirstOrDefault();
-        }
+        return Connection.Query<WorkingTimeTableRow>(sql, new { id }).FirstOrDefault();
+    }
 
-        public WorkingTimeTableRow[] SelectByTaskIds(int[] taskids)
-        {
-            #region SQL
-            const string sql = @"
+    public WorkingTimeTableRow[] SelectByTaskIds(int[] taskids)
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   id
   , taskid
@@ -144,11 +144,10 @@ FROM
 WHERE
   taskid in @taskids
 ";
-            #endregion
+        #endregion
 
-            // DapperならIN句も配列を使える
-            // ＃実装は、配列の数だけプレースホルダを用意する仕掛けのようなのでパフォーマンス的にはびみょうなのかもしれない
-            return Connection.Query<WorkingTimeTableRow>(sql, new { taskids }).ToArray();
-        }
+        // DapperならIN句も配列を使える
+        // ＃実装は、配列の数だけプレースホルダを用意する仕掛けのようなのでパフォーマンス的にはびみょうなのかもしれない
+        return Connection.Query<WorkingTimeTableRow>(sql, new { taskids }).ToArray();
     }
 }

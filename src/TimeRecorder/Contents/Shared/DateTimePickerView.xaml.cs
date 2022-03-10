@@ -13,16 +13,15 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace TimeRecorder.Contents.Shared
+namespace TimeRecorder.Contents.Shared;
+
+/// <summary>
+/// DateTimePickerView.xaml の相互作用ロジック
+/// </summary>
+public partial class DateTimePickerView : UserControl
 {
-    /// <summary>
-    /// DateTimePickerView.xaml の相互作用ロジック
-    /// </summary>
-    public partial class DateTimePickerView : UserControl
+    public DateTimePickerView()
     {
-        public DateTimePickerView()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

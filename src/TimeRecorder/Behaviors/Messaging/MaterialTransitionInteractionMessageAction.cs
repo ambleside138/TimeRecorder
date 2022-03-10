@@ -17,41 +17,39 @@ using Livet.Messaging;
 using Livet.Behaviors.Messaging;
 
 
-namespace TimeRecorder.Behaviors.Messaging
+namespace TimeRecorder.Behaviors.Messaging;
+
+public class MaterialTransitionInteractionMessageAction : TransitionInteractionMessageAction
 {
-
-    public class MaterialTransitionInteractionMessageAction : TransitionInteractionMessageAction
+    #region HostBorder依存関係プロパティ
+    public Border HostBorder
     {
-        #region HostBorder依存関係プロパティ
-        public Border HostBorder
+        get { return (Border)GetValue(HostBorderProperty); }
+        set { SetValue(HostBorderProperty, value); }
+    }
+
+    // Using a DependencyProperty as the backing store for HostBorder.  This enables animation, styling, binding, etc...
+    public static readonly DependencyProperty HostBorderProperty =
+        DependencyProperty.Register("HostBorder", typeof(Border), typeof(MaterialTransitionInteractionMessageAction), new PropertyMetadata(null));
+    #endregion
+
+
+    protected override void InvokeAction(Livet.Messaging.InteractionMessage m)
+    {
+        try
         {
-            get { return (Border)GetValue(HostBorderProperty); }
-            set { SetValue(HostBorderProperty, value); }
-        }
-
-        // Using a DependencyProperty as the backing store for HostBorder.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty HostBorderProperty =
-            DependencyProperty.Register("HostBorder", typeof(Border), typeof(MaterialTransitionInteractionMessageAction), new PropertyMetadata(null)); 
-        #endregion
-
-
-        protected override void InvokeAction(Livet.Messaging.InteractionMessage m)
-        {
-            try
+            if (HostBorder != null)
             {
-                if (HostBorder != null)
-                {
-                    HostBorder.Visibility = Visibility.Visible;
-                }
-
-                base.InvokeAction(m);
+                HostBorder.Visibility = Visibility.Visible;
             }
-            finally
+
+            base.InvokeAction(m);
+        }
+        finally
+        {
+            if (HostBorder != null)
             {
-                if (HostBorder != null)
-                {
-                    HostBorder.Visibility = Visibility.Collapsed;
-                }
+                HostBorder.Visibility = Visibility.Collapsed;
             }
         }
     }

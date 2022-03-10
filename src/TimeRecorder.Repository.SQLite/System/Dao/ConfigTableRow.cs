@@ -3,26 +3,25 @@ using System.Collections.Generic;
 using System.Text;
 using TimeRecorder.Domain.Domain.System;
 
-namespace TimeRecorder.Repository.SQLite.System.Dao
+namespace TimeRecorder.Repository.SQLite.System.Dao;
+
+class ConfigTableRow
 {
-    class ConfigTableRow
+    public string ConfigKey { get; set; }
+
+    public string JsonValue { get; set; }
+
+    public ConfigurationItem ConvertToDomainObject()
     {
-        public string ConfigKey { get; set; }
+        return new ConfigurationItem(ConfigKey, JsonValue);
+    }
 
-        public string JsonValue { get; set; }
-
-        public ConfigurationItem ConvertToDomainObject()
+    public static ConfigTableRow FromDomainObject(ConfigurationItem configurationItem)
+    {
+        return new ConfigTableRow
         {
-            return new ConfigurationItem(ConfigKey, JsonValue);
-        }
-
-        public static ConfigTableRow FromDomainObject(ConfigurationItem configurationItem)
-        {
-            return new ConfigTableRow
-            {
-                ConfigKey = configurationItem.Key,
-                JsonValue = configurationItem.JsonString,
-            };
-        }
+            ConfigKey = configurationItem.Key,
+            JsonValue = configurationItem.JsonString,
+        };
     }
 }

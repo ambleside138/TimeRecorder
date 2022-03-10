@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Repository.SQLite.System.Versions
-{
-    class Version_000_009_001_000 : IVersion
-    {
-        // worktaskの定義を大幅に変更
-        // remark, plan/actualtime: 削除
-        // source, importkey: 削除
-        // ※SQLiteは列の削除に対応していないため、テーブルの作り直しが必要...
+namespace TimeRecorder.Repository.SQLite.System.Versions;
 
-        public string CommandQuery => @"
+class Version_000_009_001_000 : IVersion
+{
+    // worktaskの定義を大幅に変更
+    // remark, plan/actualtime: 削除
+    // source, importkey: 削除
+    // ※SQLiteは列の削除に対応していないため、テーブルの作り直しが必要...
+
+    public string CommandQuery => @"
 ALTER TABLE
   worktasks
  RENAME TO 
@@ -86,29 +86,28 @@ WHERE
 
 ";
 
-        // 作業中タスクにもテーブルを用意する手法もありそうだったが、
-        // オーバースペックな気がするので今回はなしで
-        // https://flxy.jp/article/10813
-        //CREATE TABLE worktasksinprogress
-        //(
-        //    worktaskid  int PRIMARY KEY,
-        //    registdatetime
-        //);
+    // 作業中タスクにもテーブルを用意する手法もありそうだったが、
+    // オーバースペックな気がするので今回はなしで
+    // https://flxy.jp/article/10813
+    //CREATE TABLE worktasksinprogress
+    //(
+    //    worktaskid  int PRIMARY KEY,
+    //    registdatetime
+    //);
 
-        //        INSERT INTO
-        //  worktasksinprogress
-        //(
-        //  worktaskid,
-        //  registdatetime
-        // )
-        //SELECT
-        //  id,
-        //  actualenddatetime
-        //FROM
-        //  worktasks_bk
-        //WHERE
-        //  actualenddatetime IS NULL;
+    //        INSERT INTO
+    //  worktasksinprogress
+    //(
+    //  worktaskid,
+    //  registdatetime
+    // )
+    //SELECT
+    //  id,
+    //  actualenddatetime
+    //FROM
+    //  worktasks_bk
+    //WHERE
+    //  actualenddatetime IS NULL;
 
-        public string Version => "000.009.001.000";
-    }
+    public string Version => "000.009.001.000";
 }

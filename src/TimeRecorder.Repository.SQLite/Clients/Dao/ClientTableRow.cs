@@ -4,20 +4,19 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain;
 
-namespace TimeRecorder.Repository.SQLite.Clients.Dao
+namespace TimeRecorder.Repository.SQLite.Clients.Dao;
+
+class ClientTableRow
 {
-    class ClientTableRow
+    public int Id { get; set; }
+
+    public string Name { get; set; }
+
+    public string KanaName { get; set; }
+
+    public Client ToDomainObject()
     {
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string KanaName { get; set; }
-
-        public Client ToDomainObject()
-        {
-            return new Client(new Identity<Client>(Id), Name, KanaName);
-        }
-
+        return new Client(new Identity<Client>(Id), Name, KanaName);
     }
+
 }

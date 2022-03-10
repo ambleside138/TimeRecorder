@@ -2,18 +2,17 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline
+namespace TimeRecorder.Contents.WorkUnitRecorder.Timeline;
+
+class TimelineProperties
 {
-    class TimelineProperties
-    {
-        public static TimelineProperties Current { get; } = new TimelineProperties();
+    public static TimelineProperties Current { get; } = new TimelineProperties();
 
-        /// <summary>
-        /// １時間あたりの高さ
-        /// </summary>
-        public int HourHeight { get; set; } = 60;
+    /// <summary>
+    /// １時間あたりの高さ
+    /// </summary>
+    public int HourHeight { get; set; } = 60;
 
-        public int StartHour { get; set; } = 7;
+    public int StartHour { get; set; } = 7;
 
-    }
 }

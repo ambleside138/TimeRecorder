@@ -32,40 +32,25 @@
         </DataTemplate>
     </UserControl.Resources>
 
-    <Grid Margin="8">
+    <Grid Margin="8,8,0,8">
         <Grid.RowDefinitions>
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <ScrollViewer Margin="0,0,0,32">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
 
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="64" />
-                    <RowDefinition Height="64" />
-                    <RowDefinition Height="64" />
-                    <RowDefinition Height="196" />
-                    <RowDefinition Height="324" />
-                    <RowDefinition Height="64" />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+            <Grid Margin="32 0 64 0">
+                <StackPanel>
 
-                <!--  1. theme  -->
-                <TextBlock
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="0,4,16,4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                    <!--  1. theme  -->
+                    <TextBlock
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                     Text="テーマ" />
 
-                <ComboBox
+                    <TextBlock Text="テーマカラーを設定します" Style="{StaticResource MaterialDesignBody2TextBlock}" Margin="0 4 0 4 " />
+
+                    <ComboBox
                     Grid.Row="0"
                     Grid.Column="1"
                     Width="240"
@@ -75,148 +60,133 @@
                     Focusable="False"
                     ItemsSource="{Binding Swatches, Mode=OneTime}"
                     SelectedItem="{Binding SelectedSwatch.Value, Mode=TwoWay}">
-                    <ComboBox.ItemContainerStyle>
-                        <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                        </Style>
-                    </ComboBox.ItemContainerStyle>
-                </ComboBox>
+                        <ComboBox.ItemContainerStyle>
+                            <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                            </Style>
+                        </ComboBox.ItemContainerStyle>
+                    </ComboBox>
 
-                <!--  2. backup  -->
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Margin="0,8,16,4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                    <!--  2. backup  -->
+                    <TextBlock
+                        Margin="0 32 0 0"
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                     Text="バックアップ" />
 
-                <Grid Grid.Row="1" Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                         Margin="0 4 0 0"
+                        Text="１時間おきに指定フォルダへローカルDBをバックアップします" />
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <TextBox
+                        <TextBox
                         Margin="0,0,16,0"
                         VerticalAlignment="Center"
                         Text="{Binding BackupPath.Value}" />
 
-                    <c:CallMethodButton
+                        <c:CallMethodButton
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         Content="保存"
                         MethodName="RegistBackupPath"
                         Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                    </Grid>
 
+                    <!--  3. backup  -->
                     <TextBlock
-                        Grid.Row="1"
-                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                        Text="１時間おきに指定フォルダへローカルDBをバックアップします" />
-                </Grid>
-
-                <!--  3. backup  -->
-                <TextBlock
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Margin="0,8,16,4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                    Margin="0 32 0 0"
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                     Text="休憩時間" />
 
-                <Grid Grid.Row="2" Grid.Column="1">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
+                    <TextBlock
+                        Margin="0 4 0 0"
+                        Style="{StaticResource MaterialDesignBody2TextBlock}"
+                        Text="休憩時間をHHmm形式で設定します。開始時間になるとタスク停止、終了時間になるとタスク再開します。" />
+                    <Grid Grid.Row="2" Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
 
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal">
-                        <TextBox
+                        <StackPanel Orientation="Horizontal">
+                            <TextBox
                             Width="64"
                             Margin="0,0,16,0"
                             VerticalAlignment="Center"
                             MaxLength="4"
                             Text="{Binding LunchStartTimeHHmm.Value}" />
 
-                        <TextBlock VerticalAlignment="Center" Text="～" />
+                            <TextBlock VerticalAlignment="Center" Text="～" />
 
-                        <TextBox
+                            <TextBox
                             Width="64"
                             Margin="16,0,16,0"
                             VerticalAlignment="Center"
                             MaxLength="4"
                             Text="{Binding LunchEndTimeHHmm.Value}" />
-                    </StackPanel>
+                        </StackPanel>
 
 
-                    <c:CallMethodButton
+                        <c:CallMethodButton
                         Grid.Column="1"
                         VerticalAlignment="Center"
                         Content="保存"
                         MethodName="RegistLunchTime"
                         Style="{StaticResource MaterialDesignFlatMidBgButton}" />
+                    </Grid>
 
+                    <!--  4. Favorites  -->
                     <TextBlock
-                        Grid.Row="1"
-                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                        Text="休憩時間をHHmm形式で設定します。開始時間になるとタスク停止、終了時間になるとタスク再開します。" />
-                </Grid>
-
-                <!--  4. Favorites  -->
-                <TextBlock
-                    Grid.Row="3"
-                    Margin="0,8,16,4"
-                    HorizontalAlignment="Right"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                    Margin="0 32 0 0"
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                     Text="お気に入りタスク" />
 
-                <StackPanel
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    Margin="0,4,0,0">
-                    <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="よく利用するタスクを登録します" />
-                    <ListBox
-                        Height="120"
+                    <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}"
+                               Margin="0 4 0 4"
+                               Text="よく利用するタスクを登録します" />
+
+                    <Grid>
+                        <ListBox
+                        Height="240"
                         BorderBrush="{StaticResource MaterialDesignBodyLight}"
                         BorderThickness="1"
                         ItemsSource="{Binding FavoriteWorkTasks}">
-                        <ListBox.ItemContainerStyle>
-                            <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="Focusable" Value="False" />
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border HorizontalAlignment="Stretch" BorderThickness="0,0,0,1">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="64" />
-                                            <ColumnDefinition />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                            <ListBox.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Focusable" Value="False" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border HorizontalAlignment="Stretch" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="64" />
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
 
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding TaskCategory, Converter={StaticResource EnumToDisplayTextConverter}}" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding TaskCategory, Converter={StaticResource EnumToDisplayTextConverter}}" />
 
-                                        <TextBlock
+                                            <TextBlock
                                             Grid.Column="1"
                                             VerticalAlignment="Center"
                                             Text="{Binding Title}" />
 
-                                        <c:CallMethodButton
+                                            <c:CallMethodButton
                                             Grid.Column="2"
                                             Width="20"
                                             Height="20"
@@ -224,16 +194,26 @@
                                             MethodParameter="{Binding}"
                                             MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                             Style="{StaticResource MaterialDesignIconButton}">
-                                            <materialDesign:PackIcon
+                                                <materialDesign:PackIcon
                                                 Width="16"
                                                 Height="16"
                                                 Kind="Pencil" />
-                                        </c:CallMethodButton>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                                            </c:CallMethodButton>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignBody1TextBlock}"
+                    Text="追加ボタンをクリックしてお気に入りタスクを登録します"
+                    Visibility="{Binding ShowFavoriteDescription.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                    </Grid>
+                   
 
                     <c:CallMethodButton
                         Margin="0,8,0,0"
@@ -241,55 +221,41 @@
                         Content="追加"
                         MethodName="AddFavoriteTask"
                         Style="{StaticResource MaterialDesignFlatMidBgButton}" />
-                </StackPanel>
-
-                <TextBlock
-                    Grid.Row="2"
-                    Grid.Column="1"
-                    Margin="0,64,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Style="{StaticResource MaterialDesignBody1TextBlock}"
-                    Text="追加ボタンをクリックしてお気に入りタスクを登録します"
-                    Visibility="{Binding ShowFavoriteDescription.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
 
-                <!--  5. Import  -->
-                <TextBlock
-                    Grid.Row="4"
-                    Margin="0,8,16,4"
-                    HorizontalAlignment="Right"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+
+                    <!--  5. Import  -->
+                    <TextBlock
+                    Margin="0 16 0 0"
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
                     Text="スケジュール取込" />
 
-                <StackPanel
-                    Grid.Row="4"
-                    Grid.Column="1"
-                    Margin="0,4,0,0">
-                    <TextBlock Style="{StaticResource MaterialDesignBody1TextBlock}" Text="スケジュールタイトルに応じたタスク内容を設定します" />
-                    <ListBox
+                    <TextBlock Style="{StaticResource MaterialDesignBody2TextBlock}"
+                               Margin="0 4 0 4" Text="スケジュールタイトルに応じたタスク内容を設定します" />
+                    <Grid>
+                        <ListBox
                         Height="240"
                         BorderBrush="{StaticResource MaterialDesignBodyLight}"
                         BorderThickness="1"
                         ItemsSource="{Binding ScheduleTitleMaps}">
-                        <ListBox.ItemContainerStyle>
-                            <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                                <Setter Property="Focusable" Value="False" />
-                            </Style>
-                        </ListBox.ItemContainerStyle>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Border HorizontalAlignment="Stretch" BorderThickness="0,0,0,1">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition />
-                                            <ColumnDefinition Width="Auto" />
-                                        </Grid.ColumnDefinitions>
+                            <ListBox.ItemContainerStyle>
+                                <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                                    <Setter Property="Focusable" Value="False" />
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Border HorizontalAlignment="Stretch" BorderThickness="0,0,0,1">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
 
-                                        <TextBlock VerticalAlignment="Center" Text="{Binding ScheduleTitle}" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding ScheduleTitle}" />
 
-                                        <c:CallMethodButton
+                                            <c:CallMethodButton
                                             Grid.Column="1"
                                             Width="20"
                                             Height="20"
@@ -297,16 +263,26 @@
                                             MethodParameter="{Binding}"
                                             MethodTarget="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                             Style="{StaticResource MaterialDesignIconButton}">
-                                            <materialDesign:PackIcon
+                                                <materialDesign:PackIcon
                                                 Width="16"
                                                 Height="16"
                                                 Kind="Pencil" />
-                                        </c:CallMethodButton>
-                                    </Grid>
-                                </Border>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                                            </c:CallMethodButton>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <TextBlock
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Style="{StaticResource MaterialDesignBody1TextBlock}"
+                    Text="追加ボタンをクリックしてスケジュール取込マッピング設定を登録します"
+                    Visibility="{Binding ShowScheduleDescription.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                    </Grid>
+
 
                     <c:CallMethodButton
                         Margin="0,8,0,0"
@@ -314,86 +290,73 @@
                         Content="追加"
                         MethodName="AddScheduleTitleMap"
                         Style="{StaticResource MaterialDesignFlatMidBgButton}" />
-                </StackPanel>
 
-                <TextBlock
-                    Grid.Row="3"
-                    Grid.Column="1"
-                    Margin="0,64,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    Style="{StaticResource MaterialDesignBody1TextBlock}"
-                    Text="追加ボタンをクリックしてスケジュール取込マッピング設定を登録します"
-                    Visibility="{Binding ShowScheduleDescription.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
-                <!--  6. workinghour import  -->
-                <!--<TextBlock
-                    Grid.Row="5"
-                    Grid.Column="0"
-                    Margin="0,16,16,4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                    Text="勤務時間取込API" />
 
-                <Grid
-                    Grid.Row="5"
-                    Grid.Column="1"
-                    Margin="0,16,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBox
-                        Margin="0,0,16,0"
-                        VerticalAlignment="Center"
-                        Text="{Binding WorkingHourImportUrl.Value}" />
-
-                    <c:CallMethodButton
-                        Grid.Column="1"
-                        VerticalAlignment="Center"
-                        Content="保存"
-                        MethodName="RegistImportURL"
-                        Style="{StaticResource MaterialDesignFlatMidBgButton}" />
-
+                    <!--  Todo機能の利用  -->
                     <TextBlock
-                        Grid.Row="1"
-                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                        Text="勤務時間の取込に利用するAPIのURLを設定します　※設定変更後再起動が必要です" />
-                </Grid>-->
+                    Margin="0 4 0 0"
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                    Text="Todo機能の利用（β）" />
+                    <TextBlock Text="タスク管理の機能を利用するかどうかを設定します" Style="{StaticResource MaterialDesignBody2TextBlock}" Margin="0 4 0 0" />
 
-                <!--  Todo機能の利用  -->
-                <TextBlock
-                    Grid.Row="5"
-                    Grid.Column="0"
-                    Margin="0,16,16,4"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
-                    Text="Todo機能の利用" />
-
-                <StackPanel
+                    <StackPanel
                     Grid.Row="5"
                     Grid.Column="1"
                     Margin="0,16,0,0"
                     Orientation="Horizontal">
-                    <ToggleButton IsChecked="{Binding UseTodo.Value}" Style="{StaticResource MaterialDesignSwitchToggleButton}" />
-                    <TextBlock
+                        <ToggleButton IsChecked="{Binding UseTodo.Value}" Style="{StaticResource MaterialDesignSwitchToggleButton}" />
+                        <TextBlock
                         Margin="8,0,0,0"
                         VerticalAlignment="Center"
                         FontSize="12"
                         Text="{Binding UseTodoText.Value}" />
-                    <TextBlock
+                        <TextBlock
                         Margin="32,0,0,0"
                         VerticalAlignment="Center"
                         Text="※変更後に再起動が必要" />
+                    </StackPanel>
+
+                    <Separator Margin="0 64 0 16"/>
+
+                    <StackPanel Orientation="Horizontal">
+                        <Grid>
+                            <Rectangle Width="32" Height="32" RadiusX="4" RadiusY="4" Fill="#00bfa5">
+
+                            </Rectangle>
+                            <materialDesign:PackIcon
+                                Width="24"
+                                Height="24"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Foreground="White"
+                                Kind="AlarmCheck" />
+                        </Grid>
+ 
+                        <TextBlock Text="TimeRecorder" Style="{StaticResource MaterialDesignHeadline5TextBlock}" VerticalAlignment="Center" Margin="8 0 0 0" />
+
+                    </StackPanel>
+
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <TextBlock Text="ver. "  Style="{StaticResource MaterialDesignCaptionTextBlock}" FontSize="12" />
+                        <TextBlock Text="{Binding VersionInfo.Value}" Style="{StaticResource MaterialDesignCaptionTextBlock}" FontSize="12" />
+                    </StackPanel>
+
+                    <TextBlock  Style="{StaticResource MaterialDesignCaptionTextBlock}"
+							   Margin="2,0">
+							<Run Text="Source code:" />
+							<c:RunnableHyperlink Uri="https://github.com/ambleside138/TimeRecorder">
+								<Run Text="https://github.com/ambleside138/TimeRecorder" />
+							</c:RunnableHyperlink>
+
+							<LineBreak />
+
+
+                    </TextBlock>
                 </StackPanel>
+
+
+
             </Grid>
 
         </ScrollViewer>

@@ -14,88 +14,87 @@ using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain;
 using TimeRecorder.Helpers;
 
-namespace TimeRecorder.Contents.WorkUnitRecorder
+namespace TimeRecorder.Contents.WorkUnitRecorder;
+
+/// <summary>
+/// タスク（編集機能有）のViewModelを表します
+/// </summary>
+public class WorkTaskViewModel : ViewModel
 {
-    /// <summary>
-    /// タスク（編集機能有）のViewModelを表します
-    /// </summary>
-    public class WorkTaskViewModel : ViewModel
+    public ReactiveProperty<string> Title { get; }
+
+    public ReactiveProperty<TaskCategory> TaskCategory { get; }
+
+    public ReactiveProperty<Product> Product { get; }
+
+    public ReactiveProperty<Client> Client { get; }
+
+    public ReactiveProperty<WorkProcess> WorkProcess { get; }
+
+    public WorkTask DomainModel { get; }
+
+    private readonly WorkProcess[] _Processes;
+
+    private readonly Client[] _Clients;
+
+    private readonly Product[] _Products;
+
+    public WorkTaskViewModel(WorkTask task, WorkProcess[] processes, Client[] clients, Product[] products)
     {
-        public ReactiveProperty<string> Title { get; }
+        DomainModel = task;
+        _Processes = processes;
+        _Clients = clients;
+        _Products = products;
 
-        public ReactiveProperty<TaskCategory> TaskCategory { get; }
+        Title = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Title)
+                            .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "タイトルは入力必須です" : null)
+                            .AddTo(CompositeDisposable);
 
-        public ReactiveProperty<Product> Product { get; }
+        TaskCategory = DomainModel.ToReactivePropertyAsSynchronized(x => x.TaskCategory)
+                                  .AddTo(CompositeDisposable);
 
-        public ReactiveProperty<Client> Client { get; }
+        Product = DomainModel.ToReactivePropertyAsSynchronized(
+                                    x => x.ProductId,
+                                    m => _Products.FirstOrDefault(p => p.Id == m),
+                                    vm => vm?.Id ?? Identity<Product>.Empty)
+                                 .AddTo(CompositeDisposable);
 
-        public ReactiveProperty<WorkProcess> WorkProcess { get; }
+        WorkProcess = DomainModel.ToReactivePropertyAsSynchronized(
+                                    x => x.ProcessId,
+                                    m => _Processes.FirstOrDefault(p => p.Id == m),
+                                    vm => vm?.Id ?? Identity<WorkProcess>.Empty,
+                                    ReactivePropertyMode.IgnoreInitialValidationError)
+                                 .SetValidateNotifyError(x => (x == null || x.Id == Identity<WorkProcess>.Empty) ? "工程は選択必須です" : null)
+                                 .AddTo(CompositeDisposable);
 
-        public WorkTask DomainModel { get; }
+        Client = DomainModel.ToReactivePropertyAsSynchronized(
+                                    x => x.ClientId,
+                                    m => _Clients.FirstOrDefault(p => p.Id == m),
+                                    vm => vm?.Id ?? Identity<Client>.Empty)
+                                 .AddTo(CompositeDisposable);
 
-        private readonly WorkProcess[] _Processes;
-
-        private readonly Client[] _Clients;
-
-        private readonly Product[] _Products;
-
-        public WorkTaskViewModel(WorkTask task, WorkProcess[] processes, Client[] clients, Product[] products)
+        if (task.Id.IsTemporary
+            && DomainModel.TaskCategory == Domain.Domain.Tasks.TaskCategory.UnKnown)
         {
-            DomainModel = task;
-            _Processes = processes;
-            _Clients = clients;
-            _Products = products;
-
-            Title = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Title)
-                                .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "タイトルは入力必須です" : null)
-                                .AddTo(CompositeDisposable);
-
-            TaskCategory = DomainModel.ToReactivePropertyAsSynchronized(x => x.TaskCategory)
-                                      .AddTo(CompositeDisposable);
-
-            Product = DomainModel.ToReactivePropertyAsSynchronized(
-                                        x => x.ProductId,
-                                        m => _Products.FirstOrDefault(p => p.Id == m),
-                                        vm => vm?.Id ?? Identity<Product>.Empty)
-                                     .AddTo(CompositeDisposable);
-
-            WorkProcess = DomainModel.ToReactivePropertyAsSynchronized(
-                                        x => x.ProcessId,
-                                        m => _Processes.FirstOrDefault(p => p.Id == m),
-                                        vm => vm?.Id ?? Identity<WorkProcess>.Empty,
-                                        ReactivePropertyMode.IgnoreInitialValidationError)
-                                     .SetValidateNotifyError(x => (x == null || x.Id == Identity<WorkProcess>.Empty) ? "工程は選択必須です" : null)
-                                     .AddTo(CompositeDisposable);
-
-            Client = DomainModel.ToReactivePropertyAsSynchronized(
-                                        x => x.ClientId,
-                                        m => _Clients.FirstOrDefault(p => p.Id == m),
-                                        vm => vm?.Id ?? Identity<Client>.Empty)
-                                     .AddTo(CompositeDisposable);
-
-            if(task.Id.IsTemporary
-                && DomainModel.TaskCategory == Domain.Domain.Tasks.TaskCategory.UnKnown)
-            {
-                DomainModel.TaskCategory = Domain.Domain.Tasks.TaskCategory.Develop;
-            }
-
+            DomainModel.TaskCategory = Domain.Domain.Tasks.TaskCategory.Develop;
         }
-
-        public bool TryValidate()
-        {
-            var result = true;
-
-            // TODO: 検証対象をListでまとめてぐるぐる処理したいが...どう実装していいのかわからない
-            Title.ForceValidate();
-            result &= Title.HasErrors == false;
-
-            WorkProcess.ForceValidate();
-            result &= WorkProcess.HasErrors == false;
-
-            return result;
-        }
-
 
     }
+
+    public bool TryValidate()
+    {
+        var result = true;
+
+        // TODO: 検証対象をListでまとめてぐるぐる処理したいが...どう実装していいのかわからない
+        Title.ForceValidate();
+        result &= Title.HasErrors == false;
+
+        WorkProcess.ForceValidate();
+        result &= WorkProcess.HasErrors == false;
+
+        return result;
+    }
+
+
 }
  

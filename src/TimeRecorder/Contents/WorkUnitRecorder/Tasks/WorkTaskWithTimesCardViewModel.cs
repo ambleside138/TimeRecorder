@@ -22,236 +22,235 @@ using TimeRecorder.Domain.Utility.SystemClocks;
 using TimeRecorder.Helpers;
 using TimeRecorder.Host;
 
-namespace TimeRecorder.Contents.WorkUnitRecorder
+namespace TimeRecorder.Contents.WorkUnitRecorder;
+
+/// <summary>
+/// 作業時間の情報を含むタスクを表すViewModelです
+/// </summary>
+public class WorkTaskWithTimesCardViewModel : ViewModel
 {
-    /// <summary>
-    /// 作業時間の情報を含むタスクを表すViewModelです
-    /// </summary>
-    public class WorkTaskWithTimesCardViewModel : ViewModel
+    private readonly WorkTaskModel _Model = new();
+
+    public ReactivePropertySlim<bool> IsIndeterminate { get; } = new ReactivePropertySlim<bool>(false);
+
+
+    public ReactivePropertySlim<bool> IsCompleted { get; }
+
+    public ReactivePropertySlim<bool> CheckboxIsEnabled { get; }
+
+    public ReactivePropertySlim<string> PlayTooltip { get; set; } = new ReactivePropertySlim<string>();
+
+    public ReactivePropertySlim<string> PlayIconKind { get; set; } = new ReactivePropertySlim<string>();
+
+    public ReactivePropertySlim<bool> ShowWarning { get; } = new ReactivePropertySlim<bool>();
+
+    public bool IsScheduled => Dto.IsScheduled;
+
+    public string ScheduleDateTimeText
     {
-        private readonly WorkTaskModel _Model = new();
-
-        public ReactivePropertySlim<bool> IsIndeterminate { get; } = new ReactivePropertySlim<bool>(false);
-
-
-        public ReactivePropertySlim<bool> IsCompleted { get; }
-
-        public ReactivePropertySlim<bool> CheckboxIsEnabled { get; }
-
-        public ReactivePropertySlim<string> PlayTooltip { get; set; } = new ReactivePropertySlim<string>();
-
-        public ReactivePropertySlim<string> PlayIconKind { get; set; } = new ReactivePropertySlim<string>();
-
-        public ReactivePropertySlim<bool> ShowWarning { get; } = new ReactivePropertySlim<bool>();
-
-        public bool IsScheduled => Dto.IsScheduled;
-
-        public string ScheduleDateTimeText
+        get
         {
-            get
+            if (IsScheduled && Dto.WorkingTimes.Any())
             {
-                if (IsScheduled && Dto.WorkingTimes.Any())
+                var format = "HH:mm ～";
+
+                var scheduleDate = Dto.WorkingTimes.First().TimePeriod.StartDateTime;
+                if (scheduleDate.Date == SystemClockServiceLocator.Current.Now.Date)
                 {
-                    var format = "HH:mm ～";
-
-                    var scheduleDate = Dto.WorkingTimes.First().TimePeriod.StartDateTime;
-                    if (scheduleDate.Date == SystemClockServiceLocator.Current.Now.Date)
-                    {
-                        format = "[今日] " + format;
-                    }
-                    else
-                    {
-                        // 日付が異なる場合だけ月日を表示する
-                        format = "M/d " + format;
-                    }
-
-                    return scheduleDate.ToString(format);
+                    format = "[今日] " + format;
                 }
                 else
                 {
-                    return "";
+                    // 日付が異なる場合だけ月日を表示する
+                    format = "M/d " + format;
                 }
-            }
-        }
 
-        public WorkingTimeRange[] WorkingTimes { get; }
-
-        public WorkTaskWithTimesCardViewModel(WorkTaskWithTimesDto dto)
-        {
-            Dto = dto;
-            WorkingTimes = dto.WorkingTimes.OrderByDescending(t => t.TimePeriod.StartDateTime).ToArray();
-            UpdateStatus();
-
-            IsCompleted = new ReactivePropertySlim<bool>(dto.IsCompleted, ReactivePropertyMode.DistinctUntilChanged);
-            CheckboxIsEnabled = new ReactivePropertySlim<bool>(dto.IsCompleted == false);
-
-            IsCompleted.Subscribe(b =>
-                            {
-                                if(b)
-                                {
-                                    CompleteWorkTask();
-                                }
-                            })
-                        .AddTo(CompositeDisposable);
-
-            ShowWarning.Value = dto.TaskCategory != Domain.Domain.Tasks.TaskCategory.Other
-                                && string.IsNullOrEmpty(dto.ProductName)
-                                && string.IsNullOrEmpty(dto.ClientName);
-        }
-
-        public void UpdateStatus()
-        {
-            IsIndeterminate.Value = Dto.WorkingTimes.Any(t => t.IsDoing);
-
-            if (IsIndeterminate.Value)
-            {
-                PlayTooltip.Value = "現在の作業を停止";
-                PlayIconKind.Value = "Pause";
+                return scheduleDate.ToString(format);
             }
             else
             {
-                PlayTooltip.Value = "タスクを開始";
-                PlayIconKind.Value = "Play";
+                return "";
             }
         }
-
-        public void StartOrStopWorkTask()
-        {
-            var doingTask = Dto.WorkingTimes.LastOrDefault(t => t.IsDoing);
-            if(doingTask != null)
-            {
-                _Model.StopWorking(doingTask.Id);
-            }
-            else
-            {
-                _Model.StartWorking(Dto.TaskId);
-            }
-        }
-
-
-        public void EditWorkTask()
-        {
-            var targetData = _Model.SelectWorkTask(Dto.TaskId);
-
-            var editDialogVm = new WorkTaskEditDialogViewModel(targetData);
-
-            var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
-
-            if (result == ModalTransitionResponse.Yes)
-            {
-                if(editDialogVm.NeedDelete)
-                {
-                    _Model.DeleteWorkTask(Dto.TaskId);
-                }
-                else
-                {
-                    var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
-                    _Model.EditWorkTask(inputValue);
-                }
-
-            }
-        }
-
-
-
-        public async void CompleteWorkTask()
-        {
-            try
-            {
-                _Model.CompleteWorkTask(Dto.TaskId);
-                SnackbarService.Current.ShowMessage("[タスク完了] おつかれさまでした！");
-            }
-            catch (TimeRecorder.Domain.Utility.Exceptions.SpecificationCheckException ex)
-            {
-                SnackbarService.Current.ShowMessage(ex.Message);
-
-                await Task.Delay(TimeSpan.FromSeconds(2));
-                IsCompleted.Value = false;
-            } 
-        }
-
-        public void UnCompleteTask()
-        {
-            _Model.UnCompleteWorkTask(Dto.TaskId);
-        }
-
-        public void DeleteWorkTask()
-        {
-            _Model.DeleteWorkTask(Dto.TaskId);
-        }
-
-        public async void AddWorkingTime()
-        {
-            var selectedDate = MainWindowViewModel.Instance.Contents.OfType<WorkUnitRecorderViewModel>().First().TargetDateTime.Value.Date;
-
-            var now = SystemClockServiceLocator.Current.Now;
-            var workingTimeRange = WorkingTimeRange.ForEdit(Dto.TaskId, now, now);
-
-            if(now.Date == selectedDate)
-            {
-                // もう少しお行儀のいい書き方はないものか...
-                var usecase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.GetRequiredService<IWorkingTimeQueryService>());
-                var list = usecase.SelectByYmd(selectedDate.ToYmd());
-                var lastTime = list.Where(i => i.TimePeriod.IsFuture == false)
-                                   .Where(i => i.TimePeriod.IsStopped)
-                                   .OrderBy(i => i.TimePeriod.EndDateTime.Value)
-                                   .LastOrDefault();
-                if(lastTime != null)
-                {
-                    workingTimeRange = WorkingTimeRange.ForEdit(Dto.TaskId, lastTime.TimePeriod.EndDateTime.Value.AddMinutes(1), null);
-                }
-            }
-            else
-            {
-                workingTimeRange = WorkingTimeRange.ForEdit(Dto.TaskId, selectedDate, selectedDate);
-            }
-
-            var editDialogVm = new WorkingTimeRangeEditDialogViewModel(workingTimeRange);
-
-            var view = new WorkingTimeRangeEditDialog
-            {
-                DataContext = editDialogVm
-            };
-
-            //show the dialog
-            var result = (bool?)await DialogHost.Show(view);
-
-            if (result.HasValue && result.Value)
-            {
-                var editObj = editDialogVm.WorkingTimeViewModel.DomainModel;
-                _Model.AddWorkingTime(editObj);
-            }
-        }
-
-        public async void EditWorkingTime(WorkingTimeRange workingTimeRange)
-        {
-            var editDialogVm = new WorkingTimeRangeEditDialogViewModel(workingTimeRange);
-
-            var view = new WorkingTimeRangeEditDialog
-            {
-                DataContext = editDialogVm
-            };
-
-            //show the dialog
-            var result = (bool?)await DialogHost.Show(view);
-
-            if (result.HasValue && result.Value)
-            {
-                var editObj = editDialogVm.WorkingTimeViewModel.DomainModel;
-                _Model.EditWorkingTime(editObj);
-            }
-        }
-
-        public void DeleteWorkingTime(WorkingTimeRange workingTimeRange)
-        {
-            //Task.Delay(TimeSpan.FromSeconds(3))
-            //    .ContinueWith((t, _) => IsSample4DialogOpen = false, null,
-            //        TaskScheduler.FromCurrentSynchronizationContext());
-
-            _Model.DeleteWorkingTime(workingTimeRange);
-        }
-
-        public WorkTaskWithTimesDto Dto { get; }
-
     }
+
+    public WorkingTimeRange[] WorkingTimes { get; }
+
+    public WorkTaskWithTimesCardViewModel(WorkTaskWithTimesDto dto)
+    {
+        Dto = dto;
+        WorkingTimes = dto.WorkingTimes.OrderByDescending(t => t.TimePeriod.StartDateTime).ToArray();
+        UpdateStatus();
+
+        IsCompleted = new ReactivePropertySlim<bool>(dto.IsCompleted, ReactivePropertyMode.DistinctUntilChanged);
+        CheckboxIsEnabled = new ReactivePropertySlim<bool>(dto.IsCompleted == false);
+
+        IsCompleted.Subscribe(b =>
+                        {
+                            if (b)
+                            {
+                                CompleteWorkTask();
+                            }
+                        })
+                    .AddTo(CompositeDisposable);
+
+        ShowWarning.Value = dto.TaskCategory != Domain.Domain.Tasks.TaskCategory.Other
+                            && string.IsNullOrEmpty(dto.ProductName)
+                            && string.IsNullOrEmpty(dto.ClientName);
+    }
+
+    public void UpdateStatus()
+    {
+        IsIndeterminate.Value = Dto.WorkingTimes.Any(t => t.IsDoing);
+
+        if (IsIndeterminate.Value)
+        {
+            PlayTooltip.Value = "現在の作業を停止";
+            PlayIconKind.Value = "Pause";
+        }
+        else
+        {
+            PlayTooltip.Value = "タスクを開始";
+            PlayIconKind.Value = "Play";
+        }
+    }
+
+    public void StartOrStopWorkTask()
+    {
+        var doingTask = Dto.WorkingTimes.LastOrDefault(t => t.IsDoing);
+        if (doingTask != null)
+        {
+            _Model.StopWorking(doingTask.Id);
+        }
+        else
+        {
+            _Model.StartWorking(Dto.TaskId);
+        }
+    }
+
+
+    public void EditWorkTask()
+    {
+        var targetData = _Model.SelectWorkTask(Dto.TaskId);
+
+        var editDialogVm = new WorkTaskEditDialogViewModel(targetData);
+
+        var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
+
+        if (result == ModalTransitionResponse.Yes)
+        {
+            if (editDialogVm.NeedDelete)
+            {
+                _Model.DeleteWorkTask(Dto.TaskId);
+            }
+            else
+            {
+                var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
+                _Model.EditWorkTask(inputValue);
+            }
+
+        }
+    }
+
+
+
+    public async void CompleteWorkTask()
+    {
+        try
+        {
+            _Model.CompleteWorkTask(Dto.TaskId);
+            SnackbarService.Current.ShowMessage("[タスク完了] おつかれさまでした！");
+        }
+        catch (TimeRecorder.Domain.Utility.Exceptions.SpecificationCheckException ex)
+        {
+            SnackbarService.Current.ShowMessage(ex.Message);
+
+            await Task.Delay(TimeSpan.FromSeconds(2));
+            IsCompleted.Value = false;
+        }
+    }
+
+    public void UnCompleteTask()
+    {
+        _Model.UnCompleteWorkTask(Dto.TaskId);
+    }
+
+    public void DeleteWorkTask()
+    {
+        _Model.DeleteWorkTask(Dto.TaskId);
+    }
+
+    public async void AddWorkingTime()
+    {
+        var selectedDate = MainWindowViewModel.Instance.Contents.OfType<WorkUnitRecorderViewModel>().First().TargetDateTime.Value.Date;
+
+        var now = SystemClockServiceLocator.Current.Now;
+        var workingTimeRange = WorkingTimeRange.ForEdit(Dto.TaskId, now, now);
+
+        if (now.Date == selectedDate)
+        {
+            // もう少しお行儀のいい書き方はないものか...
+            var usecase = new GetWorkingTimeForTimelineUseCase(ContainerHelper.GetRequiredService<IWorkingTimeQueryService>());
+            var list = usecase.SelectByYmd(selectedDate.ToYmd());
+            var lastTime = list.Where(i => i.TimePeriod.IsFuture == false)
+                               .Where(i => i.TimePeriod.IsStopped)
+                               .OrderBy(i => i.TimePeriod.EndDateTime.Value)
+                               .LastOrDefault();
+            if (lastTime != null)
+            {
+                workingTimeRange = WorkingTimeRange.ForEdit(Dto.TaskId, lastTime.TimePeriod.EndDateTime.Value.AddMinutes(1), null);
+            }
+        }
+        else
+        {
+            workingTimeRange = WorkingTimeRange.ForEdit(Dto.TaskId, selectedDate, selectedDate);
+        }
+
+        var editDialogVm = new WorkingTimeRangeEditDialogViewModel(workingTimeRange);
+
+        var view = new WorkingTimeRangeEditDialog
+        {
+            DataContext = editDialogVm
+        };
+
+        //show the dialog
+        var result = (bool?)await DialogHostHelper.Show(view);
+
+        if (result.HasValue && result.Value)
+        {
+            var editObj = editDialogVm.WorkingTimeViewModel.DomainModel;
+            _Model.AddWorkingTime(editObj);
+        }
+    }
+
+    public async void EditWorkingTime(WorkingTimeRange workingTimeRange)
+    {
+        var editDialogVm = new WorkingTimeRangeEditDialogViewModel(workingTimeRange);
+
+        var view = new WorkingTimeRangeEditDialog
+        {
+            DataContext = editDialogVm
+        };
+
+        //show the dialog
+        var result = (bool?)await DialogHostHelper.Show(view);
+
+        if (result.HasValue && result.Value)
+        {
+            var editObj = editDialogVm.WorkingTimeViewModel.DomainModel;
+            _Model.EditWorkingTime(editObj);
+        }
+    }
+
+    public void DeleteWorkingTime(WorkingTimeRange workingTimeRange)
+    {
+        //Task.Delay(TimeSpan.FromSeconds(3))
+        //    .ContinueWith((t, _) => IsSample4DialogOpen = false, null,
+        //        TaskScheduler.FromCurrentSynchronizationContext());
+
+        _Model.DeleteWorkingTime(workingTimeRange);
+    }
+
+    public WorkTaskWithTimesDto Dto { get; }
+
 }

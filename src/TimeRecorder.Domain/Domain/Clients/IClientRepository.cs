@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.Domain.Clients
+namespace TimeRecorder.Domain.Domain.Clients;
+
+public interface IClientRepository : IRepository
 {
-    public interface IClientRepository : IRepository
-    {
-        Client[] SelectAll();
-    }
+    Client[] SelectAll();
 }

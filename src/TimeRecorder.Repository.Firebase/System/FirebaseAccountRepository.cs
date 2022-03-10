@@ -18,67 +18,66 @@ using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Repository.Firebase.Shared;
 using TimeRecorder.Repository.Firebase.System.Dao;
 
-namespace TimeRecorder.Repository.Firebase.System
+namespace TimeRecorder.Repository.Firebase.System;
+
+public class FirebaseAccountRepository : IAccountRepository
 {
-    public class FirebaseAccountRepository : IAccountRepository
+    public bool IsSignined() => FirebaseAuthenticator.Current.ExistsLoginCache();
+
+    public LoginStatus Signin()
     {
-        public bool IsSignined() => FirebaseAuthenticator.Current.ExistsLoginCache();
+        FirebaseAuthLink link = FirebaseAuthenticator.Current
+                                                     .SignInWithGoogleOAuthAsyncCached()
+                                                     ;
 
-        public LoginStatus Signin()
+        LoginStatus status = new()
         {
-            FirebaseAuthLink link = FirebaseAuthenticator.Current
-                                                         .SignInWithGoogleOAuthAsyncCached()
-                                                         ;
+            DisplayName = link.User.DisplayName,
+            Email = link.User.Email,
+            PhotoUrl = link.User.PhotoUrl,
+            UserId = link.User.LocalId,
+        };
 
-            LoginStatus status = new()
+        var db = FirestoreAccessor.CreateDbClientAsync().Result;
+
+        DocumentReference docRef = UsersDao.GetUsersReference(db).Document(status.UserId);
+
+
+        DocumentSnapshot snapshot = docRef.GetSnapshotAsync().Result;
+
+        var timestamp = Timestamp.GetCurrentTimestamp();
+
+        if (snapshot.Exists)
+        {
+            Dictionary<string, object> updates = new()
             {
-                DisplayName = link.User.DisplayName,
-                Email = link.User.Email,
-                PhotoUrl = link.User.PhotoUrl,
-                UserId = link.User.LocalId,
+                { nameof(UserDocument.LatestSignInDateTime), timestamp }
             };
 
-            var db = FirestoreAccessor.CreateDbClientAsync().Result;
-
-            DocumentReference docRef = UsersDao.GetUsersReference(db).Document(status.UserId);
-
-
-            DocumentSnapshot snapshot = docRef.GetSnapshotAsync().Result;
-
-            var timestamp = Timestamp.GetCurrentTimestamp();
-
-            if (snapshot.Exists)
-            {
-                Dictionary<string, object> updates = new()
-                {
-                    { nameof(UserDocument.LatestSignInDateTime), timestamp }
-                };
-
-                docRef.UpdateAsync(updates).Wait();
-            }
-            else
-            {
-                // 新規登録
-                UserDocument doc = new()
-                {
-                    UserId = status.UserId,
-                    DisplayName = status.DisplayName,
-                    Email = status.Email,
-                    PhotoUrl = status.PhotoUrl,
-                    LatestSignInDateTime = timestamp,
-                    CreatedAt = timestamp,
-                    UpdatedAt = timestamp,
-                };
-
-                docRef.SetAsync(doc).Wait();
-            }
-
-            return status;
+            docRef.UpdateAsync(updates).Wait();
         }
-
-        public void Signout()
+        else
         {
-            FirebaseAuthenticator.Current.SignOut();
+            // 新規登録
+            UserDocument doc = new()
+            {
+                UserId = status.UserId,
+                DisplayName = status.DisplayName,
+                Email = status.Email,
+                PhotoUrl = status.PhotoUrl,
+                LatestSignInDateTime = timestamp,
+                CreatedAt = timestamp,
+                UpdatedAt = timestamp,
+            };
+
+            docRef.SetAsync(doc).Wait();
         }
+
+        return status;
+    }
+
+    public void Signout()
+    {
+        FirebaseAuthenticator.Current.SignOut();
     }
 }

@@ -6,50 +6,49 @@ using System.Text;
 using TimeRecorder.Domain.UseCase.WorkProcesses;
 using TimeRecorder.Repository.InMemory;
 
-namespace TimeRecorder.Domain.Test.Application.Processes
+namespace TimeRecorder.Domain.Test.Application.Processes;
+
+[TestFixture]
+class ProcessApplicationServiceTest
 {
-    [TestFixture]
-    class ProcessApplicationServiceTest
+    private WorkProcessUseCase _Service;
+
+    [SetUp]
+    public void SetUp()
     {
-        private WorkProcessUseCase _Service;
- 
-        [SetUp]
-        public void SetUp()
-        {
-            _Service = new WorkProcessUseCase(new ProcessRepository());
-        }
+        _Service = new WorkProcessUseCase(new ProcessRepository());
+    }
 
-        [Test]
-        public void 工程の登録()
-        {
-            var registedItem = _Service.Regist("test");
+    [Test]
+    public void 工程の登録()
+    {
+        var registedItem = _Service.Regist("test");
 
-            Assert.IsNotNull(registedItem);
-            Assert.IsTrue(registedItem.Title == "test");
+        Assert.IsNotNull(registedItem);
+        Assert.IsTrue(registedItem.Title == "test");
 
-            var list = _Service.GetProcesses();
-            Assert.IsTrue(list.ToList().Last().Title == "test");
-        }
+        var list = _Service.GetProcesses();
+        Assert.IsTrue(list.ToList().Last().Title == "test");
+    }
 
-        [Test]
-        public void 工程の登録_重複()
-        {
-            var registedItem = _Service.Regist("test");
+    [Test]
+    public void 工程の登録_重複()
+    {
+        var registedItem = _Service.Regist("test");
 
-            var list = _Service.GetProcesses();
-            Assert.IsTrue(list.ToList().Last().Title == "test");
+        var list = _Service.GetProcesses();
+        Assert.IsTrue(list.ToList().Last().Title == "test");
 
-            var ex = Assert.Throws<Exception>(() => _Service.Regist("test"));
-        }
+        var ex = Assert.Throws<Exception>(() => _Service.Regist("test"));
+    }
 
-        [Test]
-        public void 工程の一覧取得()
-        {
-            var list = _Service.GetProcesses();
+    [Test]
+    public void 工程の一覧取得()
+    {
+        var list = _Service.GetProcesses();
 
-            Assert.IsNotNull(list);
+        Assert.IsNotNull(list);
 
-            Assert.IsTrue(list.Length == 2);
-        }
+        Assert.IsTrue(list.Length == 2);
     }
 }

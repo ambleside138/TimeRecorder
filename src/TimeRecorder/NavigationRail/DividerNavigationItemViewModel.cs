@@ -1,6 +1,5 @@
-﻿namespace TimeRecorder.NavigationRail
+﻿namespace TimeRecorder.NavigationRail;
+
+internal class DividerNavigationItemViewModel : NotSelectableNavigationItem
 {
-    internal class DividerNavigationItemViewModel : NotSelectableNavigationItem
-    {
-    }
 }

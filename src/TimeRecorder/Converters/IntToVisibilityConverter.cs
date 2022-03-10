@@ -5,27 +5,26 @@ using System.Text;
 using System.Windows;
 using System.Windows.Data;
 
-namespace TimeRecorder.Converters
-{
-    [ValueConversion(typeof(Enum), typeof(Visibility))]
-    class IntToVisibilityConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value?.ToString() == "0"
-                || (parameter != null && parameter?.ToString() == value?.ToString()))
-            {
-                return Visibility.Hidden;
-            }
-            else
-            {
-                return Visibility.Visible;
-            }
-        }
+namespace TimeRecorder.Converters;
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+[ValueConversion(typeof(Enum), typeof(Visibility))]
+class IntToVisibilityConverter : IValueConverter
+{
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value?.ToString() == "0"
+            || (parameter != null && parameter?.ToString() == value?.ToString()))
         {
-            throw new NotImplementedException();
+            return Visibility.Hidden;
         }
+        else
+        {
+            return Visibility.Visible;
+        }
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
     }
 }

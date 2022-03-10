@@ -4,13 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeRecorder.Domain.Domain.Shared
+namespace TimeRecorder.Domain.Domain.Shared;
+
+public static class IdentityHelper
 {
-    public static class IdentityHelper
+    public static T CreateTempId<T>() where T : IdentityBase, new()
     {
-        public static T CreateTempId<T>() where T : IdentityBase, new()
-        {
-            return new T() { TempValue = Guid.NewGuid() };
-        }
+        return new T() { TempValue = Guid.NewGuid() };
     }
 }

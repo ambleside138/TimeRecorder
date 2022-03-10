@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeRecorder.Domain.Domain.System
+namespace TimeRecorder.Domain.Domain.System;
+
+public interface IAccountRepository
 {
-    public interface IAccountRepository
-    {
-        bool IsSignined();
+    bool IsSignined();
 
-        LoginStatus Signin();
+    LoginStatus Signin();
 
-        void Signout();
-    }
+    void Signout();
 }

@@ -6,56 +6,54 @@ using TimeRecorder.Configurations.Items;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.UseCase.System;
 
-namespace TimeRecorder.Configurations
+namespace TimeRecorder.Configurations;
+
+
+class UserConfigurationManager
 {
+    private static UserConfigurationManager _Instance;
 
-
-    class UserConfigurationManager
+    public static UserConfigurationManager Instance
     {
-        private static UserConfigurationManager _Instance;
-
-        public static UserConfigurationManager Instance
+        get
         {
-            get
-            {
-                if (_Instance == null)
-                    _Instance = new UserConfigurationManager();
+            if (_Instance == null)
+                _Instance = new UserConfigurationManager();
 
-                return _Instance;
-            }
-
+            return _Instance;
         }
 
-        private readonly ConfigurationUseCase _ConfigurationUseCase;
+    }
 
-        private ConfigurationItem[] _ConfigurationItems;
+    private readonly ConfigurationUseCase _ConfigurationUseCase;
 
-        private UserConfigurationManager()
-        {
-            _ConfigurationUseCase = new ConfigurationUseCase(ContainerHelper.GetRequiredService<IConfigurationRepository>());
+    private ConfigurationItem[] _ConfigurationItems;
 
-            Load();
-        }
+    private UserConfigurationManager()
+    {
+        _ConfigurationUseCase = new ConfigurationUseCase(ContainerHelper.GetRequiredService<IConfigurationRepository>());
 
-        public void Load()
-        {
-            _ConfigurationItems = _ConfigurationUseCase.GetConfigurationItems();
-        }
+        Load();
+    }
 
-        public T GetConfiguration<T>(ConfigKey key) where T : class
-        {
-            var target = _ConfigurationItems.FirstOrDefault(c => c.Key == key.ToString());
+    public void Load()
+    {
+        _ConfigurationItems = _ConfigurationUseCase.GetConfigurationItems();
+    }
 
-            return target?.GetConfigValue<T>();
-        }
+    public T GetConfiguration<T>(ConfigKey key) where T : class
+    {
+        var target = _ConfigurationItems.FirstOrDefault(c => c.Key == key.ToString());
 
-        public void SetConfiguration<T>(T value) where T : ConfigItemBase
-        {
-            var item = new ConfigurationItem(value.Key.ToString());
-            item.SetConfigValue(value);
+        return target?.GetConfigValue<T>();
+    }
 
-            _ConfigurationUseCase.SetConfiguration(item);
-            Load();
-        }
+    public void SetConfiguration<T>(T value) where T : ConfigItemBase
+    {
+        var item = new ConfigurationItem(value.Key.ToString());
+        item.SetConfigValue(value);
+
+        _ConfigurationUseCase.SetConfiguration(item);
+        Load();
     }
 }

@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TimeRecorder.Domain.Domain.System
+namespace TimeRecorder.Domain.Domain.System;
+
+public interface IHealthChecker
 {
-    public interface IHealthChecker
-    {
-        SystemStatus CheckStatus();
-    }
+    SystemStatus CheckStatus();
 }

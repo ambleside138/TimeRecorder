@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeRecorder.Repository.SQLite.System
+namespace TimeRecorder.Repository.SQLite.System;
+
+class AccountRepository
 {
-    class AccountRepository
-    {
-    }
 }

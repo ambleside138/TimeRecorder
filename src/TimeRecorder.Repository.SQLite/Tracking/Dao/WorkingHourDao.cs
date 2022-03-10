@@ -7,18 +7,18 @@ using System.Text;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Repository.SQLite.Utilities;
 
-namespace TimeRecorder.Repository.SQLite.Tracking.Dao
-{
-    class WorkingHourDao : DaoBase
-    {
-        public WorkingHourDao(SQLiteConnection connection, SQLiteTransaction transaction) : base(connection, transaction)
-        {
-        }
+namespace TimeRecorder.Repository.SQLite.Tracking.Dao;
 
-        public void Insert(WorkingHourTableRow row)
-        {
-            #region SQL
-            const string sql = @"
+class WorkingHourDao : DaoBase
+{
+    public WorkingHourDao(SQLiteConnection connection, SQLiteTransaction transaction) : base(connection, transaction)
+    {
+    }
+
+    public void Insert(WorkingHourTableRow row)
+    {
+        #region SQL
+        const string sql = @"
 INSERT INTO
   workinghours
 (
@@ -33,15 +33,15 @@ VALUES
   , @endtime
 )
 ";
-            #endregion
+        #endregion
 
-            Connection.Execute(sql, row);
-        }
+        Connection.Execute(sql, row);
+    }
 
-        public void Update(WorkingHourTableRow row)
-        {
-            #region SQL
-            const string sql = @"
+    public void Update(WorkingHourTableRow row)
+    {
+        #region SQL
+        const string sql = @"
 UPDATE
   workinghours
 SET
@@ -50,32 +50,32 @@ SET
 WHERE
   ymd = @ymd
 ";
-            #endregion
+        #endregion
 
-            Connection.Execute(sql, row);
-        }
+        Connection.Execute(sql, row);
+    }
 
-        public void Delete(string[] ymds)
-        {
-            #region SQL
-            const string sql = @"
+    public void Delete(string[] ymds)
+    {
+        #region SQL
+        const string sql = @"
 DELETE FROM
   workinghours
 WHERE
   ymd in @ymds
 ";
-            #endregion
+        #endregion
 
-            if (ymds.Length == 0)
-                return;
+        if (ymds.Length == 0)
+            return;
 
-            Connection.Execute(sql, new { ymds });
-        }
+        Connection.Execute(sql, new { ymds });
+    }
 
-        public WorkingHourTableRow SelectByYmd(string ymd)
-        {
-            #region SQL
-            const string sql = @"
+    public WorkingHourTableRow SelectByYmd(string ymd)
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   ymd
   , starttime
@@ -85,15 +85,15 @@ FROM
 WHERE
   ymd = @ymd
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<WorkingHourTableRow>(sql, new { ymd }).FirstOrDefault();
-        }
+        return Connection.Query<WorkingHourTableRow>(sql, new { ymd }).FirstOrDefault();
+    }
 
-        public WorkingHourTableRow[] SelectByYmdRange(string startymd, string endymd)
-        {
-            #region SQL
-            const string sql = @"
+    public WorkingHourTableRow[] SelectByYmdRange(string startymd, string endymd)
+    {
+        #region SQL
+        const string sql = @"
 SELECT
   ymd
   , starttime
@@ -103,9 +103,8 @@ FROM
 WHERE
   ymd BETWEEN @startymd AND @endymd
 ";
-            #endregion
+        #endregion
 
-            return Connection.Query<WorkingHourTableRow>(sql, new { startymd, endymd }).ToArray();
-        }
+        return Connection.Query<WorkingHourTableRow>(sql, new { startymd, endymd }).ToArray();
     }
 }
