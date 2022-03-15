@@ -16,6 +16,7 @@ public class WorkingTimeForTimelineDto
     public string TaskTitle { get; set; }
     public TaskCategory TaskCategory { get; set; }
     public string WorkProcessName { get; set; }
+    public bool IsPlaned { get; set; }
 }
 
 public class WorkingTimeForTimelineDtoEqualityComparer : IEqualityComparer<WorkingTimeForTimelineDto>
