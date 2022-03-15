@@ -23,6 +23,7 @@ SELECT
   , task.title as title
   , task.taskcategory as taskcategory
   , processes.title as workprocessname
+  , task.tasksource as tasksource
 FROM
   workingtimes time
 INNER JOIN
@@ -62,6 +63,8 @@ WHERE
 
         public string WorkProcessName { get; set; }
 
+        public TaskSource TaskSource { get; set; }
+
         public WorkingTimeForTimelineDto ConvertToDto()
         {
 
@@ -73,6 +76,7 @@ WHERE
                 TaskTitle = Title,
                 TaskCategory = TaskCategory,
                 WorkProcessName = WorkProcessName,
+                IsPlaned = TaskSource == TaskSource.Schedule,
             };
         }
     }
