@@ -203,13 +203,23 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
     public void CopyPlanToClipboard()
     {
         var text = _Model.GetPlanedText();
+
         if(string.IsNullOrEmpty(text))
         {
             SnackbarService.Current.ShowMessage($"本日の予定はありません");
         }
         else
         {
-            Clipboard.SetText(text);
+            try
+            {
+                Clipboard.SetText(text);
+            }
+            catch (System.Runtime.InteropServices.COMException)
+            {
+                // エラー発生するが、問題ないらしいので無視
+                // http://shen7113.blog.fc2.com/blog-entry-28.html
+            }
+
             SnackbarService.Current.ShowMessage($"本日の予定をコピーしました");
         }
     }

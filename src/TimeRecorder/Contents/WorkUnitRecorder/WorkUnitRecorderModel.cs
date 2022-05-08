@@ -116,7 +116,7 @@ public class WorkUnitRecorderModel : NotificationObject, IDisposable
     public string GetPlanedText()
     {
         var array = WorkingTimes.Where(t => t.IsPlaned)
-                    .Select(t => $"{t.TimePeriod.StartDateTime:HH:mm} - {t.TimePeriod.EndDateTime:HH:mm} {t.TaskTitle}")
+                    .Select(t => $"{t.TimePeriod.StartDateTime:HH:mm}－{t.TimePeriod.EndDateTime:HH:mm} {t.TaskTitle}")
                     .ToArray();
 
         return string.Join(Environment.NewLine, array);
