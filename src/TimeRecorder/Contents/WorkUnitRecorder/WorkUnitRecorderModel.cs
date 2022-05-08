@@ -113,6 +113,15 @@ public class WorkUnitRecorderModel : NotificationObject, IDisposable
         SetDoingTask();
     }
 
+    public string GetPlanedText()
+    {
+        var array = WorkingTimes.Where(t => t.IsPlaned)
+                    .Select(t => $"{t.TimePeriod.StartDateTime:HH:mm}－{t.TimePeriod.EndDateTime:HH:mm} {t.TaskTitle}")
+                    .ToArray();
+
+        return string.Join(Environment.NewLine, array);
+    }
+
     public void UpdateDoingTask()
     {
         if (DoingTask.Value == null)

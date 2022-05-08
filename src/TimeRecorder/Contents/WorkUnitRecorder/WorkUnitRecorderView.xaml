@@ -159,25 +159,48 @@
             <TextBlock Margin="16,0,0,0" Text="終業" />-->
         </StackPanel>
 
-        <Button
-            Grid.Row="1"
+        <StackPanel Grid.Row="1" 
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center">
+            <Button
             Width="24"
             Height="24"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Center"
+            Margin="8 0"
+            Style="{StaticResource MaterialDesignIconButton}"
+            ToolTip="予定をクリップボードにコピー">
+                <materialDesign:PackIcon
+                Width="16"
+                Height="16"
+                Kind="ContentCopy" />
+
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="Click">
+                        <l:LivetCallMethodAction MethodName="CopyPlanToClipboard" MethodTarget="{Binding}" />
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+            </Button>
+
+            <Button
+            
+            Width="24"
+            Height="24"
+            
             Style="{StaticResource MaterialDesignIconButton}"
             ToolTip="Googleカレンダーから取込">
-            <materialDesign:PackIcon
+                <materialDesign:PackIcon
                 Width="16"
                 Height="16"
                 Kind="CalendarExport" />
 
-            <behaviors:Interaction.Triggers>
-                <behaviors:EventTrigger EventName="Click">
-                    <l:LivetCallMethodAction MethodName="ImportTaskFromCalendar" MethodTarget="{Binding}" />
-                </behaviors:EventTrigger>
-            </behaviors:Interaction.Triggers>
-        </Button>
+                <behaviors:Interaction.Triggers>
+                    <behaviors:EventTrigger EventName="Click">
+                        <l:LivetCallMethodAction MethodName="ImportTaskFromCalendar" MethodTarget="{Binding}" />
+                    </behaviors:EventTrigger>
+                </behaviors:Interaction.Triggers>
+            </Button>
+        </StackPanel>
+
 
         <!--  表示対象日付のタイムライン  -->
         <ScrollViewer Grid.Row="2" Padding="0,8,0,0">

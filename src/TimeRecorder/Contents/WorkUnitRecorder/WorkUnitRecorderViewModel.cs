@@ -21,6 +21,7 @@ using TimeRecorder.Helpers;
 using TimeRecorder.Contents.WorkUnitRecorder.Tasks.Buttons;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
+using System.Windows;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder;
 
@@ -196,6 +197,30 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
         {
             var inputValue = editDialogVm.TaskCardViewModel.DomainModel;
             _Model.AddWorkTask(inputValue, editDialogVm.NeedStart);
+        }
+    }
+
+    public void CopyPlanToClipboard()
+    {
+        var text = _Model.GetPlanedText();
+
+        if(string.IsNullOrEmpty(text))
+        {
+            SnackbarService.Current.ShowMessage($"本日の予定はありません");
+        }
+        else
+        {
+            try
+            {
+                Clipboard.SetText(text);
+            }
+            catch (System.Runtime.InteropServices.COMException)
+            {
+                // エラー発生するが、問題ないらしいので無視
+                // http://shen7113.blog.fc2.com/blog-entry-28.html
+            }
+
+            SnackbarService.Current.ShowMessage($"本日の予定をコピーしました");
         }
     }
 
