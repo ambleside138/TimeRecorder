@@ -16,8 +16,10 @@ class ProductTableRow
 
     public string Invalid { get; set; }
 
+    public string ReportnameOnly { get; set; }
+
     public Product ToDomainObject()
     {
-        return new Product(new Identity<Product>(Id), Name, ShortName, Invalid == "1");
+        return new Product(new Identity<Product>(Id), Name, ShortName, Invalid == "1", ReportnameOnly == "1");
     }
 }
