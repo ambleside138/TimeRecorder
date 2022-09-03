@@ -88,6 +88,8 @@ public class NotificationService
 
     private ToastContentBuilder InfoCore(string title, string content)
     {
+        ToastNotificationManagerCompat.History.Clear();
+       
         return new ToastContentBuilder()
              .AddText(title)
              .AddText(content)
@@ -96,6 +98,8 @@ public class NotificationService
 
     public void ShowTaskStarterInteractor(IEnumerable<WorkTaskWithTimesDto> workTasks, string content)
     {
+        ToastNotificationManagerCompat.History.Clear();
+
         var title = "お知らせ";
         var selector = new ToastSelectionBox(_SelectionTaskKey);
 
