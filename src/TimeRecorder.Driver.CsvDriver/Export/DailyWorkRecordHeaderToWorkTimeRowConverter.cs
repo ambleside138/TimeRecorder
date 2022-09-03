@@ -63,6 +63,9 @@ class DailyWorkRecordHeaderToWorkTimeRowConverter
         //    //return taskUnit.WorkProcess.Title;
         //}
 
+        if (taskUnit.Product.ReportNameOnly)
+            return productName;
+
         // 案件名が入っていなければ無条件で製品名を記載
         if (taskUnit.Client.Id.IsEmpty)
         {
