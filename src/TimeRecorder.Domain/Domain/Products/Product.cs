@@ -21,14 +21,20 @@ public class Product : Entity<Product>
     /// </summary>
     public bool Invalid { get; }
 
+    /// <summary>
+    /// 工数ファイル出力時に製品名だけを利用するかどうかを指定します
+    /// </summary>
+    public bool ReportNameOnly { get; set; }
+
     public static Product Empty => new(Identity<Product>.Empty, "未選択", "ミセンタク", false);
 
-    public Product(Identity<Product> id, string name, string shortName, bool invalid = false)
+    public Product(Identity<Product> id, string name, string shortName, bool invalid = false, bool reportNameOnly = false)
     {
         Id = id;
         Name = name;
         ShortName = shortName;
         Invalid = invalid;
+        ReportNameOnly = reportNameOnly;
     }
 
     protected override IEnumerable<object> GetIdentityValues()

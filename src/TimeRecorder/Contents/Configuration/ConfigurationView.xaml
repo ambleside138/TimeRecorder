@@ -321,19 +321,19 @@
 
                     <StackPanel Orientation="Horizontal">
                         <Grid>
-                            <Rectangle Width="32" Height="32" RadiusX="4" RadiusY="4" Fill="#00bfa5">
+                            <Rectangle Width="28" Height="28" RadiusX="4" RadiusY="4" Fill="#00bfa5">
 
                             </Rectangle>
                             <materialDesign:PackIcon
-                                Width="24"
-                                Height="24"
+                                Width="20"
+                                Height="20"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Foreground="White"
                                 Kind="AlarmCheck" />
                         </Grid>
  
-                        <TextBlock Text="TimeRecorder" Style="{StaticResource MaterialDesignHeadline5TextBlock}" VerticalAlignment="Center" Margin="8 0 0 0" />
+                        <TextBlock Text="TimeRecorder" Style="{StaticResource MaterialDesignHeadline4TextBlock}" VerticalAlignment="Center" Margin="8 0 0 0" Foreground="{StaticResource MahApps.Brushes.Gray1}" />
 
                     </StackPanel>
 

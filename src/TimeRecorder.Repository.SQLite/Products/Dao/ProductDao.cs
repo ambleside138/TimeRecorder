@@ -23,6 +23,7 @@ SELECT
   , name
   , shortname
   , invalid
+  , reportnameonly
 FROM
   products
 ORDER BY
