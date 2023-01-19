@@ -1,0 +1,10 @@
+﻿{
+    "profiles": {
+      "TimeRecorderWinUI (Package)": {
+        "commandName": "MsixPackage"
+      },
+      "TimeRecorderWinUI (Unpackaged)": {
+        "commandName": "Project"
+      }
+    }
+}
