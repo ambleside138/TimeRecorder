@@ -97,6 +97,11 @@
                         IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Develop, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
                         Style="{StaticResource HorizontalMarginStyleKey}" />
                     <RadioButton
+                        Content="研究開発"
+                        GroupName="TaskCategory"
+                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=ResearchAndDevelopment, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                        Style="{StaticResource HorizontalMarginStyleKey}" />
+                    <RadioButton
                         Content="契約後の導入"
                         GroupName="TaskCategory"
                         IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Introduce, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
