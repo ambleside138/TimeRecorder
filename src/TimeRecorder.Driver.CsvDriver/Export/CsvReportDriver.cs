@@ -38,7 +38,6 @@ public class CsvReportDriver : IReportDriver
         using (var sw = new StreamWriter(filePath, false, Encoding.GetEncoding("shift_jis")))
         using (var csv = new CsvHelper.CsvWriter(sw, config))
         {
-            // データを読み出し
             csv.WriteRecords(rows);
         }
 
