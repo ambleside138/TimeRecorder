@@ -12,7 +12,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     Width="420"
-    d:DesignHeight="450"
     d:DesignWidth="800"
     AllowsTransparency="True"
     Background="Transparent"
@@ -21,7 +20,7 @@
     SizeToContent="Height"
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Height="579">
 
     <behaviors:Interaction.Triggers>
 
@@ -135,6 +134,16 @@
                     DisplayMemberPath="Name"
                     ItemsSource="{Binding Clients}"
                     SelectedItem="{Binding TaskCardViewModel.Client.Value}" />
+
+                <TextBlock
+                    Margin="0,16,0,0"
+                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                    Text="セグメント*" />
+                <ComboBox
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Segments}"
+                    SelectedItem="{Binding TaskCardViewModel.Segment.Value}" />
+
             </StackPanel>
 
             <c:CallMethodButton

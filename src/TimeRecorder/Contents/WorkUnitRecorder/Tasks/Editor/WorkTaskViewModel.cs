@@ -13,6 +13,7 @@ using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain;
 using TimeRecorder.Helpers;
+using TimeRecorder.Domain.Domain.Segments;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder;
 
@@ -31,6 +32,8 @@ public class WorkTaskViewModel : ViewModel
 
     public ReactiveProperty<WorkProcess> WorkProcess { get; }
 
+    public ReactiveProperty<Segment> Segment { get; set; }
+
     public WorkTask DomainModel { get; }
 
     private readonly WorkProcess[] _Processes;
@@ -39,12 +42,15 @@ public class WorkTaskViewModel : ViewModel
 
     private readonly Product[] _Products;
 
-    public WorkTaskViewModel(WorkTask task, WorkProcess[] processes, Client[] clients, Product[] products)
+    private readonly Segment[] _Segments;
+
+    public WorkTaskViewModel(WorkTask task, WorkProcess[] processes, Client[] clients, Product[] products, Segment[] segments)
     {
         DomainModel = task;
         _Processes = processes;
         _Clients = clients;
         _Products = products;
+        _Segments = segments;
 
         Title = DomainModel.ToReactivePropertyWithIgnoreInitialValidationError(x => x.Title)
                             .SetValidateNotifyError(x => string.IsNullOrWhiteSpace(x) ? "タイトルは入力必須です" : null)
@@ -73,12 +79,25 @@ public class WorkTaskViewModel : ViewModel
                                     vm => vm?.Id ?? Identity<Client>.Empty)
                                  .AddTo(CompositeDisposable);
 
+        Segment = DomainModel.ToReactivePropertyAsSynchronized(
+                                    x => x.SegmentId,
+                                    m => _Segments.FirstOrDefault(p => p.Id == m),
+                                    vm => vm?.Id ?? Identity<Segment>.Empty,
+                                    ReactivePropertyMode.IgnoreInitialValidationError)
+                                 .SetValidateNotifyError(x => (x == null || x.Id == Identity<Segment>.Empty) ? "セグメントは選択必須です" : null)
+                                 .AddTo(CompositeDisposable);
+
         if (task.Id.IsTemporary
             && DomainModel.TaskCategory == Domain.Domain.Tasks.TaskCategory.UnKnown)
         {
             DomainModel.TaskCategory = Domain.Domain.Tasks.TaskCategory.Develop;
         }
 
+        if (task.Id.IsTemporary
+            && DomainModel.SegmentId.IsEmpty)
+        {
+            DomainModel.SegmentId = _Segments.FirstOrDefault()?.Id ?? Identity<Segment>.Empty;
+        }
     }
 
     public bool TryValidate()

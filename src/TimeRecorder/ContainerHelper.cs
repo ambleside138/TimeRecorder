@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Todo;
@@ -19,6 +20,7 @@ using TimeRecorder.Repository.GoogleAPI.Calendar;
 using TimeRecorder.Repository.InMemory;
 using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Products;
+using TimeRecorder.Repository.SQLite.Segments;
 using TimeRecorder.Repository.SQLite.System;
 using TimeRecorder.Repository.SQLite.Tasks;
 using TimeRecorder.Repository.SQLite.Tracking;
@@ -87,6 +89,7 @@ internal static class ContainerHelper
                        .AddSingleton<ITodoListRepository, FirestoreTodoListRepository>()
                        .AddSingleton<IAccountRepository, FirebaseAccountRepository>()
                        .AddSingleton<IReportDriver, CsvReportDriver>()
-                       .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>();
+                       .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>()
+                       .AddSingleton<ISegmentRepository, SQLiteSegmentRepository>();
     }
 }

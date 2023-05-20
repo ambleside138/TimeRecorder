@@ -14,6 +14,7 @@ using MaterialDesignThemes.Wpf;
 using Livet.Behaviors.Messaging.Windows;
 using Livet.Messaging.Windows;
 using TimeRecorder.Messaging.Windows;
+using TimeRecorder.Domain.Domain.Segments;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Editor;
 
@@ -33,6 +34,8 @@ class WorkTaskEditDialogViewModel : ViewModel
 
     public Product[] Products { get; }
 
+    public Segment[] Segments { get; }
+
     public bool NeedDelete { get; set; } = false;
 
     public bool NeedStart { get; set; } = false;
@@ -51,8 +54,9 @@ class WorkTaskEditDialogViewModel : ViewModel
         Processes = _WorkTaskEditDialogModel.GetProcesses(model.ProcessId);
         Clients = _WorkTaskEditDialogModel.GetClients();
         Products = _WorkTaskEditDialogModel.GetProducts(model.ProductId);
+        Segments = _WorkTaskEditDialogModel.GetSegments();
 
-        TaskCardViewModel = new WorkTaskViewModel(model, Processes, Clients, Products);
+        TaskCardViewModel = new WorkTaskViewModel(model, Processes, Clients, Products, Segments);
 
         ShowQuickStartButton = new ReactivePropertySlim<bool>(IsEditMode.Value == false);
         ShowDeleteButton = new ReactivePropertySlim<bool>(IsEditMode.Value);

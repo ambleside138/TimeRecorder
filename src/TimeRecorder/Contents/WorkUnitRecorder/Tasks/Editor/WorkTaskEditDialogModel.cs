@@ -8,6 +8,8 @@ using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.UseCase.Products;
 using TimeRecorder.Domain.UseCase.WorkProcesses;
 using TimeRecorder.UseCase.Clients;
+using TimeRecorder.Domain.Domain.Segments;
+using TimeRecorder.Helpers;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor;
 
@@ -42,6 +44,13 @@ class WorkTaskEditDialogModel
     {
         var list = new List<Product> { Product.Empty };
         list.AddRange(_ProductUseCase.GetProducts().Where(p => p.Id == currentId || p.Invalid == false));
+        return list.ToArray();
+    }
+
+    public Segment[] GetSegments()
+    {
+        var list = new List<Segment>();
+        list.AddRange(ContainerHelper.GetRequiredService<ISegmentRepository>().SelectAll());
         return list.ToArray();
     }
 }
