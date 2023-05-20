@@ -118,7 +118,7 @@
                     Text="年" />
 
                 <ComboBox
-                    Width="32"
+                    Width="48"
                     Margin="8,0"
                     HorizontalContentAlignment="Right"
                     FontSize="18"
