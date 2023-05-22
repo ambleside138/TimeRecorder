@@ -10,6 +10,7 @@ using TimeRecorder.Domain.UseCase.WorkProcesses;
 using TimeRecorder.UseCase.Clients;
 using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Helpers;
+using System.Threading.Tasks;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Editor;
 
@@ -52,5 +53,13 @@ class WorkTaskEditDialogModel
         var list = new List<Segment>();
         list.AddRange(ContainerHelper.GetRequiredService<ISegmentRepository>().SelectAll());
         return list.ToArray();
+    }
+
+    public async Task<Client[]> GetClientSourceAsync()
+    {
+        var key = "1UEMXvPblRBGzjBcaIvcGCO_1k0i5KP0ONwRZms0PV8w";
+        var list = await ContainerHelper.GetRequiredService<IClientSourceRepository>().SelectByTaskCategoryAsync(key, Domain.Domain.Tasks.TaskCategory.Introduce);
+
+        return list;
     }
 }

@@ -17,6 +17,7 @@ using TimeRecorder.Driver.CsvDriver.Import;
 using TimeRecorder.Repository.Firebase.System;
 using TimeRecorder.Repository.Firebase.Todo;
 using TimeRecorder.Repository.GoogleAPI.Calendar;
+using TimeRecorder.Repository.GoogleAPI.SpreadSheet;
 using TimeRecorder.Repository.InMemory;
 using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Products;
@@ -90,6 +91,8 @@ internal static class ContainerHelper
                        .AddSingleton<IAccountRepository, FirebaseAccountRepository>()
                        .AddSingleton<IReportDriver, CsvReportDriver>()
                        .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>()
-                       .AddSingleton<ISegmentRepository, SQLiteSegmentRepository>();
+                       .AddSingleton<ISegmentRepository, SQLiteSegmentRepository>()
+                       .AddSingleton<IClientSourceRepository, GoogleApiClientSourceRepository>();
+
     }
 }

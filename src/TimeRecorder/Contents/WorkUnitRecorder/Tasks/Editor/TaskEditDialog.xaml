@@ -70,6 +70,11 @@
                 <RowDefinition Height="52" />
             </Grid.RowDefinitions>
 
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
             <!--  Header  -->
             <TextBlock
                 VerticalAlignment="Bottom"
@@ -215,6 +220,10 @@
                     </behaviors:Interaction.Triggers>
                 </Button>
             </StackPanel>
+
+            <Grid Grid.RowSpan="3" Grid.Column="1">
+                
+            </Grid>
         </Grid>
     </Border>
 
