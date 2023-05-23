@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using TimeRecorder.Domain.Domain;
@@ -54,7 +55,16 @@ class ExporterModel
 
         if (result.IsSuccessed)
         {
-            SnackbarService.Current.ShowMessage("以下のパスに工数集計結果を出力しました" + Environment.NewLine + path);
+            try
+            {
+                Clipboard.SetText(result.Rows);
+            }
+            catch (Exception ex)
+            {
+                _Logger.Error(ex);
+            }
+
+            SnackbarService.Current.ShowMessage("集計結果をクリップボードにコピーしました" + Environment.NewLine + "以下のパスに工数集計結果を出力しました" + Environment.NewLine + path);
         }
         else
         {

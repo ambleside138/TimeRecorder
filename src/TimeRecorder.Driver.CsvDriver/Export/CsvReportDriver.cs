@@ -41,6 +41,15 @@ public class CsvReportDriver : IReportDriver
             csv.WriteRecords(rows);
         }
 
+        // クリップボードにもコピーしておく
+        var resultTexts = new StringBuilder();
+
+        config.Delimiter = "\t";
+        using (var csv = new CsvHelper.CsvWriter(new StringWriter(resultTexts), config))
+        {
+            csv.WriteRecords(rows);
+        }
+
 
         var listMessage = rows.Select(r => r.GetWaringMessage())
                                 .Where(r => string.IsNullOrEmpty(r) == false)
@@ -56,6 +65,7 @@ public class CsvReportDriver : IReportDriver
         {
             IsSuccessed = listMessage.Length == 0,
             Message = listMessage.Length > 0 ? message.ToString() : "",
+            Rows = resultTexts.ToString(),
         };
     }
 
