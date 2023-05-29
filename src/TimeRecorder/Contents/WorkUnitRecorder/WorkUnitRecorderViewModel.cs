@@ -22,6 +22,7 @@ using TimeRecorder.Contents.WorkUnitRecorder.Tasks.Buttons;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using System.Windows;
+using System.Diagnostics;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder;
 
@@ -30,6 +31,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder;
 /// </summary>
 public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
 {
+    private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
     public NavigationIconButtonViewModel NavigationIcon => new() { Title = "入力", IconKey = "CalendarClock" };
 
     private readonly WorkUnitRecorderModel _Model = new();
@@ -52,6 +55,12 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
     private const int _AlertCount = 60 * 5;
 
     public ReactivePropertySlim<bool> IsSelected { get; } = new();
+
+    //public ReactivePropertySlim<string> TimeCardLinkURL { get; }
+
+    public ReadOnlyReactivePropertySlim<bool> IsTimeCardLinkEnabled { get; }
+
+
 
     public WorkUnitRecorderViewModel()
     {
@@ -78,6 +87,15 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
         TargetDateTime = _Model.TargetDate
                                .ToReactivePropertyAsSynchronized(d => d.Value)
                                .AddTo(CompositeDisposable);
+
+        //TimeCardLinkURL = _Model.TargetTimeCardLinkURL
+        //                        .ToReactivePropertySlimAsSynchronized(d => d.Value)
+        //                        .AddTo(CompositeDisposable);
+
+        IsTimeCardLinkEnabled = _Model.TargetTimeCardLinkURL
+                                      .Select(u => string.IsNullOrEmpty(u) == false)
+                                      .ToReadOnlyReactivePropertySlim()
+                                      .AddTo(CompositeDisposable);
 
         AddingTaskButtons = new ReactiveCollection<AddingTaskButtonViewModel>();
         InitializeAddingTaskButtons();
@@ -250,6 +268,35 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
     public void StopCurrentTask()
     {
         _Model.StopCurrentTask();
+    }
+
+    public void EditTimeCardLink()
+    {
+        var editDialogVm = new TimeCardLinkEditWindowViewModel(_Model.TargetTimeCardLinkURL.Value);
+
+        var result = TransitionHelper.Current.TransitionModal<TimeCardLinkEditWindow>(editDialogVm);
+
+        if (result == ModalTransitionResponse.Yes)
+        {
+            var inputValue = editDialogVm.Url.Value;
+            _Model.UpdateTimeCardLink(inputValue);
+        }
+    }
+
+    public void OpenTimeCardLink()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = _Model.TargetTimeCardLinkURL.Value
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex);
+        }
     }
 
 }

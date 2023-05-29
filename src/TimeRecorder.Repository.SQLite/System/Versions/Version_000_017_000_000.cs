@@ -12,8 +12,8 @@ CREATE TABLE
   segments
 (
   id INTEGER PRIMARY KEY AUTOINCREMENT
-  , name
-  , displayorder
+  , name varchar(32)
+  , displayorder int
 );
 
 ALTER TABLE

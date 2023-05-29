@@ -64,7 +64,7 @@ class ExporterModel
                 _Logger.Error(ex);
             }
 
-            SnackbarService.Current.ShowMessage("集計結果をクリップボードにコピーしました" + Environment.NewLine + "以下のパスに工数集計結果を出力しました" + Environment.NewLine + path);
+            SnackbarService.Current.ShowMessage("クリップボードと以下のパスに工数集計結果を出力しました" + Environment.NewLine + path);
         }
         else
         {

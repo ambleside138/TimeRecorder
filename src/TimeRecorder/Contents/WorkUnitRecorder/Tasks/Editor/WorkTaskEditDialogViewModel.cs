@@ -60,6 +60,8 @@ class WorkTaskEditDialogViewModel : ViewModel
 
         ShowQuickStartButton = new ReactivePropertySlim<bool>(IsEditMode.Value == false);
         ShowDeleteButton = new ReactivePropertySlim<bool>(IsEditMode.Value);
+
+       var k = _WorkTaskEditDialogModel.GetClientSourceAsync().Result;
     }
 
     public void Regist()

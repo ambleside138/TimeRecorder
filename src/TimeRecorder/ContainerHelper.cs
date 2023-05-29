@@ -6,6 +6,7 @@ using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Tasks;
+using TimeRecorder.Domain.Domain.TimeCards;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -24,6 +25,7 @@ using TimeRecorder.Repository.SQLite.Products;
 using TimeRecorder.Repository.SQLite.Segments;
 using TimeRecorder.Repository.SQLite.System;
 using TimeRecorder.Repository.SQLite.Tasks;
+using TimeRecorder.Repository.SQLite.TimeCards;
 using TimeRecorder.Repository.SQLite.Tracking;
 using TimeRecorder.Repository.SQLite.Tracking.Reports;
 using TimeRecorder.Repository.SQLite.WorkProcesses;
@@ -92,7 +94,8 @@ internal static class ContainerHelper
                        .AddSingleton<IReportDriver, CsvReportDriver>()
                        .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>()
                        .AddSingleton<ISegmentRepository, SQLiteSegmentRepository>()
-                       .AddSingleton<IClientSourceRepository, GoogleApiClientSourceRepository>();
-
+                       .AddSingleton<IClientSourceRepository, GoogleApiClientSourceRepository>()
+                       .AddSingleton<ITimeCardRepository, SQLiteTimeCardRepository>()
+                       ;
     }
 }

@@ -16,6 +16,7 @@ using TimeRecorder.Contents.WorkUnitRecorder.Tasks;
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Tasks;
+using TimeRecorder.Domain.Domain.TimeCards;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.UseCase.Tasks;
 using TimeRecorder.Domain.UseCase.Tracking;
@@ -45,6 +46,8 @@ public class WorkUnitRecorderModel : NotificationObject, IDisposable
 
     private LivetCompositeDisposable _Disposables = new();
 
+    public ReactiveProperty<string> TargetTimeCardLinkURL { get; } = new ReactiveProperty<string>();
+
     private DateTime? _LatestBackupTime = null;
 
     private bool _LunchTimeStartNotificated = false;
@@ -73,6 +76,7 @@ public class WorkUnitRecorderModel : NotificationObject, IDisposable
 
         TargetDate = new ReactivePropertySlim<DateTime>(DateTime.Today);
         TargetDate.Subscribe(_ => Load()).AddTo(_Disposables);
+        TargetDate.Subscribe(_ => LoadTimeCardLink()).AddTo(_Disposables);
 
         ContainsCompleted.Subscribe(_ => Load()).AddTo(_Disposables);
     }
@@ -101,6 +105,14 @@ public class WorkUnitRecorderModel : NotificationObject, IDisposable
         PlanedTaskModels.AddRange(list);
 
         LoadWorkingTime();
+    }
+
+    public void LoadTimeCardLink()
+    {
+        TargetTimeCardLinkURL.Value = "";
+
+        var repository = ContainerHelper.GetRequiredService<ITimeCardRepository>();
+        TargetTimeCardLinkURL.Value = repository.SelectByYearMonth(new YearMonth(TargetDate.Value.Year, TargetDate.Value.Month))?.LinkURL ?? "";
     }
 
     private void LoadWorkingTime()
@@ -145,6 +157,14 @@ public class WorkUnitRecorderModel : NotificationObject, IDisposable
                 NotificationService.Current.Info("作業タスク 更新のお知らせ", message);
             }
         }
+    }
+
+    public void UpdateTimeCardLink(string text)
+    {
+        var repository = ContainerHelper.GetRequiredService<ITimeCardRepository>();
+        repository.Put(new TimeCardLink(YearMonth.FromYmdString(TargetYmd), text));
+
+        TargetTimeCardLinkURL.Value = text;
     }
 
     public void CheckLunchTime()
