@@ -56,7 +56,7 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
 
     public ReactivePropertySlim<bool> IsSelected { get; } = new();
 
-    //public ReactivePropertySlim<string> TimeCardLinkURL { get; }
+    public string TimeCardLinkURL => _Model.TargetTimeCardLinkURL.Value;
 
     public ReadOnlyReactivePropertySlim<bool> IsTimeCardLinkEnabled { get; }
 
@@ -207,7 +207,7 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
 
     public void ExecuteNewTaskDialog()
     {
-        var editDialogVm = new WorkTaskEditDialogViewModel();
+        var editDialogVm = new WorkTaskEditDialogViewModel(TimeCardLinkURL);
 
         var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
 

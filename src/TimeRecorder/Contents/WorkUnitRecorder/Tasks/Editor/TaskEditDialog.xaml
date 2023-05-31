@@ -12,20 +12,19 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    Width="420"
     d:DesignWidth="800"
     AllowsTransparency="True"
     Background="Transparent"
     FocusManager.FocusedElement="{Binding ElementName=TitleTextBox}"
     ShowInTaskbar="False"
-    SizeToContent="Height"
+    Width="468"
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
     mc:Ignorable="d" Height="495">
 
     <Window.Resources>
         <CollectionViewSource x:Key="ClientCollectionKey"
-                          Source="{Binding Clients}">
+                          Source="{Binding Clients.Value}">
             <CollectionViewSource.GroupDescriptions>
                 <PropertyGroupDescription PropertyName="InitialLetters" />
             </CollectionViewSource.GroupDescriptions>
@@ -64,166 +63,268 @@
         BorderThickness="0"
         CornerRadius="4">
         <Grid Margin="24,0,24,8">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="40" />
-                <RowDefinition />
-                <RowDefinition Height="52" />
-            </Grid.RowDefinitions>
 
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
+            <Grid Visibility="{Binding ShowClientEditorArea.Value, Converter={StaticResource InverseBoolToVisConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition />
+                    <RowDefinition Height="52" />
+                </Grid.RowDefinitions>
 
-            <!--  Header  -->
-            <TextBlock
-                VerticalAlignment="Bottom"
-                Style="{StaticResource MaterialDesignHeadline6TextBlock}"
-                Text="作業内容" />
-
-            <!--  Contents  -->
-            <StackPanel Grid.Row="1" Margin="0,8,0,16">
-                <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="タイトル*" />
-                <TextBox
-                    x:Name="TitleTextBox"
-                    materialDesign:TextFieldAssist.HasClearButton="True"
-                    Text="{Binding TaskCardViewModel.Title.Value}" />
-
+                <!--  Header  -->
                 <TextBlock
-                    Margin="0,16,0,4"
-                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                    Text="作業分類" />
-                <StackPanel Orientation="Horizontal">
-                    <RadioButton
-                        VerticalContentAlignment="Top"
-                        Content="開発"
-                        GroupName="TaskCategory"
-                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Develop, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                        Style="{StaticResource HorizontalMarginStyleKey}" />
-                    <RadioButton
-                        Content="研究開発"
-                        GroupName="TaskCategory"
-                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=ResearchAndDevelopment, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                        Style="{StaticResource HorizontalMarginStyleKey}" />
-                    <RadioButton
-                        Content="契約後の導入"
-                        GroupName="TaskCategory"
-                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Introduce, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                        Style="{StaticResource HorizontalMarginStyleKey}" />
-                    <RadioButton
-                        Content="保守"
-                        GroupName="TaskCategory"
-                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Maintain, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                        Style="{StaticResource HorizontalMarginStyleKey}" />
-                    <RadioButton
-                        Content="その他"
-                        GroupName="TaskCategory"
-                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Other, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
-                        Style="{StaticResource HorizontalMarginStyleKey}" />
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource MaterialDesignHeadline6TextBlock}"
+                    Text="作業内容" />
+
+                <!--  Contents  -->
+                <StackPanel Grid.Row="1" Margin="0,8,0,16">
+                    <TextBlock Style="{StaticResource MaterialDesignCaptionTextBlock}" Text="タイトル*" />
+                    <TextBox
+                        x:Name="TitleTextBox"
+                        materialDesign:TextFieldAssist.HasClearButton="True"
+                        Text="{Binding TaskCardViewModel.Title.Value}" />
+
+                    <TextBlock
+                        Margin="0,16,0,4"
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                        Text="作業分類" />
+                    <StackPanel Orientation="Horizontal">
+                        <RadioButton
+                            VerticalContentAlignment="Top"
+                            Content="開発"
+                            GroupName="TaskCategory"
+                            IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Develop, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                            Style="{StaticResource HorizontalMarginStyleKey}" />
+                        <RadioButton
+                            Content="研究開発"
+                            GroupName="TaskCategory"
+                            IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=ResearchAndDevelopment, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                            Style="{StaticResource HorizontalMarginStyleKey}" />
+                        <RadioButton
+                            Content="契約後の導入"
+                            GroupName="TaskCategory"
+                            IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Introduce, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                            Style="{StaticResource HorizontalMarginStyleKey}" />
+                        <RadioButton
+                            Content="保守"
+                            GroupName="TaskCategory"
+                            IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Maintain, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                            Style="{StaticResource HorizontalMarginStyleKey}" />
+                        <RadioButton
+                            Content="その他"
+                            GroupName="TaskCategory"
+                            IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Other, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                            Style="{StaticResource HorizontalMarginStyleKey}" />
+                    </StackPanel>
+
+                    <TextBlock
+                        Margin="0,16,0,4"
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                        Text="製品" />
+                    <ComboBox
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding Products}"
+                        SelectedItem="{Binding TaskCardViewModel.Product.Value}" />
+
+                    <TextBlock
+                        Margin="0,16,0,0"
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                        Text="作業工程" />
+                    <ComboBox
+                        DisplayMemberPath="Title"
+                        ItemsSource="{Binding Processes}"
+                        SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" />
+
+                    <TextBlock
+                        Margin="0,16,0,0"
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                        Text="ユーザ" />
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                        <ComboBox
+                        DisplayMemberPath="Name"
+                            Width="388"
+                        ItemsSource="{Binding Source={StaticResource ClientCollectionKey}}"
+                        SelectedItem="{Binding TaskCardViewModel.Client.Value}">
+                            <!--scrollviewer not found...-->
+                            <!--<behaviors:Interaction.Behaviors>
+                            <bb:GroupHeaderFrozenBehavior HeaderTemplate="{StaticResource GroupItemHeaderTemplateKey}" />
+                        </behaviors:Interaction.Behaviors>-->
+
+                            <ComboBox.GroupStyle>
+                                <GroupStyle HeaderTemplate="{StaticResource GroupItemHeaderTemplateKey}" />
+                            </ComboBox.GroupStyle>
+                        </ComboBox>
+
+                        <c:CallMethodButton
+                                                Width="24"
+                                                Height="24"
+                            Margin="8 0 0 0"
+                                                MethodName="ToggleClientEditArea"
+                                                MethodTarget="{Binding}"
+                                                Style="{StaticResource MaterialDesignIconButton}">
+                            <materialDesign:PackIcon
+                                                    Width="18"
+                                                    Height="18"
+                                                    Kind="Pencil" />
+                        </c:CallMethodButton>
+                    </StackPanel>
+
+
+
+                    <TextBlock
+                        Margin="0,16,0,0"
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                        Text="セグメント*" />
+                    <ComboBox
+                        DisplayMemberPath="Name"
+                        ItemsSource="{Binding Segments}"
+                        SelectedItem="{Binding TaskCardViewModel.Segment.Value}" />
+
                 </StackPanel>
 
-                <TextBlock
-                    Margin="0,16,0,4"
-                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                    Text="製品" />
-                <ComboBox
-                    DisplayMemberPath="Name"
-                    ItemsSource="{Binding Products}"
-                    SelectedItem="{Binding TaskCardViewModel.Product.Value}" />
-
-                <TextBlock
-                    Margin="0,16,0,0"
-                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                    Text="作業工程" />
-                <ComboBox
-                    DisplayMemberPath="Title"
-                    ItemsSource="{Binding Processes}"
-                    SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" />
-
-                <TextBlock
-                    Margin="0,16,0,0"
-                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                    Text="ユーザ" />
-                <ComboBox
-                    DisplayMemberPath="Name"
-                    ItemsSource="{Binding Source={StaticResource ClientCollectionKey}}"
-                    SelectedItem="{Binding TaskCardViewModel.Client.Value}">
-
-                    <!--scrollviewer not found...-->
-                    <!--<behaviors:Interaction.Behaviors>
-                        <bb:GroupHeaderFrozenBehavior HeaderTemplate="{StaticResource GroupItemHeaderTemplateKey}" />
-                    </behaviors:Interaction.Behaviors>-->
-
-                    <ComboBox.GroupStyle>
-                        <GroupStyle HeaderTemplate="{StaticResource GroupItemHeaderTemplateKey}" />
-                    </ComboBox.GroupStyle>
-                </ComboBox>
-
-                <TextBlock
-                    Margin="0,16,0,0"
-                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
-                    Text="セグメント*" />
-                <ComboBox
-                    DisplayMemberPath="Name"
-                    ItemsSource="{Binding Segments}"
-                    SelectedItem="{Binding TaskCardViewModel.Segment.Value}" />
-
-            </StackPanel>
-
-            <c:CallMethodButton
-                Grid.Row="2"
-                HorizontalAlignment="Left"
-                Content="削除"
-                MethodName="Delete"
-                Style="{StaticResource MaterialDesignOutlinedButton}"
-                Visibility="{Binding ShowDeleteButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
-                <c:CallMethodButton.BorderBrush>
-                    <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
-                </c:CallMethodButton.BorderBrush>
-                <c:CallMethodButton.Foreground>
-                    <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
-                </c:CallMethodButton.Foreground>
-            </c:CallMethodButton>
-
-            <StackPanel
-                Grid.Row="2"
-                HorizontalAlignment="Right"
-                Orientation="Horizontal">
-
-                <Button
-                    Margin="4,0"
-                    Content="登録"
-                    Style="{StaticResource MaterialDesignRaisedDarkButton}">
-                    <behaviors:Interaction.Triggers>
-                        <behaviors:EventTrigger EventName="Click">
-                            <l:LivetCallMethodAction MethodName="Regist" MethodTarget="{Binding}" />
-                        </behaviors:EventTrigger>
-                    </behaviors:Interaction.Triggers>
-                </Button>
-
                 <c:CallMethodButton
-                    Margin="4,0"
-                    Content="{materialDesign:PackIcon Play}"
-                    MethodName="RegistAndStart"
-                    Style="{StaticResource MaterialDesignRaisedButton}"
-                    ToolTip="追加して開始"
-                    Visibility="{Binding ShowQuickStartButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <Button Content="キャンセル" Style="{StaticResource MaterialDesignFlatButton}">
-                    <behaviors:Interaction.Triggers>
-                        <behaviors:EventTrigger EventName="Click">
-                            <l:WindowInteractionMessageAction>
-                                <l:DirectInteractionMessage>
-                                    <l:WindowActionMessage Action="Close" />
-                                </l:DirectInteractionMessage>
-                            </l:WindowInteractionMessageAction>
-                        </behaviors:EventTrigger>
-                    </behaviors:Interaction.Triggers>
-                </Button>
-            </StackPanel>
+                    Grid.Row="2"
+                    HorizontalAlignment="Left"
+                    Content="削除"
+                    MethodName="Delete"
+                    Style="{StaticResource MaterialDesignOutlinedButton}"
+                    Visibility="{Binding ShowDeleteButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <c:CallMethodButton.BorderBrush>
+                        <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+                    </c:CallMethodButton.BorderBrush>
+                    <c:CallMethodButton.Foreground>
+                        <SolidColorBrush Color="{StaticResource Deep OrangeAccent700}" />
+                    </c:CallMethodButton.Foreground>
+                </c:CallMethodButton>
 
-            <Grid Grid.RowSpan="3" Grid.Column="1">
-                
+                <StackPanel
+                    Grid.Row="2"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+
+                    <Button
+                        Margin="4,0"
+                        Content="登録"
+                        Style="{StaticResource MaterialDesignRaisedDarkButton}">
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="Regist" MethodTarget="{Binding}" />
+                            </behaviors:EventTrigger>
+                        </behaviors:Interaction.Triggers>
+                    </Button>
+
+                    <c:CallMethodButton
+                        Margin="4,0"
+                        Content="{materialDesign:PackIcon Play}"
+                        MethodName="RegistAndStart"
+                        Style="{StaticResource MaterialDesignRaisedButton}"
+                        ToolTip="追加して開始"
+                        Visibility="{Binding ShowQuickStartButton.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Button Content="キャンセル" Style="{StaticResource MaterialDesignFlatButton}">
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:EventTrigger EventName="Click">
+                                <l:WindowInteractionMessageAction>
+                                    <l:DirectInteractionMessage>
+                                        <l:WindowActionMessage Action="Close" />
+                                    </l:DirectInteractionMessage>
+                                </l:WindowInteractionMessageAction>
+                            </behaviors:EventTrigger>
+                        </behaviors:Interaction.Triggers>
+                    </Button>
+                </StackPanel>
             </Grid>
+
+
+
+            <Grid Visibility="{Binding ShowClientEditorArea.Value, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <TextBlock
+                    Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
+                    VerticalAlignment="Bottom"
+                    Margin="0 0 0 8"
+                    Text="案件マスタ 追加候補" />
+
+                <ListBox Grid.Row="1"
+                            BorderBrush="{StaticResource MaterialDesignBodyLight}"
+                             Margin="0 4"
+                            BorderThickness="1"
+                             Height="256"
+                         SelectedItem="{Binding SelectedClientSource.Value, Mode=TwoWay}"
+                            ItemsSource="{Binding SourceClients.Value}">
+                    <ListBox.ItemContainerStyle>
+                        <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <SolidColorBrush Color="{DynamicResource Primary50}" />
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border HorizontalAlignment="Stretch" BorderThickness="0,0,0,1">
+                                <Grid Background="Transparent">
+                                    <TextBlock VerticalAlignment="Center" 
+                                                   Text="{Binding Name}" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+                <StackPanel Grid.Row="2" Margin="0 16 0 0">
+                    <TextBox
+                            IsReadOnly="True"
+                            BorderThickness="0"
+                        Background="LightGray"
+                        DataContext="{Binding SelectedClientSource.Value}"
+                        Text="{Binding Name}" />
+
+                    <TextBlock
+                        Margin="0,2,0,0"
+                        Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                        Text="かな" />
+
+                    <TextBox
+                        x:Name="KanaTextBox"
+                        materialDesign:TextFieldAssist.HasClearButton="True"
+                        Text="{Binding ClientNameKana.Value}" />
+
+                    <StackPanel HorizontalAlignment="Right"
+                                Orientation="Horizontal"
+                                Margin="0 32 0 0">
+                        
+
+                        <c:CallMethodButton
+                            Content="案件登録"
+                            MethodName="RegistClient"
+                            Style="{StaticResource MaterialDesignOutlinedButton}"
+                             />
+
+                        <c:CallMethodButton
+                            Content="戻る"
+                            Margin="8 0 0 0"
+                            MethodName="ToggleClientEditArea"
+                            Style="{StaticResource MaterialDesignFlatButton}"
+                                />
+                    </StackPanel>
+                   
+                </StackPanel>
+            </Grid>
+
         </Grid>
     </Border>
 

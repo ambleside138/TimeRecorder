@@ -27,8 +27,8 @@ public class Client : Entity<Client>
         KanaName = kanaName;
     }
 
-    public static Client ForSource(string name)
-        => new Client(Identity<Client>.Temporary, name, "");
+    public static Client ForSource(string name, string kanaName = "")
+        => new Client(Identity<Client>.Temporary, name, kanaName);
 
     protected override IEnumerable<object> GetIdentityValues()
     {

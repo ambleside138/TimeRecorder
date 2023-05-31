@@ -6,6 +6,8 @@ namespace TimeRecorder.Repository.InMemory;
 
 public class ClientRepository : IClientRepository
 {
+    public void Add(Client client) => throw new NotImplementedException();
+
     public Client[] SelectAll()
     {
         return new Client[]

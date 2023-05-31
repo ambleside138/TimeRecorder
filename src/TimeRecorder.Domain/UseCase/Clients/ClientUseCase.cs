@@ -21,4 +21,7 @@ public class ClientUseCase
     {
         return _ClientRepository.SelectAll();
     }
+
+    public void Add(Client client)
+        => _ClientRepository.Add(client);
 }

@@ -241,10 +241,16 @@
                                         </VisualStateGroup>
                                         <VisualStateGroup Name="SelectionStates">
                                             <VisualStateGroup.Transitions>
-                                                <VisualTransition GeneratedDuration="0:0:0.6" />
+                                                <VisualTransition GeneratedDuration="0:0:0.1" />
                                             </VisualStateGroup.Transitions>
                                             <VisualState Name="Selected">
                                                 <Storyboard>
+
+                                                    <!--<ThicknessAnimationUsingKeyFrames Storyboard.TargetName="SelectedVerticalBorder" Storyboard.TargetProperty="Margin" BeginTime="00:00:00">
+                                                        <SplineThicknessKeyFrame KeyTime="00:00:00" Value="1, 0,0,0" />
+                                                        <SplineThicknessKeyFrame KeyTime="00:00:00.25" Value="1, 20,0,0" />
+                                                    </ThicknessAnimationUsingKeyFrames>-->
+
                                                     <DoubleAnimation
                                                         Storyboard.TargetName="SelectedBorder"
                                                         Storyboard.TargetProperty="Opacity"
@@ -255,7 +261,9 @@
                                                         Storyboard.TargetProperty="Opacity"
                                                         To="1"
                                                         Duration="0" />
+
                                                 </Storyboard>
+
                                             </VisualState>
                                             <VisualState Name="Unselected">
                                                 <Storyboard>
