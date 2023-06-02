@@ -23,5 +23,6 @@ public static class VersionManager
             new Version_000_016_000_000(),
             new Version_000_017_000_000(),
             new Version_000_017_000_001(),
+            new Version_000_017_000_002(),
     };
 }

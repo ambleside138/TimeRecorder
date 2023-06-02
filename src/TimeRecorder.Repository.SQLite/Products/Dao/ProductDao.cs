@@ -24,6 +24,7 @@ SELECT
   , shortname
   , invalid
   , reportnameonly
+  , taskcategoryfilters
 FROM
   products
 ORDER BY

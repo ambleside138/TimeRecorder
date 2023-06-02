@@ -15,6 +15,8 @@ using Livet.Behaviors.Messaging.Windows;
 using Livet.Messaging.Windows;
 using TimeRecorder.Messaging.Windows;
 using TimeRecorder.Domain.Domain.Segments;
+using MessagePipe;
+using Reactive.Bindings.Extensions;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Editor;
 
@@ -28,11 +30,11 @@ class WorkTaskEditDialogViewModel : ViewModel
 
     private readonly WorkTaskEditDialogModel _WorkTaskEditDialogModel = new();
 
-    public WorkProcess[] Processes { get; }
+    public ReactivePropertySlim<WorkProcess[]> Processes { get; }
 
     public ReactivePropertySlim<Client[]> Clients { get; }
 
-    public Product[] Products { get; }
+    public ReactivePropertySlim<Product[]> Products { get; }
 
     public Segment[] Segments { get; }
 
@@ -60,12 +62,26 @@ class WorkTaskEditDialogViewModel : ViewModel
     {
         IsEditMode.Value = model.Id.IsTemporary == false;
 
-        Processes = _WorkTaskEditDialogModel.GetProcesses(model.ProcessId);
+        var allProcesses = _WorkTaskEditDialogModel.GetProcesses(model.ProcessId);
+        var allProducts = _WorkTaskEditDialogModel.GetProducts(model.ProductId);
+
+        Processes = new(allProcesses);
         Clients = new(_WorkTaskEditDialogModel.GetClients());
-        Products = _WorkTaskEditDialogModel.GetProducts(model.ProductId);
+        Products = new(allProducts);
         Segments = _WorkTaskEditDialogModel.GetSegments();
 
-        TaskCardViewModel = new WorkTaskViewModel(model, Processes, Clients.Value, Products, Segments);
+        TaskCardViewModel = new WorkTaskViewModel(model, allProcesses, Clients.Value, allProducts, Segments);
+
+        TaskCardViewModel.TaskCategory.Subscribe(s =>
+        {
+            Processes.Value = allProcesses.Where(p => p.TaskCategoryFilter.Contains(s))
+                                          .ToArray();
+
+            Products.Value = allProducts.Where(p => p.TaskCategoryFilter.Contains(s))
+                                        .ToArray();
+
+        })
+        .AddTo(CompositeDisposable);
 
         ShowQuickStartButton = new ReactivePropertySlim<bool>(IsEditMode.Value == false);
         ShowDeleteButton = new ReactivePropertySlim<bool>(IsEditMode.Value);
