@@ -23,7 +23,7 @@ class CredentialProvider
     // とりあえずスコープは固定
     private static readonly string[] _Scopes = { CalendarService.Scope.CalendarReadonly, SheetsService.Scope.SpreadsheetsReadonly };
 
-    private static readonly string _TokenDirectory = "token.json";
+    private static readonly string _TokenDirectory = "token_v2";
     private static readonly string _CredentialFileName = "credentials.json";
 
     public static async Task<UserCredential> GetUserCredentialAsync()
@@ -46,6 +46,7 @@ class CredentialProvider
 
             var tokenPath = Path.Combine(currentPath.FullName, _TokenDirectory);
             Console.WriteLine("Credential file saved to: " + tokenPath);
+
             return await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 GoogleClientSecrets.FromStream(stream).Secrets,
                 _Scopes,
