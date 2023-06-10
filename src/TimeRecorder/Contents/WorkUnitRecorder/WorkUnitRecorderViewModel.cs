@@ -255,11 +255,11 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
         {
             if (imported.Any())
             {
-                SnackbarService.Current.ShowMessage($"{imported.Length}件の予定を取り込みました");
+                SnackbarService.Current.ShowMessage($"{imported.Length}件の予定を取込・更新しました");
             }
             else
             {
-                SnackbarService.Current.ShowMessage($"取込対象の予定は見つかりませんでした");
+                SnackbarService.Current.ShowMessage($"取込・更新対象の予定は見つかりませんでした");
             }
         }
     }

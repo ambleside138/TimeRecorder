@@ -12,5 +12,7 @@ public class ImportedTask
 
     public string Source { get; set; }
 
+    public int WorkTaskId { get; set; }
+
     public DateTime CreateDateTime { get; set; }
 }
