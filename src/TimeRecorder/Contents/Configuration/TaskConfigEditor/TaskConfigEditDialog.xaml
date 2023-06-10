@@ -114,7 +114,7 @@
                     Text="製品" />
                 <ComboBox
                     DisplayMemberPath="Name"
-                    ItemsSource="{Binding Products}"
+                    ItemsSource="{Binding Products.Value}"
                     SelectedItem="{Binding TaskCardViewModel.Product.Value}" />
 
                 <TextBlock
@@ -123,7 +123,7 @@
                     Text="作業工程" />
                 <ComboBox
                     DisplayMemberPath="Title"
-                    ItemsSource="{Binding Processes}"
+                    ItemsSource="{Binding Processes.Value}"
                     SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" />
 
                 <TextBlock
@@ -132,7 +132,7 @@
                     Text="ユーザ" />
                 <ComboBox
                     DisplayMemberPath="Name"
-                    ItemsSource="{Binding Clients}"
+                    ItemsSource="{Binding Clients.Value}"
                     SelectedItem="{Binding TaskCardViewModel.Client.Value}" />
 
                 <TextBlock
