@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Calendar;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
@@ -22,6 +23,7 @@ public class ImportTaskFromCalendarUseCase
     private readonly IWorkTaskRepository _WorkTaskRepository;
     private readonly IScheduledEventRepository _ScheduledEventRepository;
     private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
+    private readonly ISegmentRepository _SegmentRepository;
     private readonly WorkTaskBuilderConfig _WorkTaskBuilderConfig;
     private readonly ScheduleTitleMap[] _ScheduleTitleMaps;
 
@@ -30,13 +32,15 @@ public class ImportTaskFromCalendarUseCase
         IScheduledEventRepository scheduledEventRepository,
         IWorkingTimeRangeRepository workingTimeRangeRepository,
         WorkTaskBuilderConfig workTaskBuilderConfig,
-        ScheduleTitleMap[] scheduleTitleMaps)
+        ScheduleTitleMap[] scheduleTitleMaps,
+        ISegmentRepository segmentRepository)
     {
         _WorkTaskRepository = workTaskRepository;
         _ScheduledEventRepository = scheduledEventRepository;
         _WorkingTimeRangeRepository = workingTimeRangeRepository;
         _WorkTaskBuilderConfig = workTaskBuilderConfig;
         _ScheduleTitleMaps = scheduleTitleMaps;
+        _SegmentRepository = segmentRepository;
     }
 
     /// <summary>
@@ -65,7 +69,7 @@ public class ImportTaskFromCalendarUseCase
             var registedWorkTasks = _WorkTaskRepository.SelectByImportKeys(events.Select(e => e.Id).ToArray());
 
             var list = new List<WorkTask>();
-            var builder = new WorkTaskBuilder(_WorkTaskBuilderConfig, _ScheduleTitleMaps);
+            var builder = new WorkTaskBuilder(_WorkTaskBuilderConfig, _ScheduleTitleMaps, _SegmentRepository);
             foreach (var @event in events)
             {
                 // 登録済みは無視する

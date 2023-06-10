@@ -15,6 +15,7 @@ using TimeRecorder.Configurations.Items;
 using TimeRecorder.Contents.WorkUnitRecorder.Tasks;
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Calendar;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.TimeCards;
 using TimeRecorder.Domain.Domain.Tracking;
@@ -94,7 +95,8 @@ public class WorkUnitRecorderModel : NotificationObject, IDisposable
             ContainerHelper.GetRequiredService<IScheduledEventRepository>(),
             ContainerHelper.GetRequiredService<IWorkingTimeRangeRepository>(),
             config.WorkTaskBuilderConfig,
-            maps?.ScheduleTitleMaps);
+            maps?.ScheduleTitleMaps,
+            ContainerHelper.GetRequiredService<ISegmentRepository>());
     }
 
     public void Load()

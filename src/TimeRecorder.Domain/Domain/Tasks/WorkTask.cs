@@ -77,7 +77,7 @@ public class WorkTask : Entity<WorkTask>
     }
     #endregion
 
-    public TaskSource TaskSource { get; private set; }
+    public TaskSource TaskSource { get; set; }
 
     public bool IsTemporary => TaskSource.IsTemporary();
 
@@ -103,16 +103,6 @@ public class WorkTask : Entity<WorkTask>
         t.TaskSource = TaskSource.Favorite;
 
         return t;
-    }
-
-    public static WorkTask FromScheduledEvent(ScheduledEvent scheduledEvent)
-    {
-        var workTask = ForNew();
-        workTask.Title = scheduledEvent.Title;
-        workTask.TaskCategory = TaskCategory.Develop;
-        workTask.TaskSource = TaskSource.Schedule;
-
-        return workTask;
     }
 
     // VSの場合、「クイックアクションとリファクタリング」からコンストラクタコードの生成が可能
