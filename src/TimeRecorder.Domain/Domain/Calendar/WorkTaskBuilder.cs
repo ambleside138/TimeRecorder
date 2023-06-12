@@ -44,6 +44,11 @@ class WorkTaskBuilder
             _Logger.Info("  Use NewSetting");
 
             var mapConfig = _ScheduleTitleMaps.FirstOrDefault(t => t.ScheduleTitle.Trim() == oTask.Title.Trim());
+            if(mapConfig ==  null)
+            {
+                mapConfig = _ScheduleTitleMaps.FirstOrDefault(t => oTask.Title.Split(" ", StringSplitOptions.TrimEntries).FirstOrDefault() == t.ScheduleTitle.Trim());
+            }
+
             if (mapConfig != null)
             {
                 var configLog = JsonSerializer.Serialize(mapConfig, JsonSerializerHelper.DefaultOptions);
