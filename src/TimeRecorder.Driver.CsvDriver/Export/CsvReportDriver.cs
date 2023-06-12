@@ -16,9 +16,9 @@ public class CsvReportDriver : IReportDriver
 {
     private DailyWorkRecordHeaderToWorkTimeRowConverter _Converter = new();
 
-    public ExportResult ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust)
+    public ExportResult ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust, bool useNewFormat)
     {
-        var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h))
+        var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h, useNewFormat))
                                          .Where(r => r.ManHour != "0")
                                          .ToArray();
 

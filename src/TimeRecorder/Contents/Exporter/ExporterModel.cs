@@ -47,11 +47,11 @@ class ExporterModel
         WorkingHourImportUrl = UserConfigurationManager.Instance.GetConfiguration<WorkingHourImportApiUrlConfig>(ConfigKey.WorkingHourImportApiUrl)?.URL ?? "";
     }
 
-    public void Export(int year, int month, string path, bool autoAdjust)
+    public void Export(int year, int month, string path, bool autoAdjust, bool useNewFormat)
     {
         var targetYearMonth = new Domain.Domain.YearMonth(year, month);
 
-        var result = _ExportMonthlyReportUseCase.Export(targetYearMonth, path, autoAdjust);
+        var result = _ExportMonthlyReportUseCase.Export(targetYearMonth, path, autoAdjust, useNewFormat);
 
         if (result.IsSuccessed)
         {
