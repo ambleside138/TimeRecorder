@@ -12,7 +12,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
     Width="420"
-    d:DesignHeight="450"
     d:DesignWidth="800"
     AllowsTransparency="True"
     Background="Transparent"
@@ -21,7 +20,7 @@
     SizeToContent="Height"
     WindowStartupLocation="CenterOwner"
     WindowStyle="None"
-    mc:Ignorable="d">
+    mc:Ignorable="d" Height="579">
 
     <behaviors:Interaction.Triggers>
 
@@ -88,6 +87,11 @@
                         IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Develop, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
                         Style="{StaticResource HorizontalMarginStyleKey}" />
                     <RadioButton
+                        Content="研究開発"
+                        GroupName="TaskCategory"
+                        IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=ResearchAndDevelopment, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
+                        Style="{StaticResource HorizontalMarginStyleKey}" />
+                    <RadioButton
                         Content="契約後の導入"
                         GroupName="TaskCategory"
                         IsChecked="{Binding TaskCardViewModel.TaskCategory.Value, ConverterParameter=Introduce, Converter={StaticResource EnumToBooleanConverter}, Mode=TwoWay}"
@@ -110,7 +114,7 @@
                     Text="製品" />
                 <ComboBox
                     DisplayMemberPath="Name"
-                    ItemsSource="{Binding Products}"
+                    ItemsSource="{Binding Products.Value}"
                     SelectedItem="{Binding TaskCardViewModel.Product.Value}" />
 
                 <TextBlock
@@ -119,7 +123,7 @@
                     Text="作業工程" />
                 <ComboBox
                     DisplayMemberPath="Title"
-                    ItemsSource="{Binding Processes}"
+                    ItemsSource="{Binding Processes.Value}"
                     SelectedItem="{Binding TaskCardViewModel.WorkProcess.Value}" />
 
                 <TextBlock
@@ -128,8 +132,18 @@
                     Text="ユーザ" />
                 <ComboBox
                     DisplayMemberPath="Name"
-                    ItemsSource="{Binding Clients}"
+                    ItemsSource="{Binding Clients.Value}"
                     SelectedItem="{Binding TaskCardViewModel.Client.Value}" />
+
+                <TextBlock
+                    Margin="0,16,0,0"
+                    Style="{StaticResource MaterialDesignCaptionTextBlock}"
+                    Text="セグメント*" />
+                <ComboBox
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Segments}"
+                    SelectedItem="{Binding TaskCardViewModel.Segment.Value}" />
+
             </StackPanel>
 
             <c:CallMethodButton

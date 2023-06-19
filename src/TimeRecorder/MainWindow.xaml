@@ -20,7 +20,7 @@
     Width="720"
     Height="480"
     MinWidth="560"
-    MinHeight="480"
+    MinHeight="560"
     Background="{DynamicResource MaterialDesignPaper}"
     BorderBrush="{DynamicResource PrimaryHueMidBrush}"
     FontFamily="{materialDesign:MaterialDesignFont}"

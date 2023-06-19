@@ -1,5 +1,6 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Calendar.v3;
+using Google.Apis.Sheets.v4;
 using Google.Apis.Util.Store;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,9 @@ class CredentialProvider
 
 
     // とりあえずスコープは固定
-    private static readonly string[] _Scopes = { CalendarService.Scope.CalendarReadonly };
+    private static readonly string[] _Scopes = { CalendarService.Scope.CalendarReadonly, SheetsService.Scope.SpreadsheetsReadonly };
 
-    private static readonly string _TokenDirectory = "token.json";
+    private static readonly string _TokenDirectory = "token_v2";
     private static readonly string _CredentialFileName = "credentials.json";
 
     public static async Task<UserCredential> GetUserCredentialAsync()
@@ -45,6 +46,7 @@ class CredentialProvider
 
             var tokenPath = Path.Combine(currentPath.FullName, _TokenDirectory);
             Console.WriteLine("Credential file saved to: " + tokenPath);
+
             return await GoogleWebAuthorizationBroker.AuthorizeAsync(
                 GoogleClientSecrets.FromStream(stream).Secrets,
                 _Scopes,

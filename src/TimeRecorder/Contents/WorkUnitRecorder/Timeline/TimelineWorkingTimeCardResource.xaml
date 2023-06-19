@@ -59,14 +59,27 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         Opacity="0.7"
+                        Visibility="{Binding IsPlaned.Value, Converter={StaticResource InverseBoolToVisConverter}}"
                         Style="{StaticResource MaterialDesignCaptionTextBlock}"
                         Text="{Binding WorkProcessName, StringFormat=[{0}]}" />
                     <!--  Title  -->
-                    <TextBlock
+                    <StackPanel Orientation="Horizontal" Margin="2">
+                        <materialDesign:PackIcon
+                                Width="14"
+                                Height="14"
+                                Margin="4,1,8,0"
+                                Kind="Calendar"
+                                Opacity="0.7"
+                                Visibility="{Binding IsPlaned.Value, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+
+                        <TextBlock
                         Margin="0"
                         Style="{StaticResource MaterialDesignSubtitle1TextBlock}"
                         Text="{Binding TaskTitle}" />
 
+                    </StackPanel>
+                    
                 </StackPanel>
 
 

@@ -29,4 +29,24 @@ FROM
 
         return Connection.Query<ClientTableRow>(sql).ToArray();
     }
+
+    public void Insert(ClientTableRow row)
+    {
+        #region SQL
+        const string sql = @"
+INSERT INTO clients
+(
+  name
+  , kananame
+)
+VALUES
+(
+  @name
+  , @kananame
+)
+";
+        #endregion
+
+        Connection.Execute(sql, row, Transaction);
+    }
 }

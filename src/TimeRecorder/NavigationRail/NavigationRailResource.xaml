@@ -208,6 +208,15 @@
                                             <ContentPresenter x:Name="ContentSite" ContentSource="Header" />
                                         </materialDesign:Ripple>
 
+                                        <Border x:Name="SelectedVerticalBorder" Width="5" 
+                                                Height="28"
+                                                Margin="1 0 0 0"
+                                                HorizontalAlignment="Left"
+                                                VerticalAlignment="Center" 
+                                                Opacity="0"
+                                                CornerRadius="4"
+                                                Background="{DynamicResource PrimaryHueMidBrush}"  />
+
                                     </Grid>
                                     <VisualStateManager.VisualStateGroups>
                                         <VisualStateGroup Name="CommonStates">
@@ -232,24 +241,50 @@
                                         </VisualStateGroup>
                                         <VisualStateGroup Name="SelectionStates">
                                             <VisualStateGroup.Transitions>
-                                                <VisualTransition GeneratedDuration="0:0:0.6" />
+                                                <VisualTransition GeneratedDuration="0:0:0.1" />
                                             </VisualStateGroup.Transitions>
                                             <VisualState Name="Selected">
                                                 <Storyboard>
+
+                                                    <!--<ThicknessAnimationUsingKeyFrames Storyboard.TargetName="SelectedVerticalBorder" Storyboard.TargetProperty="Margin" BeginTime="00:00:00">
+                                                        <SplineThicknessKeyFrame KeyTime="00:00:00" Value="1, 0,0,0" />
+                                                        <SplineThicknessKeyFrame KeyTime="00:00:00.25" Value="1, 20,0,0" />
+                                                    </ThicknessAnimationUsingKeyFrames>-->
+
                                                     <DoubleAnimation
                                                         Storyboard.TargetName="SelectedBorder"
                                                         Storyboard.TargetProperty="Opacity"
                                                         To="0.18"
                                                         Duration="0" />
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="SelectedVerticalBorder"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To="1"
+                                                        Duration="0" />
+
+                                                </Storyboard>
+
+                                            </VisualState>
+                                            <VisualState Name="Unselected">
+                                                <Storyboard>
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="SelectedVerticalBorder"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To="0"
+                                                        Duration="0" />
                                                 </Storyboard>
                                             </VisualState>
-                                            <VisualState Name="Unselected" />
                                             <VisualState Name="SelectedUnfocused">
                                                 <Storyboard>
                                                     <DoubleAnimation
                                                         Storyboard.TargetName="SelectedBorder"
                                                         Storyboard.TargetProperty="Opacity"
                                                         To="0.03"
+                                                        Duration="0" />
+                                                    <DoubleAnimation
+                                                        Storyboard.TargetName="SelectedVerticalBorder"
+                                                        Storyboard.TargetProperty="Opacity"
+                                                        To="0"
                                                         Duration="0" />
                                                 </Storyboard>
                                             </VisualState>

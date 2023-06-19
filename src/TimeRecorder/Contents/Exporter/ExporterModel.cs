@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using TimeRecorder.Domain.Domain;
@@ -46,15 +47,24 @@ class ExporterModel
         WorkingHourImportUrl = UserConfigurationManager.Instance.GetConfiguration<WorkingHourImportApiUrlConfig>(ConfigKey.WorkingHourImportApiUrl)?.URL ?? "";
     }
 
-    public void Export(int year, int month, string path, bool autoAdjust)
+    public void Export(int year, int month, string path, bool autoAdjust, bool useNewFormat)
     {
         var targetYearMonth = new Domain.Domain.YearMonth(year, month);
 
-        var result = _ExportMonthlyReportUseCase.Export(targetYearMonth, path, autoAdjust);
+        var result = _ExportMonthlyReportUseCase.Export(targetYearMonth, path, autoAdjust, useNewFormat);
 
         if (result.IsSuccessed)
         {
-            SnackbarService.Current.ShowMessage("以下のパスに工数集計結果を出力しました" + Environment.NewLine + path);
+            try
+            {
+                Clipboard.SetText(result.Rows);
+            }
+            catch (Exception ex)
+            {
+                _Logger.Error(ex);
+            }
+
+            SnackbarService.Current.ShowMessage("クリップボードと以下のパスに工数集計結果を出力しました" + Environment.NewLine + path);
         }
         else
         {

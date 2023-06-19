@@ -16,9 +16,9 @@ public class CsvReportDriver : IReportDriver
 {
     private DailyWorkRecordHeaderToWorkTimeRowConverter _Converter = new();
 
-    public ExportResult ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust)
+    public ExportResult ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust, bool useNewFormat)
     {
-        var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h))
+        var rows = dailyWorkRecordHeaders.SelectMany(h => _Converter.Convert(h, useNewFormat))
                                          .Where(r => r.ManHour != "0")
                                          .ToArray();
 
@@ -38,7 +38,15 @@ public class CsvReportDriver : IReportDriver
         using (var sw = new StreamWriter(filePath, false, Encoding.GetEncoding("shift_jis")))
         using (var csv = new CsvHelper.CsvWriter(sw, config))
         {
-            // データを読み出し
+            csv.WriteRecords(rows);
+        }
+
+        // クリップボードにもコピーしておく
+        var resultTexts = new StringBuilder();
+
+        config.Delimiter = "\t";
+        using (var csv = new CsvHelper.CsvWriter(new StringWriter(resultTexts), config))
+        {
             csv.WriteRecords(rows);
         }
 
@@ -57,6 +65,7 @@ public class CsvReportDriver : IReportDriver
         {
             IsSuccessed = listMessage.Length == 0,
             Message = listMessage.Length > 0 ? message.ToString() : "",
+            Rows = resultTexts.ToString(),
         };
     }
 

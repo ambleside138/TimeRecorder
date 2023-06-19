@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml.Schema;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
 
@@ -17,17 +18,19 @@ class WorkTaskBuilder
     private readonly WorkTaskBuilderConfig _Config;
 
     private readonly ScheduleTitleMap[] _ScheduleTitleMaps;
+    private readonly ISegmentRepository _SegmentRepository;
 
-    public WorkTaskBuilder(WorkTaskBuilderConfig config, ScheduleTitleMap[] maps)
+    public WorkTaskBuilder(WorkTaskBuilderConfig config, ScheduleTitleMap[] maps, ISegmentRepository segmentRepository)
     {
         _Config = config;
         _ScheduleTitleMaps = maps ?? Array.Empty<ScheduleTitleMap>();
+        _SegmentRepository = segmentRepository;
     }
 
     public (WorkTask task, ImportedTask imported) Build(ScheduledEvent scheduledEvent)
     {
         _Logger.Info($"starting analyze task for {scheduledEvent.StartTime:yyyy/MM/dd HH:mm～} [{scheduledEvent.Title}]");
-        var oTask = WorkTask.FromScheduledEvent(scheduledEvent);
+        var oTask = FromScheduledEvent(scheduledEvent);
 
         var eventConfig = _Config.EventMappers.FirstOrDefault(t => t.EventKind == scheduledEvent.Kind);
         if (eventConfig != null)
@@ -41,6 +44,11 @@ class WorkTaskBuilder
             _Logger.Info("  Use NewSetting");
 
             var mapConfig = _ScheduleTitleMaps.FirstOrDefault(t => t.ScheduleTitle.Trim() == oTask.Title.Trim());
+            if(mapConfig ==  null)
+            {
+                mapConfig = _ScheduleTitleMaps.FirstOrDefault(t => oTask.Title.Split(" ", StringSplitOptions.TrimEntries).FirstOrDefault() == t.ScheduleTitle.Trim());
+            }
+
             if (mapConfig != null)
             {
                 var configLog = JsonSerializer.Serialize(mapConfig, JsonSerializerHelper.DefaultOptions);
@@ -55,6 +63,7 @@ class WorkTaskBuilder
                 oTask.ProductId = new Identity<Products.Product>(mapConfig.ProductId);
                 oTask.ProcessId = new Identity<WorkProcesses.WorkProcess>(mapConfig.WorkProcessId);
                 oTask.ClientId = new Identity<Clients.Client>(mapConfig.ClientId);
+                oTask.SegmentId = new Identity<Segment>(mapConfig.SegmentId);
             }
             else
             {
@@ -81,6 +90,11 @@ class WorkTaskBuilder
             }
         }
 
+        if(oTask.SegmentId.IsEmpty)
+        {
+            oTask.SegmentId = _SegmentRepository.SelectAll().FirstOrDefault()?.Id ?? Identity<Segment>.Empty;
+        }
+
         var importedTask = new ImportedTask
         {
             Title = oTask.Title,
@@ -91,5 +105,13 @@ class WorkTaskBuilder
         return (oTask, importedTask);
     }
 
+    private static WorkTask FromScheduledEvent(ScheduledEvent scheduledEvent)
+    {
+        var workTask = WorkTask.ForNew();
+        workTask.Title = scheduledEvent.Title;
+        workTask.TaskCategory = TaskCategory.Develop;
+        workTask.TaskSource = TaskSource.Schedule;
 
+        return workTask;
+    }
 }

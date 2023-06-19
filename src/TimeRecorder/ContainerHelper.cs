@@ -3,8 +3,10 @@ using Microsoft.Extensions.DependencyInjection;
 using TimeRecorder.Domain.Domain.Calendar;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.System;
 using TimeRecorder.Domain.Domain.Tasks;
+using TimeRecorder.Domain.Domain.TimeCards;
 using TimeRecorder.Domain.Domain.Todo;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -16,11 +18,14 @@ using TimeRecorder.Driver.CsvDriver.Import;
 using TimeRecorder.Repository.Firebase.System;
 using TimeRecorder.Repository.Firebase.Todo;
 using TimeRecorder.Repository.GoogleAPI.Calendar;
+using TimeRecorder.Repository.GoogleAPI.SpreadSheet;
 using TimeRecorder.Repository.InMemory;
 using TimeRecorder.Repository.SQLite.Clients;
 using TimeRecorder.Repository.SQLite.Products;
+using TimeRecorder.Repository.SQLite.Segments;
 using TimeRecorder.Repository.SQLite.System;
 using TimeRecorder.Repository.SQLite.Tasks;
+using TimeRecorder.Repository.SQLite.TimeCards;
 using TimeRecorder.Repository.SQLite.Tracking;
 using TimeRecorder.Repository.SQLite.Tracking.Reports;
 using TimeRecorder.Repository.SQLite.WorkProcesses;
@@ -87,6 +92,10 @@ internal static class ContainerHelper
                        .AddSingleton<ITodoListRepository, FirestoreTodoListRepository>()
                        .AddSingleton<IAccountRepository, FirebaseAccountRepository>()
                        .AddSingleton<IReportDriver, CsvReportDriver>()
-                       .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>();
+                       .AddSingleton<IWorkingHourImportDriver, CsvWorkingHourImportDriver>()
+                       .AddSingleton<ISegmentRepository, SQLiteSegmentRepository>()
+                       .AddSingleton<IClientSourceRepository, GoogleApiClientSourceRepository>()
+                       .AddSingleton<ITimeCardRepository, SQLiteTimeCardRepository>()
+                       ;
     }
 }

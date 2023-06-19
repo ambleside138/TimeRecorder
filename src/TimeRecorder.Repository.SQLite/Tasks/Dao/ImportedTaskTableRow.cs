@@ -36,6 +36,7 @@ class ImportedTaskTableRow
             ImportKey = ImportKey,
             Title = Title,
             Source = Source,
+            WorkTaskId = WorkTaskId,
             CreateDateTime = CreateDateTime,
         };
     }

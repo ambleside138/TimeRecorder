@@ -22,6 +22,7 @@ static class WorkTaskFactory
                  , new Identity<Domain.Domain.Clients.Client>(workTaskTableRow.ClientId)
                  , new Identity<Domain.Domain.WorkProcesses.WorkProcess>(workTaskTableRow.ProcessId)
                  , workTaskTableRow.TaskSource
+                 , new Identity<Domain.Domain.Segments.Segment>( workTaskTableRow.SegmentId)
                  , isCompleted);
 
     }

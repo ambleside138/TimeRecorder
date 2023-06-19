@@ -38,6 +38,7 @@
         <Grid Grid.ColumnSpan="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
 
@@ -49,11 +50,67 @@
                 VerticalAlignment="Center"
                 FontSize="16"
                 SelectedDate="{Binding TargetDateTime.Value, Mode=TwoWay}" />
-
-            <!--  現在のタスク  -->
-
+            
+            <!-- timecard -->
             <Border
                 Grid.Column="1"
+                Height="32"
+                Margin="0,0,0,8"
+                VerticalAlignment="Top"
+                CornerRadius="3">
+
+                <StackPanel Orientation="Horizontal"
+                            Margin="8,2">
+
+                    <Button
+                        Width="32"
+                        Height="32"
+                        Style="{StaticResource MaterialDesignIconButton}"
+                        IsEnabled="{Binding IsTimeCardLinkEnabled.Value}"
+                        ToolTip="リンクを開く">
+                        <materialDesign:PackIcon
+                            Width="24"
+                            Height="24"
+                        VerticalAlignment="Center"
+                            Foreground="#0f9d58"
+                            Kind="GoogleSpreadsheet" />
+
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="OpenTimeCardLink" MethodTarget="{Binding}" />
+                            </behaviors:EventTrigger>
+                        </behaviors:Interaction.Triggers>
+
+                    </Button>
+
+
+                    <Button
+                        Width="24"
+                        Height="24"
+                        VerticalAlignment="Center"
+                        Margin="0 4 0 0"
+                        Style="{StaticResource MaterialDesignIconButton}"
+                        ToolTip="リンクを指定">
+                        <materialDesign:PackIcon
+                            Width="16"
+                            Height="16"
+                            Kind="Link" />
+
+                        <behaviors:Interaction.Triggers>
+                            <behaviors:EventTrigger EventName="Click">
+                                <l:LivetCallMethodAction MethodName="EditTimeCardLink" MethodTarget="{Binding}" />
+                            </behaviors:EventTrigger>
+                        </behaviors:Interaction.Triggers>
+                    </Button>
+
+                 
+                </StackPanel>
+
+            </Border>
+
+            <!--  現在のタスク  -->
+            <Border
+                Grid.Column="2"
                 Height="32"
                 Margin="16,0,0,8"
                 VerticalAlignment="Top"

@@ -118,7 +118,7 @@
                     Text="年" />
 
                 <ComboBox
-                    Width="32"
+                    Width="48"
                     Margin="8,0"
                     HorizontalContentAlignment="Right"
                     FontSize="18"
@@ -143,7 +143,7 @@
                 <Button
                     Margin="32,0,0,0"
                     HorizontalAlignment="Right"
-                    Content="CSV出力">
+                    Content="CSV出力 [新]">
                     <behaviors:Interaction.Triggers>
                         <behaviors:EventTrigger EventName="Click">
                             <l:SaveFileDialogInteractionMessageAction>
@@ -154,6 +154,22 @@
                         </behaviors:EventTrigger>
                     </behaviors:Interaction.Triggers>
                 </Button>
+                
+                <Button
+                    Margin="32,0,0,0"
+                    HorizontalAlignment="Right"
+                    Content="CSV出力 [旧]">
+                    <behaviors:Interaction.Triggers>
+                        <behaviors:EventTrigger EventName="Click">
+                            <l:SaveFileDialogInteractionMessageAction>
+                                <l:DirectInteractionMessage CallbackMethodName="ExportOld" CallbackMethodTarget="{Binding}">
+                                    <l:SavingFileSelectionMessage FileName="{Binding InitialFileName.Value}" Filter="{Binding ExportFilter}" />
+                                </l:DirectInteractionMessage>
+                            </l:SaveFileDialogInteractionMessageAction>
+                        </behaviors:EventTrigger>
+                    </behaviors:Interaction.Triggers>
+                </Button>
+
 
             </StackPanel>
         </GroupBox>

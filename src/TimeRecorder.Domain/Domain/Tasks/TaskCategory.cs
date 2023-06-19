@@ -7,6 +7,7 @@ using TimeRecorder.Domain.Utility.Attributes;
 
 namespace TimeRecorder.Domain.Domain.Tasks;
 
+// DBにValueをいれているので順番は絶対変えないこと！
 public enum TaskCategory
 {
     [DisplayText("未指定")]

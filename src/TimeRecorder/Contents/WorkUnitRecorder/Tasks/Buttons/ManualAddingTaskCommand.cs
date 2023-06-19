@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using TimeRecorder.Contents.WorkUnitRecorder.Editor;
 using TimeRecorder.Helpers;
+using TimeRecorder.Host;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder.Tasks.Buttons;
 
@@ -20,7 +22,10 @@ class ManualAddingTaskCommand : IAddingTaskCommand
 
     private void ExecuteNewTaskDialog()
     {
-        var editDialogVm = new WorkTaskEditDialogViewModel();
+        // 汚いのでなんとかしたい...
+        var linkUrl = MainWindowViewModel.Instance.Contents.OfType<WorkUnitRecorderViewModel>().First().TimeCardLinkURL;
+
+        var editDialogVm = new WorkTaskEditDialogViewModel(linkUrl);
 
         var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
 

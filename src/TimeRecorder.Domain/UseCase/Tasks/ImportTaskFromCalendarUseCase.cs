@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Calendar;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Utility;
@@ -22,6 +23,7 @@ public class ImportTaskFromCalendarUseCase
     private readonly IWorkTaskRepository _WorkTaskRepository;
     private readonly IScheduledEventRepository _ScheduledEventRepository;
     private readonly IWorkingTimeRangeRepository _WorkingTimeRangeRepository;
+    private readonly ISegmentRepository _SegmentRepository;
     private readonly WorkTaskBuilderConfig _WorkTaskBuilderConfig;
     private readonly ScheduleTitleMap[] _ScheduleTitleMaps;
 
@@ -30,13 +32,15 @@ public class ImportTaskFromCalendarUseCase
         IScheduledEventRepository scheduledEventRepository,
         IWorkingTimeRangeRepository workingTimeRangeRepository,
         WorkTaskBuilderConfig workTaskBuilderConfig,
-        ScheduleTitleMap[] scheduleTitleMaps)
+        ScheduleTitleMap[] scheduleTitleMaps,
+        ISegmentRepository segmentRepository)
     {
         _WorkTaskRepository = workTaskRepository;
         _ScheduledEventRepository = scheduledEventRepository;
         _WorkingTimeRangeRepository = workingTimeRangeRepository;
         _WorkTaskBuilderConfig = workTaskBuilderConfig;
         _ScheduleTitleMaps = scheduleTitleMaps;
+        _SegmentRepository = segmentRepository;
     }
 
     /// <summary>
@@ -65,20 +69,52 @@ public class ImportTaskFromCalendarUseCase
             var registedWorkTasks = _WorkTaskRepository.SelectByImportKeys(events.Select(e => e.Id).ToArray());
 
             var list = new List<WorkTask>();
-            var builder = new WorkTaskBuilder(_WorkTaskBuilderConfig, _ScheduleTitleMaps);
+            var builder = new WorkTaskBuilder(_WorkTaskBuilderConfig, _ScheduleTitleMaps, _SegmentRepository);
             foreach (var @event in events)
             {
-                // 登録済みは無視する
-                if (registedWorkTasks.Any(t => t.ImportKey == @event.Id))
-                    continue;
+                var target = registedWorkTasks.FirstOrDefault(t => t.ImportKey == @event.Id);
 
-                // 未登録ならスケジュールに合わせて登録
-                (WorkTask workTask, ImportedTask importedTask) = builder.Build(@event);
-                workTask = _WorkTaskRepository.AddForSchedule(workTask, importedTask);
-                list.Add(workTask);
+                if (target != null)
+                {
+                    // 登録済みなら時間とタイトルを更新
+                    var workTask = _WorkTaskRepository.SelectById(new Identity<WorkTask>(target.WorkTaskId));
+                    if(workTask != null)
+                    {
+                        workTask.Title = @event.Title;
+                        _WorkTaskRepository.Edit(workTask);
 
-                var newWorkingTime = WorkingTimeRange.FromScheduledEvent(workTask.Id, @event);
-                _WorkingTimeRangeRepository.Add(newWorkingTime);
+                        var workingTime = _WorkingTimeRangeRepository.SelectByTaskId(workTask.Id).FirstOrDefault();
+
+                        if(workingTime != null)
+                        {
+                            if(workingTime.TimePeriod.StartDateTime == @event.StartTime
+                                && workingTime.TimePeriod.EndDateTime == @event.EndTime)
+                            {
+                                continue;
+                            }
+
+                            workingTime.TimePeriod = new TimePeriod(@event.StartTime, @event.EndTime);
+                            _WorkingTimeRangeRepository.Edit(workingTime);
+                        }
+                        else
+                        {
+                            var newWorkingTime = WorkingTimeRange.FromScheduledEvent(workTask.Id, @event);
+                            _WorkingTimeRangeRepository.Add(newWorkingTime);
+                        }
+
+                        list.Add(workTask);
+                    }
+                }
+                else
+                {
+                    // 未登録ならスケジュールに合わせて登録
+                    (WorkTask workTask, ImportedTask importedTask) = builder.Build(@event);
+                    workTask = _WorkTaskRepository.AddForSchedule(workTask, importedTask);
+                    list.Add(workTask);
+
+                    var newWorkingTime = WorkingTimeRange.FromScheduledEvent(workTask.Id, @event);
+                    _WorkingTimeRangeRepository.Add(newWorkingTime);
+                }    
             }
 
             return list.ToArray();

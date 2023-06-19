@@ -71,6 +71,8 @@ public class ScheduleTitleMap : IEquatable<ScheduleTitleMap>
 
     public int WorkProcessId { get; set; }
 
+    public int SegmentId { get; set; }
+
     public WorkTask ConvertToDomainModel()
     {
         var obj = WorkTask.ForNew();
@@ -79,6 +81,7 @@ public class ScheduleTitleMap : IEquatable<ScheduleTitleMap>
         obj.ProductId = new Identity<Product>(ProductId);
         obj.ClientId = new Identity<Client>(ClientId);
         obj.ProcessId = new Identity<WorkProcess>(WorkProcessId);
+        obj.SegmentId = new Identity<Segments.Segment>(SegmentId);
 
         return obj;
     }
@@ -92,6 +95,7 @@ public class ScheduleTitleMap : IEquatable<ScheduleTitleMap>
             ProductId = workTask.ProductId.Value,
             ClientId = workTask.ClientId.Value,
             WorkProcessId = workTask.ProcessId.Value,
+            SegmentId = workTask.SegmentId.Value,
         };
     }
 

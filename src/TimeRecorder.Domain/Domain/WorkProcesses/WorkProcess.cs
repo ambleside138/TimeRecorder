@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Utility;
 
 namespace TimeRecorder.Domain.Domain.WorkProcesses;
@@ -22,6 +23,10 @@ public class WorkProcess : Entity<WorkProcess>
     /// </summary>
     public bool Invalid { get; }
 
+    /// <summary>
+    /// カテゴリフィルタ
+    /// </summary>
+    public TaskCategoryFilter TaskCategoryFilter { get; }
 
     /// <summary>
     /// Domain層内のみで、titleのみでの生成を許可する
@@ -31,11 +36,12 @@ public class WorkProcess : Entity<WorkProcess>
         : this(Identity<WorkProcess>.Temporary, title, false) { }
 
 
-    public WorkProcess(Identity<WorkProcess> identity, string title, bool invalid = false)
+    public WorkProcess(Identity<WorkProcess> identity, string title, bool invalid = false, TaskCategoryFilter taskCategoryFilter = null)
     {
         Id = identity;
         Title = title;
         Invalid = invalid;
+        TaskCategoryFilter = taskCategoryFilter ?? TaskCategoryFilter.Empty;
     }
 
     protected override IEnumerable<object> GetIdentityValues()
