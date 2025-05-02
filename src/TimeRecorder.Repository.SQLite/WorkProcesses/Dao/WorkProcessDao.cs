@@ -22,6 +22,7 @@ SELECT
   id
   , title
   , invalid
+  , taskcategoryfilters
 FROM
   processes
 ORDER BY

@@ -19,12 +19,12 @@ public class ExportMonthlyReportUseCase
         _ReportDriver = reportDriver;
     }
 
-    public ExportResult Export(YearMonth yearMonth, string path, bool autoAdjust)
+    public ExportResult Export(YearMonth yearMonth, string path, bool autoAdjust, bool useNewFormat)
     {
         var builder = new MonthlyReportBuilder(yearMonth);
         var workRecords = _DailyWorkRecordQueryService.SelectByYearMonth(yearMonth);
         var summary = builder.Build(workRecords);
 
-        return _ReportDriver.ExportMonthlyReport(summary, path, autoAdjust);
+        return _ReportDriver.ExportMonthlyReport(summary, path, autoAdjust, useNewFormat);
     }
 }

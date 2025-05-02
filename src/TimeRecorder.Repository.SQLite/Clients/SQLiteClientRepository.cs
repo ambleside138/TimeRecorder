@@ -24,4 +24,12 @@ public class SQLiteClientRepository : IClientRepository
                    .ThenBy(i => i.Id.Value)
                    .ToArray();
     }
+
+    public void Add(Client client)
+    {
+        RepositoryAction.Transaction((c, t) =>
+        {
+            new ClientDao(c, t).Insert(new ClientTableRow { Name = client.Name, KanaName = client.KanaName });
+        });
+    }
 }

@@ -51,6 +51,7 @@ public class TimelineWorkingTimeCardViewModel : ViewModel
         CanvasTop = CalcTop();
         ActualHeight.Value = CalcActualHeight();
 
+        IsPlaned.Value = workingTimeRange.IsPlaned;
     }
 
     public void UpdateDurationTime()
@@ -116,4 +117,6 @@ public class TimelineWorkingTimeCardViewModel : ViewModel
     public ReactivePropertySlim<string> DurationTimeText { get; } = new ReactivePropertySlim<string>();
 
     public ReactivePropertySlim<bool> ShowStopButton { get; } = new ReactivePropertySlim<bool>(true);
+
+    public ReactivePropertySlim<bool> IsPlaned { get; } = new();
 }

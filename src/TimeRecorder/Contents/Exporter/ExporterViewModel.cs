@@ -52,13 +52,23 @@ public class ExporterViewModel : ViewModel, IContentViewModel
         ImportKey.Value = paramConfig?.Param ?? "";
     }
 
+    public void ExportOld(SavingFileSelectionMessage message)
+    {
+        var savePath = message.Response?.FirstOrDefault();
+        if (savePath == null)
+            return;
+
+        _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value, useNewFormat: false);
+
+    }
+
     public void Export(SavingFileSelectionMessage message)
     {
         var savePath = message.Response?.FirstOrDefault();
         if (savePath == null)
             return;
 
-        _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value);
+        _ExporterModel.Export(SelectedYear.Value, SelectedMonth.Value, savePath, AutoAdjust.Value, useNewFormat:true);
 
     }
 

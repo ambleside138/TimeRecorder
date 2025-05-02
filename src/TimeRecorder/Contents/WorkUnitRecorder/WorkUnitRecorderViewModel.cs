@@ -22,6 +22,7 @@ using TimeRecorder.Contents.WorkUnitRecorder.Tasks.Buttons;
 using TimeRecorder.Configurations;
 using TimeRecorder.Configurations.Items;
 using System.Windows;
+using System.Diagnostics;
 
 namespace TimeRecorder.Contents.WorkUnitRecorder;
 
@@ -30,6 +31,8 @@ namespace TimeRecorder.Contents.WorkUnitRecorder;
 /// </summary>
 public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
 {
+    private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
+
     public NavigationIconButtonViewModel NavigationIcon => new() { Title = "入力", IconKey = "CalendarClock" };
 
     private readonly WorkUnitRecorderModel _Model = new();
@@ -52,6 +55,12 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
     private const int _AlertCount = 60 * 5;
 
     public ReactivePropertySlim<bool> IsSelected { get; } = new();
+
+    public string TimeCardLinkURL => _Model.TargetTimeCardLinkURL.Value;
+
+    public ReadOnlyReactivePropertySlim<bool> IsTimeCardLinkEnabled { get; }
+
+
 
     public WorkUnitRecorderViewModel()
     {
@@ -78,6 +87,15 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
         TargetDateTime = _Model.TargetDate
                                .ToReactivePropertyAsSynchronized(d => d.Value)
                                .AddTo(CompositeDisposable);
+
+        //TimeCardLinkURL = _Model.TargetTimeCardLinkURL
+        //                        .ToReactivePropertySlimAsSynchronized(d => d.Value)
+        //                        .AddTo(CompositeDisposable);
+
+        IsTimeCardLinkEnabled = _Model.TargetTimeCardLinkURL
+                                      .Select(u => string.IsNullOrEmpty(u) == false)
+                                      .ToReadOnlyReactivePropertySlim()
+                                      .AddTo(CompositeDisposable);
 
         AddingTaskButtons = new ReactiveCollection<AddingTaskButtonViewModel>();
         InitializeAddingTaskButtons();
@@ -189,7 +207,7 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
 
     public void ExecuteNewTaskDialog()
     {
-        var editDialogVm = new WorkTaskEditDialogViewModel();
+        var editDialogVm = new WorkTaskEditDialogViewModel(TimeCardLinkURL);
 
         var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
 
@@ -237,11 +255,11 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
         {
             if (imported.Any())
             {
-                SnackbarService.Current.ShowMessage($"{imported.Length}件の予定を取り込みました");
+                SnackbarService.Current.ShowMessage($"{imported.Length}件の予定を取込・更新しました");
             }
             else
             {
-                SnackbarService.Current.ShowMessage($"取込対象の予定は見つかりませんでした");
+                SnackbarService.Current.ShowMessage($"取込・更新対象の予定は見つかりませんでした");
             }
         }
     }
@@ -250,6 +268,35 @@ public class WorkUnitRecorderViewModel : ViewModel, IContentViewModel
     public void StopCurrentTask()
     {
         _Model.StopCurrentTask();
+    }
+
+    public void EditTimeCardLink()
+    {
+        var editDialogVm = new TimeCardLinkEditWindowViewModel(_Model.TargetTimeCardLinkURL.Value);
+
+        var result = TransitionHelper.Current.TransitionModal<TimeCardLinkEditWindow>(editDialogVm);
+
+        if (result == ModalTransitionResponse.Yes)
+        {
+            var inputValue = editDialogVm.Url.Value;
+            _Model.UpdateTimeCardLink(inputValue);
+        }
+    }
+
+    public void OpenTimeCardLink()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                UseShellExecute = true,
+                FileName = _Model.TargetTimeCardLinkURL.Value
+            });
+        }
+        catch (Exception ex)
+        {
+            _logger.Error(ex);
+        }
     }
 
 }

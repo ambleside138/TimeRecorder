@@ -6,6 +6,7 @@ using TimeRecorder.Domain.Domain.WorkProcesses;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Domain.Domain.Products;
 using TimeRecorder.Domain.Domain.Calendar;
+using TimeRecorder.Domain.Domain.Segments;
 
 namespace TimeRecorder.Domain.Domain.Tasks;
 
@@ -66,7 +67,17 @@ public class WorkTask : Entity<WorkTask>
     }
     #endregion
 
-    public TaskSource TaskSource { get; private set; }
+    #region SegmentId変更通知プロパティ
+    private Identity<Segment> _SegmentId;
+
+    public Identity<Segment> SegmentId
+    {
+        get => _SegmentId;
+        set => RaisePropertyChangedIfSet(ref _SegmentId, value);
+    }
+    #endregion
+
+    public TaskSource TaskSource { get; set; }
 
     public bool IsTemporary => TaskSource.IsTemporary();
 
@@ -82,6 +93,7 @@ public class WorkTask : Entity<WorkTask>
             ClientId = Identity<Client>.Empty,
             ProductId = Identity<Product>.Empty,
             ProcessId = Identity<WorkProcess>.Empty,
+            SegmentId= Identity<Segment>.Empty,
         };
     }
 
@@ -93,16 +105,6 @@ public class WorkTask : Entity<WorkTask>
         return t;
     }
 
-    public static WorkTask FromScheduledEvent(ScheduledEvent scheduledEvent)
-    {
-        var workTask = ForNew();
-        workTask.Title = scheduledEvent.Title;
-        workTask.TaskCategory = TaskCategory.Develop;
-        workTask.TaskSource = TaskSource.Schedule;
-
-        return workTask;
-    }
-
     // VSの場合、「クイックアクションとリファクタリング」からコンストラクタコードの生成が可能
     public WorkTask(
         Identity<WorkTask> id,
@@ -112,6 +114,7 @@ public class WorkTask : Entity<WorkTask>
         Identity<Client> ClientId,
         Identity<WorkProcess> processId,
         TaskSource source,
+        Identity<Segment> segmentId,
         bool isCompleted)
     {
         Id = id;
@@ -122,6 +125,7 @@ public class WorkTask : Entity<WorkTask>
         _ProcessId = processId;
         TaskSource = source;
         IsCompleted = isCompleted;
+        _SegmentId = segmentId;
     }
 
     public void Complete()

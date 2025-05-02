@@ -32,6 +32,8 @@ public class FavoriteWorkTask : IEquatable<FavoriteWorkTask>
 
     public int ProcessId { get; set; }
 
+    public int SegmentId { get; set; }
+
     public WorkTask ConvertToDomainModel()
     {
         var obj = WorkTask.ForNewFavorite();
@@ -40,6 +42,7 @@ public class FavoriteWorkTask : IEquatable<FavoriteWorkTask>
         obj.ProductId = new Domain.Identity<Domain.Domain.Products.Product>(ProductId);
         obj.ClientId = new Domain.Identity<Domain.Domain.Clients.Client>(ClientId);
         obj.ProcessId = new Domain.Identity<Domain.Domain.WorkProcesses.WorkProcess>(ProcessId);
+        obj.SegmentId = new Domain.Identity<Domain.Domain.Segments.Segment>(SegmentId);
 
         return obj;
     }
@@ -53,6 +56,7 @@ public class FavoriteWorkTask : IEquatable<FavoriteWorkTask>
             ProductId = workTask.ProductId.Value,
             ClientId = workTask.ClientId.Value,
             ProcessId = workTask.ProcessId.Value,
+            SegmentId= workTask.SegmentId.Value,
         };
     }
 

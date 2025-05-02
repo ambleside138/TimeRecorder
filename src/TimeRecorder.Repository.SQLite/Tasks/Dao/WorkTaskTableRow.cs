@@ -20,6 +20,8 @@ class WorkTaskTableRow
 
     public int ProcessId { get; set; }
 
+    public int SegmentId { get; set; }
+
     public TaskSource TaskSource { get; set; }
 
 
@@ -34,6 +36,7 @@ class WorkTaskTableRow
             ClientId = workTask.ClientId.Value,
             ProcessId = workTask.ProcessId.Value,
             TaskSource = workTask.TaskSource,
+            SegmentId = workTask.SegmentId.Value,
         };
     }
 }

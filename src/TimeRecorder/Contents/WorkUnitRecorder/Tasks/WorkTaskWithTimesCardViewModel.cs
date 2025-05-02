@@ -132,8 +132,10 @@ public class WorkTaskWithTimesCardViewModel : ViewModel
     public void EditWorkTask()
     {
         var targetData = _Model.SelectWorkTask(Dto.TaskId);
+        // 汚いのでなんとかしたい...
+        var linkUrl = MainWindowViewModel.Instance.Contents.OfType<WorkUnitRecorderViewModel>().First().TimeCardLinkURL;
 
-        var editDialogVm = new WorkTaskEditDialogViewModel(targetData);
+        var editDialogVm = new WorkTaskEditDialogViewModel(targetData, linkUrl);
 
         var result = TransitionHelper.Current.TransitionModal<TaskEditDialog>(editDialogVm);
 

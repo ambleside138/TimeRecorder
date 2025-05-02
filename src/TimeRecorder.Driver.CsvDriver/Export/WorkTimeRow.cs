@@ -22,6 +22,8 @@ class WorkTimeRow
 
     public string Remarks { get; set; }
 
+    public string Segment { get; set; }
+
     public string ManHour { get; set; }
 
     private int _TotalMinutes;

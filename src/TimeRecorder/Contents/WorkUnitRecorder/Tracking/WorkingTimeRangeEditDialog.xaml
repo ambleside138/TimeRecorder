@@ -8,7 +8,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:system="clr-namespace:System;assembly=System.Runtime"
-    Width="280"
+    Width="320"
     d:DesignHeight="100"
     d:DesignWidth="280"
     Background="{StaticResource MaterialDesignBackground}"
@@ -28,7 +28,7 @@
 
     </behaviors:Interaction.Triggers>
 
-    <StackPanel Margin="16">
+    <StackPanel Margin="32">
         <StackPanel Orientation="Horizontal">
             <DatePicker
                 Width="96"
@@ -60,7 +60,7 @@
         </StackPanel>
 
         <StackPanel
-            Margin="0,16,0,0"
+            Margin="0,32,0,0"
             HorizontalAlignment="Right"
             Orientation="Horizontal">
 

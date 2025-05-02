@@ -2,6 +2,7 @@
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -34,6 +35,8 @@ public class WorkingTimeRecordForReport
     public bool IsTemporary { get; set; }
 
     public bool IsScheduled { get; set; }
+
+    public Segment Segment { get; set; }
 
     public WorkingTimeRange ConvertToWorkingTimeRange()
     {

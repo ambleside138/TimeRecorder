@@ -27,6 +27,7 @@ insert into worktasks
   , clientId 
   , processId 
   , tasksource
+  , segmentId
 )
 values
 (
@@ -36,6 +37,7 @@ values
   , @clientId 
   , @processId 
   , @tasksource
+  , @segmentId
 )
 ";
         #endregion
@@ -70,6 +72,7 @@ set
   , productId = @productId
   , clientId = @clientId
   , processId = @processId
+  , segmentId = @segmentId
 where
   id = @id
 ";
@@ -130,6 +133,7 @@ SELECT
   , clientId 
   , processId  
   , tasksource
+  , segmentId
 FROM
   worktasks
 WHERE

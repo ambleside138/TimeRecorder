@@ -8,6 +8,7 @@ using TimeRecorder.Domain;
 using TimeRecorder.Domain.Domain;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -15,6 +16,7 @@ using TimeRecorder.Domain.UseCase.Tracking.Reports;
 using TimeRecorder.Domain.Utility;
 using TimeRecorder.Repository.SQLite.Clients.Dao;
 using TimeRecorder.Repository.SQLite.Products.Dao;
+using TimeRecorder.Repository.SQLite.Segments.Dao;
 using TimeRecorder.Repository.SQLite.Tasks.Dao;
 using TimeRecorder.Repository.SQLite.Tracking.Dao;
 using TimeRecorder.Repository.SQLite.WorkProcesses.Dao;
@@ -37,6 +39,7 @@ SELECT
   , task.processid as workprocessid
   , task.productid as productid
   , task.TaskSource as tasksource
+  , task.segmentid as segmentid
 FROM
   workingtimes time
 INNER JOIN
@@ -68,6 +71,10 @@ WHERE
                                                 .Select(d => d.ToDomainObject())
                                                 .ToDictionary(p => p.Id);
 
+            var segments = new SegmentDao(c, null).SelectAll()
+                                                            .Select(d => d.ToDomainObject())
+                                                            .ToDictionary(p => p.Id);
+
             var param = new
             {
                 start = yearMonth.StartDate.ToString("yyyyMMdd"),
@@ -81,6 +88,7 @@ WHERE
                 processes.TryGetValue(new Identity<WorkProcess>(task.WorkProcessId), out WorkProcess targetProcess);
                 products.TryGetValue(new Identity<Product>(task.ProductId), out Product targetProduct);
                 clients.TryGetValue(new Identity<Client>(task.ClientId), out Client targetClient);
+                segments.TryGetValue(new Identity<Domain.Domain.Segments.Segment>(task.SegmentId), out Segment targetSegment);
 
                 if (string.IsNullOrEmpty(task.EndTime))
                 {
@@ -101,6 +109,7 @@ WHERE
                     WorkTaskId = new Identity<WorkTask>(task.WorkTaskId),
                     IsTemporary = task.TaskSource.IsTemporary(),
                     IsScheduled = task.TaskSource == TaskSource.Schedule,
+                    Segment = targetSegment ?? Segment.Empty,
                 };
 
                 list.Add(dto);
@@ -142,5 +151,7 @@ WHERE
         public TaskSource TaskSource { get; set; }
 
         public string ImportKey { get; set; }
+
+        public int SegmentId { get; set; }
     }
 }

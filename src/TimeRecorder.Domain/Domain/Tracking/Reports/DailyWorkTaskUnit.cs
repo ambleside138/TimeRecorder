@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using TimeRecorder.Domain.Domain.Clients;
 using TimeRecorder.Domain.Domain.Products;
+using TimeRecorder.Domain.Domain.Segments;
 using TimeRecorder.Domain.Domain.Tasks;
 using TimeRecorder.Domain.Domain.Tracking;
 using TimeRecorder.Domain.Domain.WorkProcesses;
@@ -19,6 +20,7 @@ public class DailyWorkTaskUnit
     public Product Product { get; }
     public Client Client { get; }
     public WorkProcess WorkProcess { get; }
+    public Segment Segment { get; }
     public string Title { get; }
 
     public bool IsTemporary { get; }
@@ -45,6 +47,7 @@ public class DailyWorkTaskUnit
         Title = workingTime.Title;
         IsTemporary = workingTime.IsTemporary;
         IsScheduled = workingTime.IsScheduled;
+        Segment = workingTime.Segment;
     }
 
     public void AddWorkingTime(WorkingTimeRange timeRange)
@@ -64,7 +67,8 @@ public class DailyWorkTaskUnit
                 && Product.Id == dailyWorkTaskUnit.Product.Id
                 && Client.Id == dailyWorkTaskUnit.Client.Id
                 && WorkProcess.Id == dailyWorkTaskUnit.WorkProcess.Id
-                && Title == dailyWorkTaskUnit.Title)
+                && Title == dailyWorkTaskUnit.Title
+                && Segment.Id == dailyWorkTaskUnit.Segment.Id)
             {
                 return true;
             }

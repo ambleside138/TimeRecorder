@@ -7,7 +7,7 @@ namespace TimeRecorder.Domain.UseCase.Tracking.Reports;
 
 public interface IReportDriver
 {
-    ExportResult ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust);
+    ExportResult ExportMonthlyReport(DailyWorkRecordHeader[] dailyWorkRecordHeaders, string filePath, bool autoAdjust, bool useNewFormat);
 }
 
 public class ExportResult
@@ -15,4 +15,6 @@ public class ExportResult
     public bool IsSuccessed { get; set; }
 
     public string Message { get; set; }
+
+    public string Rows { get; set; }
 }
